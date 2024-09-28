@@ -9,7 +9,7 @@ import { IHealthCheck } from "./IHealthCheck";
 
 export interface IContainerInstance {
     type: ElementType.ContainerInstance;
-    identifier?: Identifier;
+    identifier: Identifier;
     containerIdentifier: Identifier;
     deploymentGroups?: Identifier[];
     relationships?: IRelationship[];

@@ -9,7 +9,7 @@ import { Relationship } from "./Relationship";
 import { Tag } from "./Tag";
 
 type ContainerInstanceParams = Required<
-    Pick<IContainerInstance, "containerIdentifier">
+    Pick<IContainerInstance, "identifier" | "containerIdentifier">
 > &
     Partial<Omit<IContainerInstance, "containerIdentifier" | "type">>;
 
@@ -36,7 +36,7 @@ export class ContainerInstance implements ISupportSnapshot<IContainerInstance> {
     }
 
     public readonly type: ElementType.ContainerInstance;
-    public readonly identifier?: Identifier;
+    public readonly identifier: Identifier;
     public readonly containerIdentifier: Identifier;
     public readonly deploymentGroups?: Identifier[];
     public readonly relationships?: Relationship[];

@@ -1,23 +1,24 @@
+import { IComponent, IContainer, IPerson, ISoftwareSystem } from "../../src";
 import { workspace } from "../../src/models";
 
-let customer;
-let supportStuff;
-let internetBankingSystem;
-let backoffice;
-let mainframe;
-let email;
-let atm;
-let singlePageApplication;
-let mobileApp;
-let webApplication;
-let apiApplication;
-let database;
-let signinController;
-let accountsSummaryController;
-let resetPasswordController;
-let securityComponent;
-let mainframeBankingSystemFacade;
-let emailSystemFacade;
+let customer: IPerson;
+let supportStuff: IPerson;
+let internetBankingSystem: ISoftwareSystem;
+let backoffice: IPerson;
+let mainframe: ISoftwareSystem;
+let email: ISoftwareSystem;
+let atm: ISoftwareSystem;
+let singlePageApplication: IContainer;
+let mobileApp: IContainer;
+let webApplication: IContainer;
+let apiApplication: IContainer;
+let database: IContainer;
+let signinController: IComponent;
+let accountsSummaryController: IComponent;
+let resetPasswordController: IComponent;
+let securityComponent: IComponent;
+let mainframeBankingSystemFacade: IComponent;
+let emailSystemFacade: IComponent;
 
 // Example usage of the fluent API with callbacks
 export default workspace("Big Bank plc.", "", (_) => {

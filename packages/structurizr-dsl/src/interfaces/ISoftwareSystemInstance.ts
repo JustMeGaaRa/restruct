@@ -9,7 +9,7 @@ import { Url } from "./Url";
 
 export interface ISoftwareSystemInstance {
     type: ElementType.SoftwareSystemInstance;
-    identifier?: Identifier;
+    identifier: Identifier;
     softwareSystemIdentifier: Identifier;
     deploymentGroups?: Identifier[];
     relationships?: IRelationship[];

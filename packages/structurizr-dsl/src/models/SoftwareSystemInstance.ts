@@ -9,7 +9,7 @@ import { Relationship } from "./Relationship";
 import { Tag } from "./Tag";
 
 type SoftwareSystemInstanceParams = Required<
-    Pick<ISoftwareSystemInstance, "softwareSystemIdentifier">
+    Pick<ISoftwareSystemInstance, "identifier" | "softwareSystemIdentifier">
 > &
     Partial<Omit<ISoftwareSystemInstance, "softwareSystemIdentifier" | "type">>;
 
@@ -38,7 +38,7 @@ export class SoftwareSystemInstance
     }
 
     public readonly type: ElementType.SoftwareSystemInstance;
-    public readonly identifier?: Identifier;
+    public readonly identifier: Identifier;
     public readonly softwareSystemIdentifier: Identifier;
     public readonly deploymentGroups?: Identifier[];
     public readonly relationships?: Relationship[];

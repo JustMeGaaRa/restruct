@@ -1,14 +1,22 @@
+import {
+    IContainer,
+    IContainerInstance,
+    IDeploymentEnvironment,
+    IDeploymentNode,
+    IInfrastructureNode,
+    ISoftwareSystem,
+} from "../../src";
 import { workspace } from "../../src/models";
 
-let springPetClinit;
-let webApplication;
-let database;
-let live;
-let region;
-let route53;
-let elb;
-let webApplicationInstance;
-let databaseInstance;
+let springPetClinit: ISoftwareSystem;
+let webApplication: IContainer;
+let database: IContainer;
+let live: IDeploymentEnvironment;
+let region: IDeploymentNode;
+let route53: IInfrastructureNode;
+let elb: IInfrastructureNode;
+let webApplicationInstance: IContainerInstance;
+let databaseInstance: IContainerInstance;
 
 export default workspace(
     "Amazon Web Services Example",
@@ -30,7 +38,11 @@ export default workspace(
                 }
             );
 
-            _.uses(webApplication, database, "Reads from and writes to"),
+            _.uses(
+                webApplication.identifier,
+                database.identifier,
+                "Reads from and writes to"
+            ),
                 (live = _.deploymentEnvironment("Live", (_) => {
                     region = _.deploymentNode("us-east-1", (_) => {
                         route53 = _.infrastructureNode(
@@ -45,20 +57,30 @@ export default workspace(
                         _.deploymentNode("Autoscaling group", (_) => {
                             _.deploymentNode("EC2 instance");
 
-                            webApplicationInstance =
-                                _.containerInstance(webApplication);
+                            webApplicationInstance = _.containerInstance(
+                                webApplication.identifier
+                            );
                         });
 
                         _.deploymentNode("Amazon RDS", (_) => {
                             _.deploymentNode("MySQL", (_) => {
-                                databaseInstance =
-                                    _.containerInstance(database);
+                                databaseInstance = _.containerInstance(
+                                    database.identifier
+                                );
                             });
                         });
                     });
 
-                    _.uses(route53, elb, "Forwards requests to");
-                    _.uses(elb, webApplicationInstance, "Forwards requests to");
+                    _.uses(
+                        route53.identifier,
+                        elb.identifier,
+                        "Forwards requests to"
+                    );
+                    _.uses(
+                        elb.identifier,
+                        webApplicationInstance.identifier,
+                        "Forwards requests to"
+                    );
                 }));
         });
 
