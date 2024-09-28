@@ -1,0 +1,19 @@
+{
+    "name": "@structurizr/dsl",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+        "dev": "tsc --watch",
+        "build": "tsc -b",
+        "test": "echo 'Add test script here'",
+        "lint": "eslint ."
+    },
+    "devDependencies": {
+        "@repo/eslint-config": "workspace:*",
+        "@repo/typescript-config": "workspace:*",
+        "@types/node": "^20.11.24",
+        "@types/eslint": "^8.56.5",
+        "eslint": "^8.57.0",
+        "typescript": "^5.3.3"
+    }
+}
