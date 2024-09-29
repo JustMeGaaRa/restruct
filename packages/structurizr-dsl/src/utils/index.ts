@@ -89,7 +89,7 @@ export const findViewByKey = (
 export const findViewForElement = (
     workspace: IWorkspace,
     viewType: ViewType,
-    elementIdentifier: Identifier
+    elementIdentifier?: Identifier
 ): View | undefined => {
     return (
         [workspace.views.systemLandscape].find((x) => x?.type === viewType) ??

@@ -1,21 +1,26 @@
 {
-    "name": "@structurizr/dsl",
+    "name": "@structurizr/react",
     "version": "0.0.0",
     "private": true,
     "exports": {
         ".": "./src/index.ts"
     },
     "scripts": {
-        "dev": "tsc --watch",
-        "build": "tsc -b",
-        "test": "echo 'Add test script here'",
         "lint": "eslint ."
+    },
+    "dependencies": {
+        "@structurizr/dsl": "workspace:*",
+        "react": "^18.2.0",
+        "uuid": "^10.0.0"
     },
     "devDependencies": {
         "@repo/eslint-config": "workspace:*",
         "@repo/typescript-config": "workspace:*",
         "@types/node": "^20.11.24",
         "@types/eslint": "^8.56.5",
+        "@types/react": "^18.2.61",
+        "@types/react-dom": "^18.2.19",
+        "@types/uuid": "^10.0.0",
         "eslint": "^8.57.0",
         "typescript": "^5.3.3"
     }
