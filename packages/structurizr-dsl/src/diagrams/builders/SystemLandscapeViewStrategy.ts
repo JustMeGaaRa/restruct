@@ -13,8 +13,8 @@ import {
 
 export class SystemLandscapeViewStrategy implements ISupportVisitor {
     constructor(
-        private model: IModel,
-        private view: ISystemLandscapeView
+        private readonly model: IModel,
+        private readonly view: ISystemLandscapeView
     ) {}
 
     accept<T>(visitor: IElementVisitor<T>): Array<T> {

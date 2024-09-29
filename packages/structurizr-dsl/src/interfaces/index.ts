@@ -11,6 +11,7 @@ export * from "./IDeploymentEnvironment";
 export * from "./IDeploymentNode";
 export * from "./IDeploymentView";
 export * from "./IElementStyle";
+export * from "./IElement";
 export * from "./IGroup";
 export * from "./IHealthCheck";
 export * from "./IInfrastructureNode";

@@ -1,15 +1,15 @@
-import { ComponentViewStrategy, IElement } from "@structurizr/dsl";
+import { ComponentViewStrategy, IComponentView } from "@structurizr/dsl";
 import { FC, PropsWithChildren, useEffect, useState } from "react";
 import { IViewMetadata, ViewMetadataProvider } from "../../containers";
-// import { ViewElementJsxVisitor } from "../../types";
+import { ViewElementJsxVisitor, ZoomCallback } from "../../types";
 import { createDefaultComponentView } from "../../utils";
 import { useWorkspace } from "./Workspace";
 
 export const ComponentView: FC<PropsWithChildren<{
-    value: { key?: string; containerIdentifier: string; };
+    value: IComponentView;
     metadata?: IViewMetadata;
-    onZoomInClick?: (event: React.MouseEvent<HTMLButtonElement>, element: IElement) => void;
-    onZoomOutClick?: (event: React.MouseEvent<HTMLButtonElement>, element: IElement) => void;
+    onZoomInClick?: ZoomCallback;
+    onZoomOutClick?: ZoomCallback;
 }>> = ({
     children,
     value,
@@ -22,12 +22,12 @@ export const ComponentView: FC<PropsWithChildren<{
 
         useEffect(() => {
             if (workspace) {
-                // const visitor = new ViewElementJsxVisitor(onZoomInClick, onZoomOutClick);
-                // const componentView = workspace.views.components.find(x => x.key === value.key)
-                //     ?? createDefaultComponentView(value.containerIdentifier);
-                // const strategy = new ComponentViewStrategy(workspace.model, componentView);
-                // const elements = strategy.accept(visitor);
-                // setElements(elements);
+                const visitor = new ViewElementJsxVisitor(onZoomInClick, onZoomOutClick);
+                const componentView = workspace.views.components.find(x => x.key === value.key)
+                    ?? createDefaultComponentView(value.containerIdentifier);
+                const strategy = new ComponentViewStrategy(workspace.model, componentView);
+                const elements = strategy.accept(visitor);
+                setElements(elements);
             }
         }, [workspace, value.key, value.containerIdentifier, onZoomInClick, onZoomOutClick]);
 
