@@ -1,5 +1,7 @@
-import { IComponent, IContainer, IPerson, ISoftwareSystem } from "../../src";
-import { workspace } from "../../src/models";
+# Big Bank Plc Example
+
+```js
+import { IComponent, IContainer, IPerson, ISoftwareSystem, workspace  } from "@structurizr/dsl";
 
 let customer: IPerson;
 let supportStuff: IPerson;
@@ -100,3 +102,5 @@ export default workspace("Big Bank plc.", "", (_) => {
         _.systemContextView(internetBankingSystem.identifier, "SystemContext");
     });
 });
+
+```

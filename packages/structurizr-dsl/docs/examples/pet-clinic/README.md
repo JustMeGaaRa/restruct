@@ -1,3 +1,6 @@
+# Pet Clinic Example
+
+```js
 import {
     IContainer,
     IContainerInstance,
@@ -5,8 +8,8 @@ import {
     IDeploymentNode,
     IInfrastructureNode,
     ISoftwareSystem,
-} from "../../src";
-import { workspace } from "../../src/models";
+    workspace
+} from "@structurizr/dsl";
 
 let springPetClinit: ISoftwareSystem;
 let webApplication: IContainer;
@@ -42,46 +45,47 @@ export default workspace(
                 webApplication.identifier,
                 database.identifier,
                 "Reads from and writes to"
-            ),
-                (live = _.deploymentEnvironment("Live", (_) => {
-                    region = _.deploymentNode("us-east-1", (_) => {
-                        route53 = _.infrastructureNode(
-                            "Route 53",
-                            "Highly available and scalable cloud DNS service."
+            );
+
+            live = _.deploymentEnvironment("Live", (_) => {
+                region = _.deploymentNode("us-east-1", (_) => {
+                    route53 = _.infrastructureNode(
+                        "Route 53",
+                        "Highly available and scalable cloud DNS service."
+                    );
+                    elb = _.infrastructureNode(
+                        "Elastic Load Balancer",
+                        "Automatically distributes incoming application traffic."
+                    );
+
+                    _.deploymentNode("Autoscaling group", (_) => {
+                        _.deploymentNode("EC2 instance");
+
+                        webApplicationInstance = _.containerInstance(
+                            webApplication.identifier
                         );
-                        elb = _.infrastructureNode(
-                            "Elastic Load Balancer",
-                            "Automatically distributes incoming application traffic."
-                        );
-
-                        _.deploymentNode("Autoscaling group", (_) => {
-                            _.deploymentNode("EC2 instance");
-
-                            webApplicationInstance = _.containerInstance(
-                                webApplication.identifier
-                            );
-                        });
-
-                        _.deploymentNode("Amazon RDS", (_) => {
-                            _.deploymentNode("MySQL", (_) => {
-                                databaseInstance = _.containerInstance(
-                                    database.identifier
-                                );
-                            });
-                        });
                     });
 
-                    _.uses(
-                        route53.identifier,
-                        elb.identifier,
-                        "Forwards requests to"
-                    );
-                    _.uses(
-                        elb.identifier,
-                        webApplicationInstance.identifier,
-                        "Forwards requests to"
-                    );
-                }));
+                    _.deploymentNode("Amazon RDS", (_) => {
+                        _.deploymentNode("MySQL", (_) => {
+                            databaseInstance = _.containerInstance(
+                                database.identifier
+                            );
+                        });
+                    });
+                });
+
+                _.uses(
+                    route53.identifier,
+                    elb.identifier,
+                    "Forwards requests to"
+                );
+                _.uses(
+                    elb.identifier,
+                    webApplicationInstance.identifier,
+                    "Forwards requests to"
+                );
+            });
         });
 
         _.views((_) => {
@@ -101,3 +105,5 @@ export default workspace(
         });
     }
 );
+
+```
