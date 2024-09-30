@@ -16,10 +16,10 @@ export interface IDiagram<TScope, TPrimary, TSupporting> {
 }
 
 export interface ISystemLandscapeDiagram
-    extends IDiagram<"all", ISoftwareSystem, "none"> {}
+    extends IDiagram<unknown, ISoftwareSystem | IPerson, unknown> {}
 
 export interface ISystemContextDiagram
-    extends IDiagram<ISoftwareSystem, ISoftwareSystem, IPerson> {}
+    extends IDiagram<unknown, ISoftwareSystem, ISoftwareSystem | IPerson> {}
 
 export interface IContainerDiagram
     extends IDiagram<ISoftwareSystem, IContainer, ISoftwareSystem | IPerson> {}
@@ -28,7 +28,7 @@ export interface IComponentDiagram
     extends IDiagram<
         IContainer,
         IComponent,
-        ISoftwareSystem | IComponent | IPerson
+        ISoftwareSystem | IContainer | IPerson
     > {}
 
 export interface IDeploymentDiagram

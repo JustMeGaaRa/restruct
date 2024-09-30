@@ -15,7 +15,7 @@ import { Container } from "./Container";
 import { Relationship } from "./Relationship";
 import { Person } from "./Person";
 
-export const ContainerView: FC<PropsWithChildren<{
+export const ContainerDiagram: FC<PropsWithChildren<{
     value: IContainerView;
     metadata?: IViewMetadata;
     onZoomInClick?: ZoomCallback;

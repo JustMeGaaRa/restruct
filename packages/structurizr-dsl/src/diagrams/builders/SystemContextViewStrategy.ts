@@ -1,5 +1,10 @@
-import { IModel, ISoftwareSystem, ISystemContextView } from "../../interfaces";
-import { IElementVisitor, ISupportVisitor } from "../../shared";
+import {
+    IModel,
+    IPerson,
+    ISoftwareSystem,
+    ISystemContextView,
+} from "../../interfaces";
+import { IDiagramVisitor, ISupportVisitor } from "../../shared";
 import {
     elementIncludedInView,
     getRelationships,
@@ -7,13 +12,22 @@ import {
     relationshipExistsOverall,
 } from "../../utils";
 
-export class SystemContextViewStrategy implements ISupportVisitor {
+export class SystemContextViewStrategy
+    implements
+        ISupportVisitor<unknown, ISoftwareSystem, ISoftwareSystem | IPerson>
+{
     constructor(
         private model: IModel,
         private view: ISystemContextView
     ) {}
 
-    accept<T>(visitor: IElementVisitor<T>): Array<T> {
+    accept(
+        visitor: IDiagramVisitor<
+            unknown,
+            ISoftwareSystem,
+            ISoftwareSystem | IPerson
+        >
+    ): void {
         const visitedElements = new Set<string>();
         const relationships = getRelationships(this.model, false);
         const people = this.model.groups
@@ -27,7 +41,7 @@ export class SystemContextViewStrategy implements ISupportVisitor {
         const visitConnectedSoftwareSystems = (
             softwareSystem: ISoftwareSystem
         ) => {
-            return softwareSystems
+            softwareSystems
                 .filter(
                     (softwareSystem) =>
                         softwareSystem.identifier !==
@@ -46,15 +60,15 @@ export class SystemContextViewStrategy implements ISupportVisitor {
                         )
                     );
                 })
-                .map((softwareSystem) => {
+                .forEach((softwareSystem) => {
                     visitedElements.add(softwareSystem.identifier);
-                    return visitor.visitSoftwareSystem(softwareSystem);
+                    visitor.visitSupportingElement(softwareSystem);
                 });
         };
 
         // 2.1.2. include all people that are directly connected to the current software system
         const visitConnectedPeople = (softwareSystem: ISoftwareSystem) => {
-            return people
+            people
                 .filter((person) => {
                     return (
                         relationshipExistsOverall(
@@ -65,35 +79,28 @@ export class SystemContextViewStrategy implements ISupportVisitor {
                     );
                 })
                 .filter((person) => !visitedElements.has(person.identifier))
-                .map((person) => {
+                .forEach((person) => {
                     visitedElements.add(person.identifier);
-                    return visitor.visitPerson(person);
+                    visitor.visitSupportingElement(person);
                 });
         };
 
-        const visitedSoftwareSystems = softwareSystems
+        softwareSystems
             .filter(
                 (softwareSystem) =>
                     softwareSystem.identifier ===
                     this.view.softwareSystemIdentifier
             )
-            .flatMap((softwareSystem) => {
-                const visitedConnectedPeople =
-                    visitConnectedPeople(softwareSystem);
-                const visitedConnectedSoftwareSystems =
-                    visitConnectedSoftwareSystems(softwareSystem);
-
+            .forEach((softwareSystem) => {
                 // 2.1.1. include the current software and all software systems
                 visitedElements.add(softwareSystem.identifier);
-                const visitedSoftwareSystem =
-                    visitor.visitSoftwareSystem(softwareSystem);
+                visitor.visitPrimaryElement(softwareSystem);
 
-                return [visitedSoftwareSystem]
-                    .concat(visitedConnectedPeople)
-                    .concat(visitedConnectedSoftwareSystems);
+                visitConnectedPeople(softwareSystem);
+                visitConnectedSoftwareSystems(softwareSystem);
             });
 
-        const visitedRelationships = relationships
+        relationships
             .filter(
                 (relationship) =>
                     relationship.sourceIdentifier !==
@@ -110,8 +117,6 @@ export class SystemContextViewStrategy implements ISupportVisitor {
                     relationship
                 )
             )
-            .map((relationship) => visitor.visitRelationship(relationship));
-
-        return visitedSoftwareSystems.concat(visitedRelationships);
+            .forEach((relationship) => visitor.visitRelationship(relationship));
     }
 }

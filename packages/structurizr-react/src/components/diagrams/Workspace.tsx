@@ -15,8 +15,8 @@ export const Workspace: FC<PropsWithChildren> = ({ children }) => {
                 position: "relative",
                 margin: "0px",
                 padding: "0px",
-                height: "100vh",
-                width: "100vw",
+                height: "100%",
+                width: "100%",
                 overflow: "hidden",
             }}
         >

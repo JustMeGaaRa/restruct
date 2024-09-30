@@ -1,11 +1,23 @@
-import { ComponentViewStrategy, IComponentView } from "@structurizr/dsl";
+import {
+    ComponentDiagramBuilder,
+    IComponentDiagram,
+    IComponentView,
+    isContainer,
+    isPerson,
+    isSoftwareSystem
+} from "@structurizr/dsl";
 import { FC, PropsWithChildren, useEffect, useState } from "react";
 import { IViewMetadata, ViewMetadataProvider } from "../../containers";
-import { ViewElementJsxVisitor, ZoomCallback } from "../../types";
+import { ZoomCallback } from "../../types";
 import { createDefaultComponentView } from "../../utils";
 import { useWorkspace } from "./Workspace";
+import { Container } from "./Container";
+import { Component } from "./Component";
+import { SoftwareSystem } from "./SoftwareSystem";
+import { Person } from "./Person";
+import { Relationship } from "./Relationship";
 
-export const ComponentView: FC<PropsWithChildren<{
+export const ComponentDiagram: FC<PropsWithChildren<{
     value: IComponentView;
     metadata?: IViewMetadata;
     onZoomInClick?: ZoomCallback;
@@ -18,22 +30,62 @@ export const ComponentView: FC<PropsWithChildren<{
     onZoomOutClick,
 }) => {
         const { workspace } = useWorkspace();
-        const [elements, setElements] = useState<JSX.Element[]>([]);
+        const [diagram, setDiagram] = useState<IComponentDiagram | null>(null);
 
         useEffect(() => {
             if (workspace) {
-                const visitor = new ViewElementJsxVisitor(onZoomInClick, onZoomOutClick);
                 const componentView = workspace.views.components.find(x => x.key === value.key)
                     ?? createDefaultComponentView(value.containerIdentifier);
-                const strategy = new ComponentViewStrategy(workspace.model, componentView);
-                const elements = strategy.accept(visitor);
-                setElements(elements);
+                const builder = new ComponentDiagramBuilder(workspace, componentView);
+                setDiagram(builder.build());
             }
         }, [workspace, value.key, value.containerIdentifier, onZoomInClick, onZoomOutClick]);
 
         return (
             <ViewMetadataProvider metadata={metadata}>
-                {elements}
+                {diagram?.scope && (
+                    <Container
+                        key={diagram.scope.identifier}
+                        value={{
+                            ...diagram.scope,
+                            technology: diagram.scope.technology.join(", ")
+                        }}
+                    >
+                        {diagram?.primaryElements.map((element) => (
+                            <Component
+                                key={element.identifier}
+                                value={{
+                                    ...element,
+                                    technology: element.technology.join(", ")
+                                }}
+                            />
+                        ))}
+                    </Container>
+                )}
+                {diagram?.supportingElements.filter(isSoftwareSystem).map((element) => (
+                    <SoftwareSystem key={element.identifier} value={element} />
+                ))}
+                {diagram?.supportingElements.filter(isContainer).map((element) => (
+                    <Container
+                        key={element.identifier}
+                        value={{
+                            ...diagram.scope,
+                            technology: diagram.scope.technology.join(", ")
+                        }}
+                    />
+                ))}
+                {diagram?.supportingElements.filter(isPerson).map((element) => (
+                    <Person key={element.identifier} value={element} />
+                ))}
+                {diagram?.relationships.map((relationship) => (
+                    <Relationship
+                        key={`${relationship.sourceIdentifier}_${relationship.targetIdentifier}`}
+                        value={{
+                            identifier: `${relationship.sourceIdentifier}_${relationship.targetIdentifier}`,
+                            ...relationship
+                        }}
+                    />
+                ))}
                 {children}
             </ViewMetadataProvider>
         );

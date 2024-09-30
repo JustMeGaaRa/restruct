@@ -1,5 +1,5 @@
-import { IElementVisitor } from "./IElementVisitor";
+import { IDiagramVisitor } from "./IDiagramVisitor";
 
-export interface ISupportVisitor {
-    accept<T = any>(visitor: IElementVisitor<T>): Array<T>;
+export interface ISupportVisitor<TScope, TPrimary, TSupporting> {
+    accept(visitor: IDiagramVisitor<TScope, TPrimary, TSupporting>): void;
 }

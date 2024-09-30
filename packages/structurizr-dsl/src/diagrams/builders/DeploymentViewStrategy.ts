@@ -5,7 +5,8 @@ import {
     relationshipExistsForElementsInView,
 } from "../../utils";
 
-export class DeploymentViewStrategy implements ISupportVisitor {
+// TODO: implement the ISupportVisitor interface
+export class DeploymentViewStrategy {
     constructor(
         private readonly model: IModel,
         private readonly view: IDeploymentView

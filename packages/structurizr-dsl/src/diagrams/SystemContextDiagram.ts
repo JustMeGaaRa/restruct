@@ -23,14 +23,14 @@ export class SystemContextDiagramBuilder
             this.systemContextView
         );
         const visitor = new SystemContextDiagramVisitor();
-        // TODO: refactor stratey to accept diagram visitor
-        strategy.accept(visitor as any);
+        strategy.accept(visitor);
         return visitor.diagram;
     }
 }
 
 class SystemContextDiagramVisitor
-    implements IDiagramVisitor<ISoftwareSystem, ISoftwareSystem, IPerson>
+    implements
+        IDiagramVisitor<unknown, ISoftwareSystem, ISoftwareSystem | IPerson>
 {
     constructor(
         public diagram: ISystemContextDiagram = {
@@ -41,7 +41,7 @@ class SystemContextDiagramVisitor
         }
     ) {}
 
-    visitorScopeElement(scope: ISoftwareSystem): void {
+    visitorScopeElement(scope: unknown): void {
         this.diagram.scope = scope;
     }
     visitPrimaryElement(primaryElement: ISoftwareSystem): void {

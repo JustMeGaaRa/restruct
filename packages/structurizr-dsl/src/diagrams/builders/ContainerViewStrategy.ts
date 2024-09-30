@@ -1,5 +1,11 @@
-import { IContainer, IContainerView, IModel } from "../../interfaces";
-import { IElementVisitor, ISupportVisitor } from "../../shared";
+import {
+    IContainer,
+    IContainerView,
+    IModel,
+    IPerson,
+    ISoftwareSystem,
+} from "../../interfaces";
+import { IDiagramVisitor, ISupportVisitor } from "../../shared";
 import {
     elementIncludedInView,
     getRelationships,
@@ -7,13 +13,22 @@ import {
     relationshipExistsOverall,
 } from "../../utils";
 
-export class ContainerViewStrategy implements ISupportVisitor {
+export class ContainerViewStrategy
+    implements
+        ISupportVisitor<ISoftwareSystem, IContainer, ISoftwareSystem | IPerson>
+{
     constructor(
         private model: IModel,
         private view: IContainerView
     ) {}
 
-    accept<T>(visitor: IElementVisitor<T>): Array<T> {
+    accept(
+        visitor: IDiagramVisitor<
+            ISoftwareSystem,
+            IContainer,
+            ISoftwareSystem | IPerson
+        >
+    ): void {
         const visitedElements = new Set<string>();
         const relationships = getRelationships(this.model, false);
         const people = this.model.groups
@@ -25,14 +40,14 @@ export class ContainerViewStrategy implements ISupportVisitor {
 
         // 3.1.3. include all software systems that are directly connected to the current container
         const visitConnectedSoftwareSystems = (container: IContainer) => {
-            return softwareSystems
+            softwareSystems
                 .filter(
                     (softwareSystem) =>
                         softwareSystem.identifier !==
                         this.view.softwareSystemIdentifier
                 )
-                .filter((softwareSystem) => {
-                    return (
+                .filter(
+                    (softwareSystem) =>
                         relationshipExistsOverall(
                             relationships,
                             container.identifier,
@@ -42,50 +57,45 @@ export class ContainerViewStrategy implements ISupportVisitor {
                             this.view,
                             softwareSystem.identifier
                         )
-                    );
-                })
+                )
                 .filter(
                     (softwareSystem) =>
                         !visitedElements.has(softwareSystem.identifier)
                 )
-                .map((softwareSystem) => {
+                .forEach((softwareSystem) => {
                     visitedElements.add(softwareSystem.identifier);
-                    return visitor.visitSoftwareSystem(softwareSystem);
+                    visitor.visitSupportingElement(softwareSystem);
                 });
         };
 
         // 3.1.2. include all people that are directly connected to the current container
         const visitConnectedPeople = (container: IContainer) => {
-            return people
-                .filter((person) => {
-                    return (
+            people
+                .filter(
+                    (person) =>
                         relationshipExistsOverall(
                             relationships,
                             container.identifier,
                             person.identifier
                         ) || elementIncludedInView(this.view, person.identifier)
-                    );
-                })
+                )
                 .filter((person) => !visitedElements.has(person.identifier))
-                .map((person) => {
+                .forEach((person) => {
                     visitedElements.add(person.identifier);
-                    return visitor.visitPerson(person);
+                    visitor.visitSupportingElement(person);
                 });
         };
 
         // 3.1. iterate over all containers and include them
-        const visitContainerArray = (
-            containers: Array<IContainer>,
-            parentId?: string
-        ) => {
-            return containers.map((container) => {
+        const visitContainerArray = (containers: Array<IContainer>) => {
+            containers.forEach((container) => {
                 visitedElements.add(container.identifier);
-                return visitor.visitContainer(container, { parentId });
+                return visitor.visitPrimaryElement(container);
             });
         };
 
         // 2.1. iterate over all software systems and find software system for the view
-        const visitedSoftwareSystem = softwareSystems
+        softwareSystems
             .filter(
                 (softwareSystem) =>
                     softwareSystem.identifier ===
@@ -97,45 +107,24 @@ export class ContainerViewStrategy implements ISupportVisitor {
                     .concat(softwareSystem.containers);
 
                 // 2.1.2.2 include all containers in the group and the group itself
-                const visitedGroups = softwareSystem.groups.map((group) => {
+                softwareSystem.groups.forEach((group) => {
                     visitedElements.add(group.identifier);
-                    const visitedContainers = visitContainerArray(
-                        group.containers,
-                        group.identifier
-                    );
-                    return visitor.visitGroup(group, {
-                        parentId: softwareSystem.identifier,
-                        children: visitedContainers,
-                    });
+                    visitContainerArray(group.containers);
+                    // visitor.visitGroup(group);
                 });
 
                 // 2.1.3. include all containers in the software system
-                const visitedContainers = visitContainerArray(
-                    softwareSystem.containers,
-                    softwareSystem.identifier
-                );
+                visitContainerArray(softwareSystem.containers);
 
-                const visitedConnectedPeople =
-                    containers.flatMap(visitConnectedPeople);
-                const visitedConnectedSoftwareSystems = containers.flatMap(
-                    visitConnectedSoftwareSystems
-                );
+                containers.forEach(visitConnectedPeople);
+                containers.forEach(visitConnectedSoftwareSystems);
 
                 // 2.1.1. include the software system as a boundary element
                 visitedElements.add(softwareSystem.identifier);
-                const visitedSoftwareSystem = visitor.visitSoftwareSystem(
-                    softwareSystem,
-                    {
-                        children: visitedGroups.concat(visitedContainers),
-                    }
-                );
-
-                return [visitedSoftwareSystem]
-                    .concat(visitedConnectedSoftwareSystems)
-                    .concat(visitedConnectedPeople);
+                visitor.visitorScopeElement(softwareSystem);
             });
 
-        const visitedRelationships = relationships
+        relationships
             .filter(
                 (relationship) =>
                     relationship.sourceIdentifier !==
@@ -152,8 +141,6 @@ export class ContainerViewStrategy implements ISupportVisitor {
                     relationship
                 )
             )
-            .map((relationship) => visitor.visitRelationship(relationship));
-
-        return visitedSoftwareSystem.concat(visitedRelationships);
+            .forEach((relationship) => visitor.visitRelationship(relationship));
     }
 }

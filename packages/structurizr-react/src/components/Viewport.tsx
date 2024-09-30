@@ -111,7 +111,6 @@ export const Viewport: FC<PropsWithChildren> = ({ children }) => {
             height={"100%"}
             width={"100%"}
             style={{
-                backgroundColor: "#292B2C",
                 position: "absolute",
                 top: "0px",
                 left: "0px",

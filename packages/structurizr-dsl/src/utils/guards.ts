@@ -17,6 +17,9 @@ import {
     IContainer,
     IComponent,
     IRelationship,
+    ElementType,
+    RelationshipType,
+    ViewType,
 } from "../interfaces";
 
 export function isWorkspace(workspace: any): workspace is IWorkspace {
@@ -26,18 +29,18 @@ export function isGroup(group: any): group is IGroup {
     throw new Error("Not implemented");
 }
 export function isPerson(person: any): person is IPerson {
-    throw new Error("Not implemented");
+    return person.type === ElementType.Person;
 }
 export function isSoftwareSystem(
     softwareSystem: any
 ): softwareSystem is ISoftwareSystem {
-    throw new Error("Not implemented");
+    return softwareSystem.type === ElementType.SoftwareSystem;
 }
 export function isContainer(container: any): container is IContainer {
-    throw new Error("Not implemented");
+    return container.type === ElementType.Container;
 }
 export function isComponent(component: any): component is IComponent {
-    throw new Error("Not implemented");
+    return component.type === ElementType.Component;
 }
 export function isDeploymentEnvironment(
     deploymentEnvironment: any
@@ -47,52 +50,52 @@ export function isDeploymentEnvironment(
 export function isDeploymentNode(
     deploymentNode: any
 ): deploymentNode is IDeploymentNode {
-    throw new Error("Not implemented");
+    return deploymentNode.type === ElementType.DeploymentNode;
 }
 export function isInfrastructureNode(
     infrastructureNode: any
 ): infrastructureNode is IInfrastructureNode {
-    throw new Error("Not implemented");
+    return infrastructureNode.type === ElementType.InfrastructureNode;
 }
 export function isSoftwareSystemInstance(
     softwareSystemInstance: any
 ): softwareSystemInstance is ISoftwareSystemInstance {
-    throw new Error("Not implemented");
+    return softwareSystemInstance.type === ElementType.SoftwareSystemInstance;
 }
 export function isContainerInstance(
     containerInstance: any
 ): containerInstance is IContainerInstance {
-    throw new Error("Not implemented");
+    return containerInstance.type === ElementType.ContainerInstance;
 }
 export function isRelationship(
     relationship: any
 ): relationship is IRelationship {
-    throw new Error("Not implemented");
+    return relationship.type === RelationshipType.Relationship;
 }
 export function isSystemLandscapeView(
     systemLandscapeView: any
 ): systemLandscapeView is ISystemLandscapeView {
-    throw new Error("Not implemented");
+    return systemLandscapeView.type === ViewType.SystemLandscape;
 }
 export function isSystemContextView(
     systemContextView: any
 ): systemContextView is ISystemContextView {
-    throw new Error("Not implemented");
+    return systemContextView.type === ViewType.SystemContext;
 }
 export function isContainerView(
     containerView: any
 ): containerView is IContainerView {
-    throw new Error("Not implemented");
+    return containerView.type === ViewType.Container;
 }
 export function isComponentView(
     componentView: any
 ): componentView is IComponentView {
-    throw new Error("Not implemented");
+    return componentView.type === ViewType.Component;
 }
 export function isDeploymentView(
     deploymentView: any
 ): deploymentView is IDeploymentView {
-    throw new Error("Not implemented");
+    return deploymentView.type === ViewType.Deployment;
 }
 export function isStyles(styles: any): styles is IStyles {
     throw new Error("Not implemented");

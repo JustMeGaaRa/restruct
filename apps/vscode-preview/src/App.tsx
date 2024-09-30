@@ -1,39 +1,37 @@
+import { IWorkspace } from "@structurizr/dsl";
+import {
+    ComponentDiagram,
+    ContainerDiagram,
+    SystemContextDiagram,
+    SystemLandscapeDiagram,
+    Views,
+    Workspace,
+    WorkspaceProvider
+} from "@structurizr/react";
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
+import { BigBankPlc } from "./workspace";
 
-function App() {
-    const [count, setCount] = useState(0);
+export const App = () => {
+    const [workspace, setWorkspace] = useState<IWorkspace>(BigBankPlc);
 
     return (
-        <>
-            <div>
-                <a href="https://vitejs.dev" target="_blank">
-                    <img src={viteLogo} className="logo" alt="Vite logo" />
-                </a>
-                <a href="https://react.dev" target="_blank">
-                    <img
-                        src={reactLogo}
-                        className="logo react"
-                        alt="React logo"
-                    />
-                </a>
-            </div>
-            <h1>Vite + React</h1>
-            <div className="card">
-                <button onClick={() => setCount((count) => count + 1)}>
-                    count is {count}
-                </button>
-                <p>
-                    Edit <code>src/App.tsx</code> and save to test HMR
-                </p>
-            </div>
-            <p className="read-the-docs">
-                Click on the Vite and React logos to learn more
-            </p>
-        </>
+        <div className={"flex items-center justify-center h-screen w-screen bg-slate-950"}>
+            <WorkspaceProvider workspace={workspace} setWorkspace={setWorkspace}>
+                <Workspace>
+                    <Views>
+                        <SystemLandscapeDiagram value={workspace.views.systemLandscape} />
+                        {/* {workspace.views.systemContexts.map((systemContext) => (
+                            <SystemContextDiagram key={systemContext.key} value={systemContext} />
+                        ))} */}
+                        {/* {workspace.views.containers.map((container) => (
+                            <ContainerDiagram key={container.key} value={container} />
+                        ))} */}
+                        {/* {workspace.views.components.map((component) => (
+                            <ComponentDiagram key={component.key} value={component} />
+                        ))} */}
+                    </Views>
+                </Workspace>
+            </WorkspaceProvider>
+        </div>
     );
 }
-
-export default App;

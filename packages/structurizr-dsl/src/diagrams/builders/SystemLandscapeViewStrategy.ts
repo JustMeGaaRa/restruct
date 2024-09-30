@@ -5,43 +5,41 @@ import {
     ISoftwareSystem,
     ISystemLandscapeView,
 } from "../../interfaces";
-import { IElementVisitor, ISupportVisitor } from "../../shared";
+import { IDiagramVisitor, ISupportVisitor } from "../../shared";
 import {
     getRelationships,
     relationshipExistsForElementsInView,
 } from "../../utils";
 
-export class SystemLandscapeViewStrategy implements ISupportVisitor {
+export class SystemLandscapeViewStrategy
+    implements ISupportVisitor<unknown, ISoftwareSystem | IPerson, unknown>
+{
     constructor(
         private readonly model: IModel,
         private readonly view: ISystemLandscapeView
     ) {}
 
-    accept<T>(visitor: IElementVisitor<T>): Array<T> {
+    accept(
+        visitor: IDiagramVisitor<unknown, ISoftwareSystem | IPerson, unknown>
+    ): void {
         const visitedElements = new Set<string>();
         const relationships = getRelationships(this.model, false);
 
         // 2.1. include all software systems
         const visitSoftwareSystemArray = (
-            softwareSystems: Array<ISoftwareSystem>,
-            parentId?: string
+            softwareSystems: Array<ISoftwareSystem>
         ) => {
             return softwareSystems.map((softwareSystem) => {
                 visitedElements.add(softwareSystem.identifier);
-                return visitor.visitSoftwareSystem(softwareSystem, {
-                    parentId,
-                });
+                return visitor.visitPrimaryElement(softwareSystem);
             });
         };
 
         // 2.1. include all people
-        const visitPersonArray = (
-            people: Array<IPerson>,
-            parentId?: string
-        ) => {
+        const visitPersonArray = (people: Array<IPerson>) => {
             return people.map((person) => {
                 visitedElements.add(person.identifier);
-                return visitor.visitPerson(person, { parentId });
+                return visitor.visitPrimaryElement(person);
             });
         };
 
@@ -59,34 +57,18 @@ export class SystemLandscapeViewStrategy implements ISupportVisitor {
         };
 
         // 1.1. iterate over all groups and find software system for the view
-        const visitedGroups = this.model.groups.map((group) => {
+        this.model.groups.flatMap((group) => {
             // 1.1.1.2. include people and software systems in the group
-            const visitedSoftwareSystems = visitSoftwareSystemArray(
-                group.softwareSystems,
-                group.identifier
-            );
-            const visitedPeople = visitPersonArray(
-                group.people,
-                group.identifier
-            );
+            visitSoftwareSystemArray(group.softwareSystems);
+            visitPersonArray(group.people);
 
             // 1.1.1.1. include the software system group as a boundary element
             visitedElements.add(group.identifier);
-            return visitor.visitGroup(group, {
-                children: visitedSoftwareSystems.concat(visitedPeople),
-            });
         });
 
         // 1.2. iterate over all software systems and find software system for the view
-        const visitedSoftwareSystems = visitSoftwareSystemArray(
-            this.model.softwareSystems
-        );
-        const visitedPeople = visitPersonArray(this.model.people);
-        const visitedRelationships = visitRelationshipArray(relationships);
-
-        return visitedGroups
-            .concat(visitedSoftwareSystems)
-            .concat(visitedPeople)
-            .concat(visitedRelationships);
+        visitSoftwareSystemArray(this.model.softwareSystems);
+        visitPersonArray(this.model.people);
+        visitRelationshipArray(relationships);
     }
 }

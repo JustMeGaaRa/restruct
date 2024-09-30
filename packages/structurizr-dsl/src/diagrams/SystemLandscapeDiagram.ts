@@ -1,4 +1,5 @@
 import {
+    IPerson,
     IRelationship,
     ISoftwareSystem,
     ISystemLandscapeDiagram,
@@ -22,31 +23,30 @@ export class SystemLandscapeDiagramBuilder
             this.systemLandscapeView
         );
         const visitor = new SystemLandscapeDiagramVisitor();
-        // TODO: refactor stratey to accept diagram visitor
-        strategy.accept(visitor as any);
+        strategy.accept(visitor);
         return visitor.diagram;
     }
 }
 
 class SystemLandscapeDiagramVisitor
-    implements IDiagramVisitor<"all", ISoftwareSystem, "none">
+    implements IDiagramVisitor<unknown, ISoftwareSystem | IPerson, unknown>
 {
     constructor(
         public diagram: ISystemLandscapeDiagram = {
-            scope: "all",
+            scope: undefined,
             primaryElements: [],
             supportingElements: [],
             relationships: [],
         }
     ) {}
 
-    visitorScopeElement(scope: "all"): void {
+    visitorScopeElement(scope: unknown): void {
         this.diagram.scope = scope;
     }
     visitPrimaryElement(primaryElement: ISoftwareSystem): void {
         this.diagram.primaryElements.push(primaryElement);
     }
-    visitSupportingElement(supportingElement: "none"): void {
+    visitSupportingElement(supportingElement: unknown): void {
         this.diagram.supportingElements.push(supportingElement);
     }
     visitRelationship(relationship: IRelationship): void {

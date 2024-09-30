@@ -1,38 +1,43 @@
 import {
+    IComponent,
+    IComponentDiagram,
+    IComponentView,
     IContainer,
-    IContainerDiagram,
-    IContainerView,
     IPerson,
     IRelationship,
     ISoftwareSystem,
     IWorkspace,
 } from "../interfaces";
 import { IBuilder, IDiagramVisitor } from "../shared";
-import { ContainerViewStrategy } from "./builders";
+import { ComponentViewStrategy } from "./builders";
 
-export class ContainerDiagramBuilder implements IBuilder<IContainerDiagram> {
+export class ComponentDiagramBuilder implements IBuilder<IComponentDiagram> {
     constructor(
         private readonly workspace: IWorkspace,
-        private readonly containerView: IContainerView
+        private readonly componentView: IComponentView
     ) {}
 
-    build(): IContainerDiagram {
-        const strategy = new ContainerViewStrategy(
+    build(): IComponentDiagram {
+        const strategy = new ComponentViewStrategy(
             this.workspace.model,
-            this.containerView
+            this.componentView
         );
-        const visitor = new ContainerDiagramVisitor();
+        const visitor = new ComponentDiagramVisitor();
         strategy.accept(visitor);
         return visitor.diagram;
     }
 }
 
-class ContainerDiagramVisitor
+class ComponentDiagramVisitor
     implements
-        IDiagramVisitor<ISoftwareSystem, IContainer, ISoftwareSystem | IPerson>
+        IDiagramVisitor<
+            IContainer,
+            IComponent,
+            ISoftwareSystem | IContainer | IPerson
+        >
 {
     constructor(
-        public diagram: IContainerDiagram = {
+        public diagram: IComponentDiagram = {
             scope: {} as any,
             primaryElements: [],
             supportingElements: [],
@@ -40,13 +45,15 @@ class ContainerDiagramVisitor
         }
     ) {}
 
-    visitorScopeElement(scope: ISoftwareSystem): void {
+    visitorScopeElement(scope: IContainer): void {
         this.diagram.scope = scope;
     }
-    visitPrimaryElement(primaryElement: IContainer): void {
+    visitPrimaryElement(primaryElement: IComponent): void {
         this.diagram.primaryElements.push(primaryElement);
     }
-    visitSupportingElement(supportingElement: ISoftwareSystem | IPerson): void {
+    visitSupportingElement(
+        supportingElement: ISoftwareSystem | IContainer | IPerson
+    ): void {
         this.diagram.supportingElements.push(supportingElement);
     }
     visitRelationship(relationship: IRelationship): void {

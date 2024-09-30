@@ -1,4 +1,10 @@
-import { ISystemContextDiagram, ISystemContextView, SystemContextDiagramBuilder } from "@structurizr/dsl";
+import {
+    ISystemContextDiagram,
+    ISystemContextView,
+    SystemContextDiagramBuilder,
+    isPerson,
+    isSoftwareSystem
+} from "@structurizr/dsl";
 import { FC, PropsWithChildren, useEffect, useState } from "react";
 import { IViewMetadata, ViewMetadataProvider } from "../../containers";
 import { ZoomCallback } from "../../types";
@@ -6,6 +12,7 @@ import { createDefaultSystemContextView } from "../../utils";
 import { useWorkspace } from "./Workspace";
 import { SoftwareSystem } from "./SoftwareSystem";
 import { Relationship } from "./Relationship";
+import { Person } from "./Person";
 
 export const SystemContextDiagram: FC<PropsWithChildren<{
     value: ISystemContextView;
@@ -33,11 +40,14 @@ export const SystemContextDiagram: FC<PropsWithChildren<{
 
         return (
             <ViewMetadataProvider metadata={metadata}>
-                {diagram?.scope && (
-                    <SoftwareSystem key={diagram.scope.identifier} value={diagram.scope} />
-                )}
                 {diagram?.primaryElements.map((element) => (
                     <SoftwareSystem key={element.identifier} value={element} />
+                ))}
+                {diagram?.supportingElements.filter(isSoftwareSystem).map((element) => (
+                    <SoftwareSystem key={element.identifier} value={element} />
+                ))}
+                {diagram?.supportingElements.filter(isPerson).map((element) => (
+                    <Person key={element.identifier} value={element} />
                 ))}
                 {diagram?.relationships.map((relationship) => (
                     <Relationship
