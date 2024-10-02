@@ -7,13 +7,13 @@ import { Tag } from "./Tag";
 import { Technology } from "./Technology";
 import { String } from "../utils/string";
 
-type ContainerParams = Required<Pick<IContainer, "name" | "identifier">> &
-    Partial<Omit<IContainer, "type" | "name" | "identifier">>;
+type ContainerParams = Required<Pick<IContainer, "name">> &
+    Partial<Omit<IContainer, "type" | "name">>;
 
 export class Container implements ISupportSnapshot<IContainer> {
     constructor(params: ContainerParams) {
         this.type = ElementType.Container;
-        this.identifier = params.identifier;
+        this.identifier = params.identifier ?? crypto.randomUUID();
         this.name = params.name;
         this.groups = params.groups
             ? params.groups.map((g) => new Group(g))

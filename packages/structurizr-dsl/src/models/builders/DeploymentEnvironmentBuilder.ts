@@ -15,8 +15,6 @@ export class DeploymentEnvironmentBuilder
 
     constructor(name: string) {
         this.deploymentEnvironment = new DeploymentEnvironment({
-            // TODO: generate an identifier
-            identifier: "",
             name,
             deploymentNodes: [],
             relationships: [],

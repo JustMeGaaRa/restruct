@@ -17,8 +17,6 @@ export class GroupBuilder implements IBuilder<IGroup> {
 
     constructor(name: string) {
         this.group = new Group({
-            // TODO: generate an identifier
-            identifier: "",
             name,
             people: [],
             softwareSystems: [],

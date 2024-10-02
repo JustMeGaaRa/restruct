@@ -7,8 +7,6 @@ export class PersonBuilder implements IBuilder<IPerson> {
 
     constructor(name: string, description?: string) {
         this.person = new Person({
-            // TODO: generate an identifier
-            identifier: "",
             name,
             description,
         }).toSnapshot();

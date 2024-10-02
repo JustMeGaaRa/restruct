@@ -8,15 +8,13 @@ import { Tag } from "./Tag";
 import { Technology } from "./Technology";
 import { String } from "../utils/string";
 
-type DeploymentNodeValues = Required<
-    Pick<IDeploymentNode, "identifier" | "name">
-> &
-    Partial<Omit<IDeploymentNode, "type" | "identifier" | "name">>;
+type DeploymentNodeValues = Required<Pick<IDeploymentNode, "name">> &
+    Partial<Omit<IDeploymentNode, "type" | "name">>;
 
 export class DeploymentNode implements ISupportSnapshot<IDeploymentNode> {
     constructor(params: DeploymentNodeValues) {
         this.type = ElementType.DeploymentNode;
-        this.identifier = params.identifier;
+        this.identifier = params.identifier ?? crypto.randomUUID();
         this.name = params.name;
         this.deploymentNodes = params.deploymentNodes
             ? params.deploymentNodes.map((d) => new DeploymentNode(d))

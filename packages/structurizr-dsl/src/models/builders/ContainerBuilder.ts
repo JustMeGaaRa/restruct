@@ -8,8 +8,6 @@ export class ContainerBuilder implements IBuilder<IContainer> {
 
     constructor(name: string, description?: string) {
         this.container = new Container({
-            // TODO: generate an identifier
-            identifier: "",
             name,
             description,
             groups: [],

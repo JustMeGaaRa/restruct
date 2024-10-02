@@ -10,16 +10,16 @@ import { Tag } from "./Tag";
 import { String } from "../utils/string";
 
 type SoftwareSystemInstanceParams = Required<
-    Pick<ISoftwareSystemInstance, "identifier" | "softwareSystemIdentifier">
+    Pick<ISoftwareSystemInstance, "softwareSystemIdentifier">
 > &
-    Partial<Omit<ISoftwareSystemInstance, "softwareSystemIdentifier" | "type">>;
+    Partial<Omit<ISoftwareSystemInstance, "type" | "softwareSystemIdentifier">>;
 
 export class SoftwareSystemInstance
     implements ISupportSnapshot<ISoftwareSystemInstance>
 {
     constructor(params: SoftwareSystemInstanceParams) {
         this.type = ElementType.SoftwareSystemInstance;
-        this.identifier = params.identifier;
+        this.identifier = params.identifier ?? crypto.randomUUID();
         this.softwareSystemIdentifier = params.softwareSystemIdentifier;
         this.deploymentGroups = params.deploymentGroups ?? [];
         this.relationships = params.relationships

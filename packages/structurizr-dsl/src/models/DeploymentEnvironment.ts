@@ -8,20 +8,15 @@ import { DeploymentNode } from "./DeploymentNode";
 import { Relationship } from "./Relationship";
 
 type DeploymentEnvironmentParams = Required<
-    Pick<IDeploymentEnvironment, "identifier" | "name" | "deploymentNodes">
+    Pick<IDeploymentEnvironment, "name" | "deploymentNodes">
 > &
-    Partial<
-        Omit<
-            IDeploymentEnvironment,
-            "identifier" | "name" | "deploymentNodes" | "type"
-        >
-    >;
+    Partial<Omit<IDeploymentEnvironment, "type" | "name" | "deploymentNodes">>;
 
 export class DeploymentEnvironment
     implements ISupportSnapshot<IDeploymentEnvironment>
 {
     constructor(params: DeploymentEnvironmentParams) {
-        this.identifier = params.identifier;
+        this.identifier = params.identifier ?? crypto.randomUUID();
         this.name = params.name;
         this.deploymentGroups = params.deploymentGroups ?? [];
         this.deploymentNodes = params.deploymentNodes

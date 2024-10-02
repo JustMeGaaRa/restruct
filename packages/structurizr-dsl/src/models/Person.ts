@@ -4,13 +4,13 @@ import { Relationship } from "./Relationship";
 import { Tag } from "./Tag";
 import { String } from "../utils/string";
 
-type PersonParams = Required<Pick<IPerson, "name" | "identifier">> &
-    Partial<Omit<IPerson, "type" | "name" | "identifier">>;
+type PersonParams = Required<Pick<IPerson, "name">> &
+    Partial<Omit<IPerson, "type" | "name">>;
 
 export class Person implements ISupportSnapshot<IPerson> {
     constructor(params: PersonParams) {
         this.type = ElementType.Person;
-        this.identifier = params.identifier;
+        this.identifier = params.identifier ?? crypto.randomUUID();
         this.name = params.name;
         this.description = params.description;
         this.url = params.url;

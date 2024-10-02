@@ -7,10 +7,9 @@ export class ComponentBuilder implements IBuilder<IComponent> {
 
     constructor(name: string, description?: string, tags?: string[]) {
         this.component = new Component({
-            // TODO: generate an identifier
-            identifier: "",
             name,
             description,
+            tags: tags?.map((tag) => ({ name: tag })) ?? [],
         }).toSnapshot();
     }
 

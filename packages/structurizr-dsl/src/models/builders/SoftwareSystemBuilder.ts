@@ -9,8 +9,6 @@ export class SoftwareSystemBuilder implements IBuilder<ISoftwareSystem> {
 
     constructor(name: string, description?: string) {
         this.softwareSystem = new SoftwareSystem({
-            // TODO: generate an identifier
-            identifier: "",
             name,
             description,
             groups: [],

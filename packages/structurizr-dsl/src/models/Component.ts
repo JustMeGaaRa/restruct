@@ -5,13 +5,13 @@ import { Tag } from "./Tag";
 import { Technology } from "./Technology";
 import { String } from "../utils/string";
 
-type ComponentParams = Required<Pick<IComponent, "name" | "identifier">> &
-    Partial<Omit<IComponent, "type" | "name" | "identifier">>;
+type ComponentParams = Required<Pick<IComponent, "name">> &
+    Partial<Omit<IComponent, "type" | "name">>;
 
 export class Component implements ISupportSnapshot<IComponent> {
     constructor(params: ComponentParams) {
         this.type = ElementType.Component;
-        this.identifier = params.identifier;
+        this.identifier = params.identifier ?? crypto.randomUUID();
         this.name = params.name;
         this.technology = params.technology
             ? params.technology.map((x) => new Technology(x))

@@ -1,4 +1,4 @@
-import { ElementType, IElement, IGroup, Identifier } from "../interfaces";
+import { ElementType, IGroup, Identifier } from "../interfaces";
 import { ISupportSnapshot } from "../shared";
 import { Component } from "./Component";
 import { Container } from "./Container";
@@ -6,13 +6,13 @@ import { Person } from "./Person";
 import { SoftwareSystem } from "./SoftwareSystem";
 import { Tag } from "./Tag";
 
-type GroupParams = Required<Pick<IGroup, "name" | "identifier">> &
-    Partial<Omit<IGroup, "type" | "name" | "identifier">>;
+type GroupParams = Required<Pick<IGroup, "name">> &
+    Partial<Omit<IGroup, "type" | "name">>;
 
 export class Group implements ISupportSnapshot<IGroup> {
     constructor(params: GroupParams) {
         this.type = ElementType.Group;
-        this.identifier = params.identifier;
+        this.identifier = params.identifier ?? crypto.randomUUID();
         this.name = params.name;
         this.people = params.people
             ? params.people.map((p) => new Person(p))
@@ -30,6 +30,7 @@ export class Group implements ISupportSnapshot<IGroup> {
             Tag.Element,
             Tag.Group,
             ...(params.tags
+                ?.map((t) => new Tag(t.name))
                 ?.filter((x) => x.name !== Tag.Element.name)
                 ?.filter((x) => x.name !== Tag.Group.name) ?? []),
         ];

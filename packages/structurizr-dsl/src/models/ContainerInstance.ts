@@ -10,14 +10,14 @@ import { Tag } from "./Tag";
 import { String } from "../utils/string";
 
 type ContainerInstanceParams = Required<
-    Pick<IContainerInstance, "identifier" | "containerIdentifier">
+    Pick<IContainerInstance, "containerIdentifier">
 > &
-    Partial<Omit<IContainerInstance, "containerIdentifier" | "type">>;
+    Partial<Omit<IContainerInstance, "type" | "containerIdentifier">>;
 
 export class ContainerInstance implements ISupportSnapshot<IContainerInstance> {
     constructor(params: ContainerInstanceParams) {
         this.type = ElementType.ContainerInstance;
-        this.identifier = params.identifier;
+        this.identifier = params.identifier ?? crypto.randomUUID();
         this.containerIdentifier = params.containerIdentifier;
         this.deploymentGroups = params.deploymentGroups ?? [];
         this.relationships = params.relationships

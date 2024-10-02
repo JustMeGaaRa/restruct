@@ -6,15 +6,13 @@ import { Relationship } from "./Relationship";
 import { Tag } from "./Tag";
 import { String } from "../utils/string";
 
-export type SoftwareSystemParams = Required<
-    Pick<ISoftwareSystem, "name" | "identifier">
-> &
-    Partial<Omit<ISoftwareSystem, "type" | "name" | "identifier">>;
+export type SoftwareSystemParams = Required<Pick<ISoftwareSystem, "name">> &
+    Partial<Omit<ISoftwareSystem, "type" | "name">>;
 
 export class SoftwareSystem implements ISupportSnapshot<ISoftwareSystem> {
     constructor(params: SoftwareSystemParams) {
         this.type = ElementType.SoftwareSystem;
-        this.identifier = params.identifier;
+        this.identifier = params.identifier ?? crypto.randomUUID();
         this.name = params.name;
         this.groups = params.groups
             ? params.groups.map((g) => new Group(g))

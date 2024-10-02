@@ -10,17 +10,15 @@ import { Tag } from "./Tag";
 import { Technology } from "./Technology";
 import { String } from "../utils/string";
 
-type InfrastructureNodeValues = Required<
-    Pick<IInfrastructureNode, "identifier" | "name">
-> &
-    Partial<Omit<IInfrastructureNode, "type" | "identifier" | "name">>;
+type InfrastructureNodeValues = Required<Pick<IInfrastructureNode, "name">> &
+    Partial<Omit<IInfrastructureNode, "type" | "name">>;
 
 export class InfrastructureNode
     implements ISupportSnapshot<IInfrastructureNode>
 {
     constructor(params: InfrastructureNodeValues) {
         this.type = ElementType.InfrastructureNode;
-        this.identifier = params.identifier;
+        this.identifier = params.identifier ?? crypto.randomUUID();
         this.name = params.name;
         this.description = params.description;
         this.technology = params.technology
