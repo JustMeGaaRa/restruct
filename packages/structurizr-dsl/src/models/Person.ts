@@ -2,6 +2,7 @@ import { ElementType, IPerson, Identifier, Url } from "../interfaces";
 import { ISupportSnapshot } from "../shared";
 import { Relationship } from "./Relationship";
 import { Tag } from "./Tag";
+import { String } from "../utils/string";
 
 type PersonParams = Required<Pick<IPerson, "name" | "identifier">> &
     Partial<Omit<IPerson, "type" | "name" | "identifier">>;
@@ -22,8 +23,13 @@ export class Person implements ISupportSnapshot<IPerson> {
             Tag.Element,
             Tag.Person,
             ...(params.tags
-                ?.filter((x) => x.name !== Tag.Element.name)
-                ?.filter((x) => x.name !== Tag.Person.name) ?? []),
+                ?.map((t) => new Tag(t.name))
+                ?.filter(
+                    (x) => !String.equalsIgnoreCase(x.name, Tag.Element.name)
+                )
+                ?.filter(
+                    (x) => !String.equalsIgnoreCase(x.name, Tag.Person.name)
+                ) ?? []),
         ];
     }
 

@@ -15,7 +15,10 @@ export class PersonBuilder implements IBuilder<IPerson> {
     }
 
     tags(...tags: string[]): this {
-        this.person.tags = tags.map((tag) => ({ name: tag }));
+        this.person = new Person({
+            ...this.person,
+            tags: tags.map((tag) => ({ name: tag })),
+        }).toSnapshot();
         return this;
     }
 

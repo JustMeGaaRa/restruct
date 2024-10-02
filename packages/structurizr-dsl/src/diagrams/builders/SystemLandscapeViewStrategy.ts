@@ -29,31 +29,33 @@ export class SystemLandscapeViewStrategy
         const visitSoftwareSystemArray = (
             softwareSystems: Array<ISoftwareSystem>
         ) => {
-            return softwareSystems.map((softwareSystem) => {
+            softwareSystems.forEach((softwareSystem) => {
                 visitedElements.add(softwareSystem.identifier);
-                return visitor.visitPrimaryElement(softwareSystem);
+                visitor.visitPrimaryElement(softwareSystem);
             });
         };
 
         // 2.1. include all people
         const visitPersonArray = (people: Array<IPerson>) => {
-            return people.map((person) => {
+            people.forEach((person) => {
                 visitedElements.add(person.identifier);
-                return visitor.visitPrimaryElement(person);
+                visitor.visitPrimaryElement(person);
             });
         };
 
         const visitRelationshipArray = (
             relationships: Array<IRelationship>
         ) => {
-            return relationships
+            relationships
                 .filter((relationship) =>
                     relationshipExistsForElementsInView(
                         Array.from(visitedElements),
                         relationship
                     )
                 )
-                .map((relationship) => visitor.visitRelationship(relationship));
+                .forEach((relationship) =>
+                    visitor.visitRelationship(relationship)
+                );
         };
 
         // 1.1. iterate over all groups and find software system for the view

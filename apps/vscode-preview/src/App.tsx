@@ -20,15 +20,15 @@ export const App = () => {
                 <Workspace>
                     <Views>
                         <SystemLandscapeDiagram value={workspace.views.systemLandscape} />
-                        {/* {workspace.views.systemContexts.map((systemContext) => (
+                        {workspace.views.systemContexts.map((systemContext) => (
                             <SystemContextDiagram key={systemContext.key} value={systemContext} />
-                        ))} */}
-                        {/* {workspace.views.containers.map((container) => (
+                        ))}
+                        {workspace.views.containers.map((container) => (
                             <ContainerDiagram key={container.key} value={container} />
-                        ))} */}
-                        {/* {workspace.views.components.map((component) => (
+                        ))}
+                        {workspace.views.components.map((component) => (
                             <ComponentDiagram key={component.key} value={component} />
-                        ))} */}
+                        ))}
                     </Views>
                 </Workspace>
             </WorkspaceProvider>

@@ -6,6 +6,7 @@ import { Relationship } from "./Relationship";
 import { SoftwareSystemInstance } from "./SoftwareSystemInstance";
 import { Tag } from "./Tag";
 import { Technology } from "./Technology";
+import { String } from "../utils/string";
 
 type DeploymentNodeValues = Required<
     Pick<IDeploymentNode, "identifier" | "name">
@@ -46,8 +47,17 @@ export class DeploymentNode implements ISupportSnapshot<IDeploymentNode> {
             Tag.Element,
             Tag.DeploymentNode,
             ...(params.tags
-                ?.filter((x) => x.name !== Tag.Element.name)
-                ?.filter((x) => x.name !== Tag.DeploymentNode.name) ?? []),
+                ?.map((t) => new Tag(t.name))
+                ?.filter(
+                    (x) => !String.equalsIgnoreCase(x.name, Tag.Element.name)
+                )
+                ?.filter(
+                    (x) =>
+                        !String.equalsIgnoreCase(
+                            x.name,
+                            Tag.DeploymentNode.name
+                        )
+                ) ?? []),
         ];
     }
 

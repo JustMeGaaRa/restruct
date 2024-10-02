@@ -4,6 +4,7 @@ import { Container } from "./Container";
 import { Group } from "./Group";
 import { Relationship } from "./Relationship";
 import { Tag } from "./Tag";
+import { String } from "../utils/string";
 
 export type SoftwareSystemParams = Required<
     Pick<ISoftwareSystem, "name" | "identifier">
@@ -32,8 +33,17 @@ export class SoftwareSystem implements ISupportSnapshot<ISoftwareSystem> {
             Tag.Element,
             Tag.SoftwareSystem,
             ...(params.tags
-                ?.filter((x) => x.name !== Tag.Element.name)
-                ?.filter((x) => x.name !== Tag.SoftwareSystem.name) ?? []),
+                ?.map((t) => new Tag(t.name))
+                ?.filter(
+                    (x) => !String.equalsIgnoreCase(x.name, Tag.Element.name)
+                )
+                ?.filter(
+                    (x) =>
+                        !String.equalsIgnoreCase(
+                            x.name,
+                            Tag.SoftwareSystem.name
+                        )
+                ) ?? []),
         ];
     }
 

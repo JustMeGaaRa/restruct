@@ -42,7 +42,10 @@ export const ContainerDiagram: FC<PropsWithChildren<{
         return (
             <ViewMetadataProvider metadata={metadata}>
                 {diagram?.scope && (
-                    <SoftwareSystem key={diagram.scope.identifier} value={diagram.scope}>
+                    <SoftwareSystem
+                        key={diagram.scope.identifier}
+                        value={diagram.scope}
+                    >
                         {diagram?.primaryElements.map((element) => (
                             <Container
                                 key={element.identifier}

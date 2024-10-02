@@ -5,6 +5,7 @@ import { Group } from "./Group";
 import { Relationship } from "./Relationship";
 import { Tag } from "./Tag";
 import { Technology } from "./Technology";
+import { String } from "../utils/string";
 
 type ContainerParams = Required<Pick<IContainer, "name" | "identifier">> &
     Partial<Omit<IContainer, "type" | "name" | "identifier">>;
@@ -34,8 +35,13 @@ export class Container implements ISupportSnapshot<IContainer> {
             Tag.Element,
             Tag.Container,
             ...(params.tags
-                ?.filter((x) => x.name !== Tag.Element.name)
-                ?.filter((x) => x.name !== Tag.Container.name) ?? []),
+                ?.map((t) => new Tag(t.name))
+                ?.filter(
+                    (x) => !String.equalsIgnoreCase(x.name, Tag.Element.name)
+                )
+                ?.filter(
+                    (x) => !String.equalsIgnoreCase(x.name, Tag.Container.name)
+                ) ?? []),
         ];
     }
 

@@ -28,7 +28,7 @@ export class SystemLandscapeDiagramBuilder
     }
 }
 
-class SystemLandscapeDiagramVisitor
+export class SystemLandscapeDiagramVisitor
     implements IDiagramVisitor<unknown, ISoftwareSystem | IPerson, unknown>
 {
     constructor(

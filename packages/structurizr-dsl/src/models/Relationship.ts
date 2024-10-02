@@ -27,7 +27,10 @@ export class Relationship implements ISupportSnapshot<IRelationship> {
         this.url = params.url;
         // this.properties = params.properties;
         // this.perspectives = params.perspectives;
-        this.tags = [Tag.Relationship, ...(params.tags ?? [])];
+        this.tags = [
+            Tag.Relationship,
+            ...(params.tags?.map((t) => new Tag(t.name)) ?? []),
+        ];
     }
 
     public readonly type: RelationshipType.Relationship;

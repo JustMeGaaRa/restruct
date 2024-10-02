@@ -8,6 +8,7 @@ import { ISupportSnapshot } from "../shared";
 import { Relationship } from "./Relationship";
 import { Tag } from "./Tag";
 import { Technology } from "./Technology";
+import { String } from "../utils/string";
 
 type InfrastructureNodeValues = Required<
     Pick<IInfrastructureNode, "identifier" | "name">
@@ -35,8 +36,17 @@ export class InfrastructureNode
             Tag.Element,
             Tag.InfrastructureNode,
             ...(params.tags
-                ?.filter((x) => x.name !== Tag.Element.name)
-                ?.filter((x) => x.name !== Tag.InfrastructureNode.name) ?? []),
+                ?.map((t) => new Tag(t.name))
+                ?.filter(
+                    (x) => !String.equalsIgnoreCase(x.name, Tag.Element.name)
+                )
+                ?.filter(
+                    (x) =>
+                        !String.equalsIgnoreCase(
+                            x.name,
+                            Tag.InfrastructureNode.name
+                        )
+                ) ?? []),
         ];
     }
 

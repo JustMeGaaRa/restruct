@@ -3,6 +3,7 @@ import { ISupportSnapshot } from "../shared";
 import { Relationship } from "./Relationship";
 import { Tag } from "./Tag";
 import { Technology } from "./Technology";
+import { String } from "../utils/string";
 
 type ComponentParams = Required<Pick<IComponent, "name" | "identifier">> &
     Partial<Omit<IComponent, "type" | "name" | "identifier">>;
@@ -26,8 +27,13 @@ export class Component implements ISupportSnapshot<IComponent> {
             Tag.Element,
             Tag.Component,
             ...(params.tags
-                ?.filter((x) => x.name !== Tag.Element.name)
-                ?.filter((x) => x.name !== Tag.Component.name) ?? []),
+                ?.map((t) => new Tag(t.name))
+                ?.filter(
+                    (x) => !String.equalsIgnoreCase(x.name, Tag.Element.name)
+                )
+                ?.filter(
+                    (x) => !String.equalsIgnoreCase(x.name, Tag.Component.name)
+                ) ?? []),
         ];
     }
 

@@ -69,8 +69,8 @@ export const ComponentDiagram: FC<PropsWithChildren<{
                     <Container
                         key={element.identifier}
                         value={{
-                            ...diagram.scope,
-                            technology: diagram.scope.technology.join(", ")
+                            ...element,
+                            technology: element.technology.join(", ")
                         }}
                     />
                 ))}

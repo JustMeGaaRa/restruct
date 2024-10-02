@@ -7,6 +7,7 @@ import {
 import { ISupportSnapshot } from "../shared";
 import { Relationship } from "./Relationship";
 import { Tag } from "./Tag";
+import { String } from "../utils/string";
 
 type ContainerInstanceParams = Required<
     Pick<IContainerInstance, "identifier" | "containerIdentifier">
@@ -29,9 +30,15 @@ export class ContainerInstance implements ISupportSnapshot<IContainerInstance> {
         // this.healthCheck = params.healthCheck;
         this.tags = [
             Tag.ContainerInstance,
-            ...(params.tags?.filter(
-                (x) => x.name !== Tag.ContainerInstance.name
-            ) ?? []),
+            ...(params.tags
+                ?.map((t) => new Tag(t.name))
+                ?.filter(
+                    (x) =>
+                        !String.equalsIgnoreCase(
+                            x.name,
+                            Tag.ContainerInstance.name
+                        )
+                ) ?? []),
         ];
     }
 

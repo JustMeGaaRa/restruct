@@ -1,0 +1,418 @@
+<mxfile host="Electron" modified="2023-01-05T20:01:49.046Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/16.5.1 Chrome/96.0.4664.110 Electron/16.0.7 Safari/537.36" etag="0vs0cDH56STlusZg0Lah" compressed="false" version="16.5.1" type="device" pages="4">
+  <diagram id="G76k5dbB-pKJo7cjeD5h" name="system context">
+    <mxGraphModel dx="1102" dy="1025" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="MhujU75AkTNqacEszH4M-0" />
+        <mxCell id="MhujU75AkTNqacEszH4M-1" parent="MhujU75AkTNqacEszH4M-0" />
+        <mxCell id="MhujU75AkTNqacEszH4M-6" value="&lt;b&gt;Reverse Architecture&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Software System: .NET 6, React 18, Azure]&lt;br&gt;&lt;br&gt;Scans, builds and keeps in sync the source and respective C4 diagram documentation&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6a00ff;strokeColor=#3700CC;fontColor=#ffffff;align=center;comic=0;resizable=0;" parent="MhujU75AkTNqacEszH4M-1" vertex="1">
+          <mxGeometry x="360" y="360" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="I30QS05-0p-JNHWTqeK2-0" value="" style="group;strokeColor=none;fillColor=none;comic=0;resizable=0;" parent="MhujU75AkTNqacEszH4M-1" vertex="1" connectable="0">
+          <mxGeometry x="260" y="100" width="120" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="I30QS05-0p-JNHWTqeK2-1" value="" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;align=center;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;comic=0;" parent="I30QS05-0p-JNHWTqeK2-0" vertex="1">
+          <mxGeometry x="20" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="I30QS05-0p-JNHWTqeK2-2" value="&lt;b&gt;Architect&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Person]&lt;br&gt;&lt;br&gt;Description&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;comic=0;" parent="I30QS05-0p-JNHWTqeK2-0" vertex="1">
+          <mxGeometry y="60" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="I30QS05-0p-JNHWTqeK2-3" value="Setup Automatic Scanning&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[HTTPS]&lt;/font&gt;" style="endArrow=classic;html=1;rounded=0;flowAnimation=1;entryX=0.25;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;labelBackgroundColor=#FFCC00;dashed=1;" parent="MhujU75AkTNqacEszH4M-1" source="I30QS05-0p-JNHWTqeK2-2" target="MhujU75AkTNqacEszH4M-6" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="110" y="270" as="sourcePoint" />
+            <mxPoint x="190" y="190" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="I30QS05-0p-JNHWTqeK2-4" value="" style="group;strokeColor=none;fillColor=none;comic=0;resizable=0;" parent="MhujU75AkTNqacEszH4M-1" vertex="1" connectable="0">
+          <mxGeometry x="500" y="100" width="120" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="I30QS05-0p-JNHWTqeK2-5" value="" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;align=center;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;comic=0;" parent="I30QS05-0p-JNHWTqeK2-4" vertex="1">
+          <mxGeometry x="20" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="I30QS05-0p-JNHWTqeK2-6" value="&lt;b&gt;Developer&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Person]&lt;br&gt;&lt;br&gt;Description&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;comic=0;" parent="I30QS05-0p-JNHWTqeK2-4" vertex="1">
+          <mxGeometry y="60" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="I30QS05-0p-JNHWTqeK2-7" value="View Documentation&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[HTTPS]&lt;/font&gt;" style="endArrow=classic;html=1;rounded=0;flowAnimation=1;entryX=0.75;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;labelBackgroundColor=#FFCC00;dashed=1;" parent="MhujU75AkTNqacEszH4M-1" source="I30QS05-0p-JNHWTqeK2-6" target="MhujU75AkTNqacEszH4M-6" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="450" y="250" as="sourcePoint" />
+            <mxPoint x="450" y="370" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="95XgA9RA_2UPxiv9tkFe-1" value="&lt;b&gt;GitHub Auth Api&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Software System]&lt;br&gt;&lt;br&gt;Authentication provider to identify the user&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;align=center;comic=0;resizable=0;" parent="MhujU75AkTNqacEszH4M-1" vertex="1">
+          <mxGeometry x="120" y="600" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="95XgA9RA_2UPxiv9tkFe-2" value="Authenticate against&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[OAuth / OpenId Connect]&lt;/font&gt;" style="endArrow=classic;html=1;rounded=0;flowAnimation=1;labelBackgroundColor=#ffcc00;dashed=1;" parent="MhujU75AkTNqacEszH4M-1" source="MhujU75AkTNqacEszH4M-6" target="95XgA9RA_2UPxiv9tkFe-1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="450" y="470" as="sourcePoint" />
+            <mxPoint x="450" y="610" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yDpvmc4MYYAibLBb8zhH-0" value="&lt;b&gt;GitHub&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Software System]&lt;br&gt;&lt;br&gt;The repository for the statically generated C4 diagrams as documentation&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;align=center;comic=0;resizable=0;" parent="MhujU75AkTNqacEszH4M-1" vertex="1">
+          <mxGeometry x="600" y="600" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="yDpvmc4MYYAibLBb8zhH-1" value="Save diagrams to&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[JSON / HTTPS]&lt;/font&gt;" style="endArrow=classic;html=1;rounded=0;flowAnimation=1;labelBackgroundColor=#ffcc00;dashed=1;" parent="MhujU75AkTNqacEszH4M-1" source="MhujU75AkTNqacEszH4M-6" target="yDpvmc4MYYAibLBb8zhH-0" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="760" y="610" as="sourcePoint" />
+            <mxPoint x="1220" y="620" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yDpvmc4MYYAibLBb8zhH-2" value="&lt;b&gt;GitHub Repository Api&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Software System]&lt;br&gt;&lt;br&gt;The repository with the source code for the project / system&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;align=center;comic=0;resizable=0;" parent="MhujU75AkTNqacEszH4M-1" vertex="1">
+          <mxGeometry x="360" y="600" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="yDpvmc4MYYAibLBb8zhH-3" value="Scan projects sources at&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[HTTPS]&lt;/font&gt;" style="endArrow=classic;html=1;rounded=0;flowAnimation=1;labelBackgroundColor=#ffcc00;dashed=1;" parent="MhujU75AkTNqacEszH4M-1" source="MhujU75AkTNqacEszH4M-6" target="yDpvmc4MYYAibLBb8zhH-2" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="760" y="650" as="sourcePoint" />
+            <mxPoint x="1038.9473684210527" y="970" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="hP_F9w-6uo0Y5F_orkQO" name="container">
+    <mxGraphModel dx="1609" dy="844" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="OkedVZd0Y9oNl2lE7yTI-0" />
+        <mxCell id="OkedVZd0Y9oNl2lE7yTI-1" parent="OkedVZd0Y9oNl2lE7yTI-0" />
+        <mxCell id="TQLlWcLl3XkQqs4VnHGi-0" value="&lt;b&gt;&lt;font style=&quot;font-size: 13px&quot;&gt;Reverse Architecture&lt;/font&gt;&lt;/b&gt;&lt;br style=&quot;font-size: 12px&quot;&gt;&lt;font style=&quot;font-size: 11px&quot;&gt;[Software System]&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=bottom;align=left;fontSize=12;fontColor=#333333;spacingBottom=4;spacingLeft=2;fillColor=#f5f5f5;strokeColor=#CCCCCC;" parent="OkedVZd0Y9oNl2lE7yTI-1" vertex="1">
+          <mxGeometry x="80" y="320" width="720" height="600" as="geometry" />
+        </mxCell>
+        <mxCell id="04s9YNvr7HEQpaBeW9-V-0" value="&lt;b&gt;Scanner Api&lt;br&gt;&lt;/b&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Container: .NET 6, Azure]&lt;br&gt;&lt;br&gt;Automatically scans and creates the initial diagrams for the system&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0050ef;strokeColor=#001DBC;fontColor=#ffffff;align=center;comic=0;resizable=0;" parent="OkedVZd0Y9oNl2lE7yTI-1" vertex="1">
+          <mxGeometry x="600" y="560" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="_MBzzagS1AfSxFR1c0wz-0" value="" style="group;strokeColor=none;fillColor=none;comic=0;resizable=0;" parent="OkedVZd0Y9oNl2lE7yTI-1" vertex="1" connectable="0">
+          <mxGeometry x="220" y="100" width="120" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="_MBzzagS1AfSxFR1c0wz-1" value="" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;align=center;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;comic=0;" parent="_MBzzagS1AfSxFR1c0wz-0" vertex="1">
+          <mxGeometry x="20" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="_MBzzagS1AfSxFR1c0wz-2" value="&lt;b&gt;Architect&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Person]&lt;br&gt;&lt;br&gt;Description&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;comic=0;" parent="_MBzzagS1AfSxFR1c0wz-0" vertex="1">
+          <mxGeometry y="60" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="_MBzzagS1AfSxFR1c0wz-3" value="Setup Automatic Scanning&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[HTTPS]&lt;/font&gt;" style="endArrow=classic;html=1;rounded=0;flowAnimation=1;entryX=0.25;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;labelBackgroundColor=#FFCC00;dashed=1;" parent="OkedVZd0Y9oNl2lE7yTI-1" source="_MBzzagS1AfSxFR1c0wz-2" target="VoWyXw3nkENcTDgFW-cu-4" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="110" y="270" as="sourcePoint" />
+            <mxPoint x="400" y="360" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_MBzzagS1AfSxFR1c0wz-4" value="" style="group;strokeColor=none;fillColor=none;comic=0;resizable=0;" parent="OkedVZd0Y9oNl2lE7yTI-1" vertex="1" connectable="0">
+          <mxGeometry x="540" y="100" width="120" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="_MBzzagS1AfSxFR1c0wz-5" value="" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;align=center;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;comic=0;" parent="_MBzzagS1AfSxFR1c0wz-4" vertex="1">
+          <mxGeometry x="20" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="_MBzzagS1AfSxFR1c0wz-6" value="&lt;b&gt;Developer&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Person]&lt;br&gt;&lt;br&gt;Description&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;comic=0;" parent="_MBzzagS1AfSxFR1c0wz-4" vertex="1">
+          <mxGeometry y="60" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="_MBzzagS1AfSxFR1c0wz-7" value="View Documentation&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[HTTPS]&lt;/font&gt;" style="endArrow=classic;html=1;rounded=0;flowAnimation=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=#FFCC00;dashed=1;" parent="OkedVZd0Y9oNl2lE7yTI-1" source="_MBzzagS1AfSxFR1c0wz-6" target="VoWyXw3nkENcTDgFW-cu-4" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="450" y="250" as="sourcePoint" />
+            <mxPoint x="480" y="360" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="VoWyXw3nkENcTDgFW-cu-4" value="&lt;b&gt;Web App&lt;br&gt;&lt;/b&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Container: React.js, TypeScript]&lt;br&gt;&lt;br&gt;Web application for diagramming using C4 model and real-time collaboration&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0050ef;strokeColor=#001DBC;fontColor=#ffffff;align=center;comic=0;resizable=0;" parent="OkedVZd0Y9oNl2lE7yTI-1" vertex="1">
+          <mxGeometry x="360" y="360" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="VoWyXw3nkENcTDgFW-cu-6" value="Saves profile project list to&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[JSON / HTTPS]&lt;/font&gt;" style="endArrow=classic;html=1;rounded=0;flowAnimation=1;labelBackgroundColor=#FFCC00;dashed=1;" parent="OkedVZd0Y9oNl2lE7yTI-1" source="8qRDA3cnjLSXIVnhSPIe-2" target="u4vtROE-GgxmV7mKPTqN-4" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="60" y="690" as="sourcePoint" />
+            <mxPoint x="640" y="760" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="u4vtROE-GgxmV7mKPTqN-0" value="&lt;b&gt;GitHub&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Software System]&lt;br&gt;&lt;br&gt;The repository for the statically generated C4 diagrams as documentation&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;align=center;comic=0;resizable=0;" parent="OkedVZd0Y9oNl2lE7yTI-1" vertex="1">
+          <mxGeometry x="920" y="360" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="u4vtROE-GgxmV7mKPTqN-1" value="Save diagrams to&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[JSON / HTTPS]&lt;/font&gt;" style="endArrow=classic;html=1;rounded=0;flowAnimation=1;labelBackgroundColor=#ffcc00;dashed=1;" parent="OkedVZd0Y9oNl2lE7yTI-1" source="VoWyXw3nkENcTDgFW-cu-4" target="u4vtROE-GgxmV7mKPTqN-0" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="970" y="820" as="sourcePoint" />
+            <mxPoint x="1220" y="620" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="u4vtROE-GgxmV7mKPTqN-2" value="&lt;b&gt;GitHub Repository Api&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Software System]&lt;br&gt;&lt;br&gt;The repository with the source code for the project / system&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;align=center;comic=0;resizable=0;" parent="OkedVZd0Y9oNl2lE7yTI-1" vertex="1">
+          <mxGeometry x="920" y="560" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="u4vtROE-GgxmV7mKPTqN-3" value="Scan projects sources at&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[HTTPS]&lt;/font&gt;" style="endArrow=classic;html=1;rounded=0;flowAnimation=1;labelBackgroundColor=#ffcc00;dashed=1;" parent="OkedVZd0Y9oNl2lE7yTI-1" source="04s9YNvr7HEQpaBeW9-V-0" target="u4vtROE-GgxmV7mKPTqN-2" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="905" y="820" as="sourcePoint" />
+            <mxPoint x="1038.9473684210527" y="970" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="u4vtROE-GgxmV7mKPTqN-4" value="&lt;b&gt;Document Database&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Database: Azure CosmosDb]&lt;br&gt;&lt;br&gt;Stores the project list per each user profile&lt;/font&gt;" style="shape=cylinder2;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;align=center;comic=0;resizable=0;points=[[0,0.5,0,0,0],[0.5,0,0,0,0],[0.5,1,0,0,0],[1,0.5,0,0,0]];" parent="OkedVZd0Y9oNl2lE7yTI-1" vertex="1">
+          <mxGeometry x="360" y="760" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="Jd2M67YUhnSgmvgmPHsA-0" value="&lt;b&gt;GitHub Auth Api&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Software System]&lt;br&gt;&lt;br&gt;Authentication provider to identify the user&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;align=center;comic=0;resizable=0;" parent="OkedVZd0Y9oNl2lE7yTI-1" vertex="1">
+          <mxGeometry x="-200" y="360" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="Jd2M67YUhnSgmvgmPHsA-1" value="Authenticate against&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[OAuth / OpenId Connect]&lt;/font&gt;" style="endArrow=classic;html=1;rounded=0;flowAnimation=1;labelBackgroundColor=#ffcc00;dashed=1;" parent="OkedVZd0Y9oNl2lE7yTI-1" source="VoWyXw3nkENcTDgFW-cu-4" target="Jd2M67YUhnSgmvgmPHsA-0" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="390" y="660" as="sourcePoint" />
+            <mxPoint x="450" y="810" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="8qRDA3cnjLSXIVnhSPIe-1" value="Forwards requests to&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[JSON / HTTPS]&lt;/font&gt;" style="endArrow=classic;html=1;rounded=0;flowAnimation=1;labelBackgroundColor=#FFCC00;dashed=1;" parent="OkedVZd0Y9oNl2lE7yTI-1" source="VoWyXw3nkENcTDgFW-cu-4" target="04s9YNvr7HEQpaBeW9-V-0" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="500" y="460" as="sourcePoint" />
+            <mxPoint x="450" y="370" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="8qRDA3cnjLSXIVnhSPIe-2" value="&lt;b&gt;Profile Api&lt;br&gt;&lt;/b&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Container: .NET 6, Azure Functions]&lt;br&gt;&lt;br&gt;Provides profile data from the database&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0050ef;strokeColor=#001DBC;fontColor=#ffffff;align=center;comic=0;resizable=0;" parent="OkedVZd0Y9oNl2lE7yTI-1" vertex="1">
+          <mxGeometry x="360" y="560" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="8qRDA3cnjLSXIVnhSPIe-3" value="Forwards requests to&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[JSON / HTTPS]&lt;/font&gt;" style="endArrow=classic;html=1;rounded=0;flowAnimation=1;labelBackgroundColor=#FFCC00;dashed=1;" parent="OkedVZd0Y9oNl2lE7yTI-1" source="VoWyXw3nkENcTDgFW-cu-4" target="8qRDA3cnjLSXIVnhSPIe-2" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="440" y="460" as="sourcePoint" />
+            <mxPoint x="630" y="570" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wVCPT9aP7PH_RTpsTsMQ-0" value="&lt;b&gt;Signaling Api&lt;br&gt;&lt;/b&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Container: Node.js. Azure Functions]&lt;br&gt;&lt;br&gt;A signaling server for establishing a WebRTC connection between two pers&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0050ef;strokeColor=#001DBC;fontColor=#ffffff;align=center;comic=0;resizable=0;" vertex="1" parent="OkedVZd0Y9oNl2lE7yTI-1">
+          <mxGeometry x="120" y="560" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="wVCPT9aP7PH_RTpsTsMQ-1" value="Exchanges SDP with&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[HTTPS]&lt;/font&gt;" style="endArrow=classic;html=1;rounded=0;flowAnimation=1;labelBackgroundColor=#FFCC00;dashed=1;" edge="1" parent="OkedVZd0Y9oNl2lE7yTI-1" source="VoWyXw3nkENcTDgFW-cu-4" target="wVCPT9aP7PH_RTpsTsMQ-0">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="450" y="470" as="sourcePoint" />
+            <mxPoint x="450" y="570" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="hOHY2VYGtfpSgtlKWEu8" name="component">
+    <mxGraphModel dx="1609" dy="1244" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="dIgtPmutZqsgrGHIfvw8-0" />
+        <mxCell id="dIgtPmutZqsgrGHIfvw8-1" parent="dIgtPmutZqsgrGHIfvw8-0" />
+        <mxCell id="GXtAjg4jMHYepAZkmLfQ-2" value="&lt;b&gt;&lt;font style=&quot;font-size: 13px&quot;&gt;Scanner Api&lt;/font&gt;&lt;/b&gt;&lt;br style=&quot;font-size: 12px&quot;&gt;&lt;font style=&quot;font-size: 11px&quot;&gt;[Container]&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=bottom;align=left;fontSize=12;fontColor=#333333;spacingBottom=4;spacingLeft=2;fillColor=#f5f5f5;strokeColor=#CCCCCC;" parent="dIgtPmutZqsgrGHIfvw8-1" vertex="1">
+          <mxGeometry x="40" y="80" width="680" height="1000" as="geometry" />
+        </mxCell>
+        <mxCell id="GXtAjg4jMHYepAZkmLfQ-0" value="&lt;b&gt;Core&lt;br&gt;&lt;/b&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Component: .NET 6]&lt;br&gt;&lt;br&gt;Description&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1ba1e2;strokeColor=#006EAF;fontColor=#ffffff;align=center;comic=0;resizable=0;" parent="dIgtPmutZqsgrGHIfvw8-1" vertex="1">
+          <mxGeometry x="320" y="920" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="GXtAjg4jMHYepAZkmLfQ-1" value="&lt;b&gt;Reverse Architecture App&lt;br&gt;&lt;/b&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Container: React.js, TypeScript]&lt;br&gt;&lt;br&gt;Description&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0050ef;strokeColor=#001DBC;fontColor=#ffffff;align=center;comic=0;resizable=0;" parent="dIgtPmutZqsgrGHIfvw8-1" vertex="1">
+          <mxGeometry x="320" y="-80" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="o6G1ISgHbWsUvHfaI4vE-0" value="&lt;b&gt;Analyzer .NET&lt;br&gt;&lt;/b&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Component: .NET 6]&lt;br&gt;&lt;br&gt;Description&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1ba1e2;strokeColor=#006EAF;fontColor=#ffffff;align=center;comic=0;resizable=0;" parent="dIgtPmutZqsgrGHIfvw8-1" vertex="1">
+          <mxGeometry x="520" y="520" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="o6G1ISgHbWsUvHfaI4vE-1" value="&lt;b&gt;Analyzer Abstractions&lt;br&gt;&lt;/b&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Component: .NET 6]&lt;br&gt;&lt;br&gt;Description&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1ba1e2;strokeColor=#006EAF;fontColor=#ffffff;align=center;comic=0;resizable=0;" parent="dIgtPmutZqsgrGHIfvw8-1" vertex="1">
+          <mxGeometry x="520" y="720" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="o6G1ISgHbWsUvHfaI4vE-2" value="&lt;b&gt;Export Neo4j&lt;br&gt;&lt;/b&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Component: .NET 6]&lt;br&gt;&lt;br&gt;Description&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1ba1e2;strokeColor=#006EAF;fontColor=#ffffff;align=center;comic=0;resizable=0;" parent="dIgtPmutZqsgrGHIfvw8-1" vertex="1">
+          <mxGeometry x="80" y="520" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="o6G1ISgHbWsUvHfaI4vE-3" value="Reference&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[via Project Reference]&lt;/font&gt;" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;flowAnimation=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=#FFCC00;dashed=1;" parent="dIgtPmutZqsgrGHIfvw8-1" source="o6G1ISgHbWsUvHfaI4vE-1" target="GXtAjg4jMHYepAZkmLfQ-0" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="140" y="530" as="sourcePoint" />
+            <mxPoint x="220" y="450" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="o6G1ISgHbWsUvHfaI4vE-4" value="Reference&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[via Project Reference]&lt;/font&gt;" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;flowAnimation=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;labelBackgroundColor=#FFCC00;dashed=1;" parent="dIgtPmutZqsgrGHIfvw8-1" source="o6G1ISgHbWsUvHfaI4vE-2" target="GXtAjg4jMHYepAZkmLfQ-0" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="780" y="660" as="sourcePoint" />
+            <mxPoint x="890" y="690" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="o6G1ISgHbWsUvHfaI4vE-5" value="Reference&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[via Project Reference]&lt;/font&gt;" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;flowAnimation=0;labelBackgroundColor=#FFCC00;dashed=1;" parent="dIgtPmutZqsgrGHIfvw8-1" source="o6G1ISgHbWsUvHfaI4vE-0" target="o6G1ISgHbWsUvHfaI4vE-1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="580" y="710" as="sourcePoint" />
+            <mxPoint x="660" y="630" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="o6G1ISgHbWsUvHfaI4vE-6" value="&lt;b&gt;Analyzer Api&lt;br&gt;&lt;/b&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Component: .NET 6]&lt;br&gt;&lt;br&gt;Description&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1ba1e2;strokeColor=#006EAF;fontColor=#ffffff;align=center;comic=0;resizable=0;" parent="dIgtPmutZqsgrGHIfvw8-1" vertex="1">
+          <mxGeometry x="520" y="120" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="o6G1ISgHbWsUvHfaI4vE-7" value="&lt;b&gt;Export Api&lt;br&gt;&lt;/b&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Component: .NET 6]&lt;br&gt;&lt;br&gt;Description&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1ba1e2;strokeColor=#006EAF;fontColor=#ffffff;align=center;comic=0;resizable=0;" parent="dIgtPmutZqsgrGHIfvw8-1" vertex="1">
+          <mxGeometry x="80" y="120" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="o6G1ISgHbWsUvHfaI4vE-8" value="Reference&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[via Project Reference]&lt;/font&gt;" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;flowAnimation=0;labelBackgroundColor=#FFCC00;dashed=1;" parent="dIgtPmutZqsgrGHIfvw8-1" source="o6G1ISgHbWsUvHfaI4vE-7" target="o6G1ISgHbWsUvHfaI4vE-15" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="150" y="760" as="sourcePoint" />
+            <mxPoint x="230" y="680" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="o6G1ISgHbWsUvHfaI4vE-9" value="&lt;b&gt;Neo4j Graph Database&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Software System]&lt;br&gt;&lt;br&gt;Generates a graph of dependencies and allows to analyze it&lt;br&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;align=center;comic=0;resizable=0;" parent="dIgtPmutZqsgrGHIfvw8-1" vertex="1">
+          <mxGeometry x="-280" y="520" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="o6G1ISgHbWsUvHfaI4vE-10" value="Export to&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[via Bolt]&lt;/font&gt;" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;flowAnimation=0;labelBackgroundColor=#FFCC00;dashed=1;" parent="dIgtPmutZqsgrGHIfvw8-1" source="o6G1ISgHbWsUvHfaI4vE-2" target="o6G1ISgHbWsUvHfaI4vE-9" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-150" y="380" as="sourcePoint" />
+            <mxPoint x="-70" y="300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="o6G1ISgHbWsUvHfaI4vE-11" value="Sync Communication&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Protocol]&lt;/font&gt;" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;flowAnimation=0;labelBackgroundColor=#FFCC00;dashed=1;" parent="dIgtPmutZqsgrGHIfvw8-1" source="GXtAjg4jMHYepAZkmLfQ-1" target="o6G1ISgHbWsUvHfaI4vE-7" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="90" y="230" as="sourcePoint" />
+            <mxPoint x="170" y="150" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="o6G1ISgHbWsUvHfaI4vE-12" value="Sync Communication&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Protocol]&lt;/font&gt;" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;flowAnimation=0;labelBackgroundColor=#FFCC00;dashed=1;" parent="dIgtPmutZqsgrGHIfvw8-1" source="GXtAjg4jMHYepAZkmLfQ-1" target="o6G1ISgHbWsUvHfaI4vE-6" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="650" y="220" as="sourcePoint" />
+            <mxPoint x="730" y="140" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="o6G1ISgHbWsUvHfaI4vE-13" value="Reference&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[via Project Reference]&lt;/font&gt;" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;flowAnimation=0;labelBackgroundColor=#FFCC00;dashed=1;" parent="dIgtPmutZqsgrGHIfvw8-1" source="o6G1ISgHbWsUvHfaI4vE-6" target="o6G1ISgHbWsUvHfaI4vE-14" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="850" y="380" as="sourcePoint" />
+            <mxPoint x="930" y="300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="o6G1ISgHbWsUvHfaI4vE-14" value="&lt;b&gt;Analyzer Services&lt;br&gt;&lt;/b&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Component: .NET 6]&lt;br&gt;&lt;br&gt;Description&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1ba1e2;strokeColor=#006EAF;fontColor=#ffffff;align=center;comic=0;resizable=0;" parent="dIgtPmutZqsgrGHIfvw8-1" vertex="1">
+          <mxGeometry x="520" y="320" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="o6G1ISgHbWsUvHfaI4vE-15" value="&lt;b&gt;Export Servcices&lt;br&gt;&lt;/b&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Component: .NET 6]&lt;br&gt;&lt;br&gt;Description&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1ba1e2;strokeColor=#006EAF;fontColor=#ffffff;align=center;comic=0;resizable=0;" parent="dIgtPmutZqsgrGHIfvw8-1" vertex="1">
+          <mxGeometry x="80" y="320" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="o6G1ISgHbWsUvHfaI4vE-16" value="Reference&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[via Project Reference]&lt;/font&gt;" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;flowAnimation=0;labelBackgroundColor=#FFCC00;dashed=1;" parent="dIgtPmutZqsgrGHIfvw8-1" source="o6G1ISgHbWsUvHfaI4vE-15" target="o6G1ISgHbWsUvHfaI4vE-2" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-320" y="240" as="sourcePoint" />
+            <mxPoint x="-240" y="160" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="o6G1ISgHbWsUvHfaI4vE-17" value="Reference&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[via Project Reference]&lt;/font&gt;" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;flowAnimation=0;labelBackgroundColor=#FFCC00;dashed=1;" parent="dIgtPmutZqsgrGHIfvw8-1" source="o6G1ISgHbWsUvHfaI4vE-14" target="o6G1ISgHbWsUvHfaI4vE-0" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="780" y="430" as="sourcePoint" />
+            <mxPoint x="860" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="4y3hK_n4dyfKDP0q2ytZ" name="code">
+    <mxGraphModel dx="1209" dy="1244" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="KjJtMANAjizYxt7jdm4G-39" value="&lt;b&gt;&lt;font style=&quot;font-size: 13px&quot;&gt;Reverse Architecture C4 Api&lt;/font&gt;&lt;/b&gt;&lt;br style=&quot;font-size: 12px&quot;&gt;&lt;font style=&quot;font-size: 11px&quot;&gt;[Component]&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=bottom;align=left;fontSize=12;fontColor=#333333;spacingBottom=4;spacingLeft=2;fillColor=#f5f5f5;strokeColor=#CCCCCC;" parent="1" vertex="1">
+          <mxGeometry x="120" y="-80" width="1200" height="1000" as="geometry" />
+        </mxCell>
+        <mxCell id="KjJtMANAjizYxt7jdm4G-1" value="&lt;b&gt;.NET Project Analyzer&lt;br&gt;&lt;/b&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Component: Technology]&lt;br&gt;&lt;br&gt;Description&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1ba1e2;strokeColor=#006EAF;fontColor=#ffffff;align=center;comic=0;resizable=0;" parent="1" vertex="1">
+          <mxGeometry x="160" y="760" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="KjJtMANAjizYxt7jdm4G-2" value="&lt;b&gt;Java Project Analyzer&lt;br&gt;&lt;/b&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Component: Technology]&lt;br&gt;&lt;br&gt;Description&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1ba1e2;strokeColor=#006EAF;fontColor=#ffffff;align=center;comic=0;resizable=0;" parent="1" vertex="1">
+          <mxGeometry x="360" y="760" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="KjJtMANAjizYxt7jdm4G-3" value="&lt;b&gt;Python Project Analyzer&lt;br&gt;&lt;/b&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Component: Technology]&lt;br&gt;&lt;br&gt;Description&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1ba1e2;strokeColor=#006EAF;fontColor=#ffffff;align=center;comic=0;resizable=0;" parent="1" vertex="1">
+          <mxGeometry x="560" y="760" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="KjJtMANAjizYxt7jdm4G-5" value="&lt;b&gt;Analyzer Core&lt;br&gt;&lt;/b&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Component: Technology]&lt;br&gt;&lt;br&gt;Description&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1ba1e2;strokeColor=#006EAF;fontColor=#ffffff;align=center;comic=0;resizable=0;" parent="1" vertex="1">
+          <mxGeometry x="360" y="560" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="KjJtMANAjizYxt7jdm4G-6" value="&lt;b&gt;C4 Graph Builder Factory&lt;br&gt;&lt;/b&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Component: Technology]&lt;br&gt;&lt;br&gt;Description&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1ba1e2;strokeColor=#006EAF;fontColor=#ffffff;align=center;comic=0;resizable=0;" parent="1" vertex="1">
+          <mxGeometry x="360" y="160" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="KjJtMANAjizYxt7jdm4G-8" value="Async Communication&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Transport Layer]&lt;/font&gt;" style="endArrow=classic;html=1;dashed=1;edgeStyle=orthogonalEdgeStyle;rounded=0;flowAnimation=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;" parent="1" source="KjJtMANAjizYxt7jdm4G-5" target="KjJtMANAjizYxt7jdm4G-1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="550" y="720" as="sourcePoint" />
+            <mxPoint x="630" y="640" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KjJtMANAjizYxt7jdm4G-10" value="Async Communication&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Transport Layer]&lt;/font&gt;" style="endArrow=classic;html=1;dashed=1;edgeStyle=orthogonalEdgeStyle;rounded=0;flowAnimation=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="KjJtMANAjizYxt7jdm4G-5" target="KjJtMANAjizYxt7jdm4G-2" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="630" y="810" as="sourcePoint" />
+            <mxPoint x="710" y="730" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KjJtMANAjizYxt7jdm4G-11" value="Async Communication&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Transport Layer]&lt;/font&gt;" style="endArrow=classic;html=1;dashed=1;edgeStyle=orthogonalEdgeStyle;rounded=0;flowAnimation=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;" parent="1" source="KjJtMANAjizYxt7jdm4G-5" target="KjJtMANAjizYxt7jdm4G-3" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="450" y="790" as="sourcePoint" />
+            <mxPoint x="450" y="930" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KjJtMANAjizYxt7jdm4G-12" value="&lt;b&gt;C4 Data Model&lt;br&gt;&lt;/b&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Component: Technology]&lt;br&gt;&lt;br&gt;Description&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1ba1e2;strokeColor=#006EAF;fontColor=#ffffff;align=center;comic=0;resizable=0;" parent="1" vertex="1">
+          <mxGeometry x="360" y="360" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="KjJtMANAjizYxt7jdm4G-13" value="Uses&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[via reference]&lt;/font&gt;" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;flowAnimation=0;" parent="1" source="KjJtMANAjizYxt7jdm4G-5" target="KjJtMANAjizYxt7jdm4G-12" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="370" y="780" as="sourcePoint" />
+            <mxPoint x="210" y="780" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KjJtMANAjizYxt7jdm4G-14" value="&lt;b&gt;C4 Context Graph Builder&lt;br&gt;&lt;/b&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Component: Technology]&lt;br&gt;&lt;br&gt;Description&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1ba1e2;strokeColor=#006EAF;fontColor=#ffffff;align=center;comic=0;resizable=0;" parent="1" vertex="1">
+          <mxGeometry x="160" y="-40" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="KjJtMANAjizYxt7jdm4G-15" value="&lt;b&gt;C4 Container Graph Builder&lt;br&gt;&lt;/b&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Component: Technology]&lt;br&gt;&lt;br&gt;Description&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1ba1e2;strokeColor=#006EAF;fontColor=#ffffff;align=center;comic=0;resizable=0;" parent="1" vertex="1">
+          <mxGeometry x="360" y="-40" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="KjJtMANAjizYxt7jdm4G-16" value="&lt;b&gt;C4 Component Graph Builder&lt;br&gt;&lt;/b&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Component: Technology]&lt;br&gt;&lt;br&gt;Description&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1ba1e2;strokeColor=#006EAF;fontColor=#ffffff;align=center;comic=0;resizable=0;" parent="1" vertex="1">
+          <mxGeometry x="560" y="-40" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="KjJtMANAjizYxt7jdm4G-17" value="&lt;b&gt;C4 Graph Visualizer&lt;br&gt;&lt;/b&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Component: Technology]&lt;br&gt;&lt;br&gt;Description&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1ba1e2;strokeColor=#006EAF;fontColor=#ffffff;align=center;comic=0;resizable=0;" parent="1" vertex="1">
+          <mxGeometry x="1120" y="360" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="KjJtMANAjizYxt7jdm4G-20" value="Show Diagram&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Protocol]&lt;/font&gt;" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;flowAnimation=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0;exitY=0.25;exitDx=0;exitDy=0;" parent="1" source="KjJtMANAjizYxt7jdm4G-17" target="KjJtMANAjizYxt7jdm4G-25" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="420" as="sourcePoint" />
+            <mxPoint x="260" y="100" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KjJtMANAjizYxt7jdm4G-21" value="Sync Communication&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Protocol]&lt;/font&gt;" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;flowAnimation=0;exitX=0.25;exitY=0;exitDx=0;exitDy=0;" parent="1" source="KjJtMANAjizYxt7jdm4G-6" target="KjJtMANAjizYxt7jdm4G-14" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="430" y="-150" as="sourcePoint" />
+            <mxPoint x="270" y="-50" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KjJtMANAjizYxt7jdm4G-23" value="Sync Communication&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Protocol]&lt;/font&gt;" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;flowAnimation=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" parent="1" source="KjJtMANAjizYxt7jdm4G-6" target="KjJtMANAjizYxt7jdm4G-15" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="450" y="-130" as="sourcePoint" />
+            <mxPoint x="290" y="-30" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KjJtMANAjizYxt7jdm4G-24" value="Sync Communication&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Protocol]&lt;/font&gt;" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;flowAnimation=0;exitX=0.75;exitY=0;exitDx=0;exitDy=0;" parent="1" source="KjJtMANAjizYxt7jdm4G-6" target="KjJtMANAjizYxt7jdm4G-16" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="460" y="-120" as="sourcePoint" />
+            <mxPoint x="300" y="-20" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KjJtMANAjizYxt7jdm4G-25" value="&lt;b&gt;C4 Diagram Service&lt;br&gt;&lt;/b&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Component: Technology]&lt;br&gt;&lt;br&gt;Description&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1ba1e2;strokeColor=#006EAF;fontColor=#ffffff;align=center;comic=0;resizable=0;" parent="1" vertex="1">
+          <mxGeometry x="840" y="160" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="KjJtMANAjizYxt7jdm4G-26" value="Sync Communication&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Protocol]&lt;/font&gt;" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;flowAnimation=0;" parent="1" source="KjJtMANAjizYxt7jdm4G-25" target="KjJtMANAjizYxt7jdm4G-6" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="170" y="310" as="sourcePoint" />
+            <mxPoint x="250" y="230" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KjJtMANAjizYxt7jdm4G-28" value="Gets Metadata Model&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[via reference]&lt;/font&gt;" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;flowAnimation=0;" parent="1" source="KjJtMANAjizYxt7jdm4G-32" target="KjJtMANAjizYxt7jdm4G-5" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="90" y="290" as="sourcePoint" />
+            <mxPoint x="170" y="210" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KjJtMANAjizYxt7jdm4G-31" value="Uses&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[via reference]&lt;/font&gt;" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;flowAnimation=0;entryX=1;entryY=0.25;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="KjJtMANAjizYxt7jdm4G-25" target="KjJtMANAjizYxt7jdm4G-12" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="410" y="630" as="sourcePoint" />
+            <mxPoint x="130" y="770" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KjJtMANAjizYxt7jdm4G-32" value="&lt;b&gt;Analyzer Service&lt;br&gt;&lt;/b&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Component: Technology]&lt;br&gt;&lt;br&gt;Description&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1ba1e2;strokeColor=#006EAF;fontColor=#ffffff;align=center;comic=0;resizable=0;" parent="1" vertex="1">
+          <mxGeometry x="840" y="560" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="KjJtMANAjizYxt7jdm4G-33" value="Analyze&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Protocol]&lt;/font&gt;" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;flowAnimation=0;entryX=1;entryY=0.25;entryDx=0;entryDy=0;exitX=0;exitY=0.75;exitDx=0;exitDy=0;" parent="1" source="KjJtMANAjizYxt7jdm4G-17" target="KjJtMANAjizYxt7jdm4G-32" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1090" y="435" as="sourcePoint" />
+            <mxPoint x="850" y="220" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KjJtMANAjizYxt7jdm4G-34" value="Uses&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[via reference]&lt;/font&gt;" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;flowAnimation=0;" parent="1" source="KjJtMANAjizYxt7jdm4G-6" target="KjJtMANAjizYxt7jdm4G-12" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="690" y="245" as="sourcePoint" />
+            <mxPoint x="530" y="420" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KjJtMANAjizYxt7jdm4G-38" value="Uses&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[via reference]&lt;/font&gt;" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;flowAnimation=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" parent="1" source="KjJtMANAjizYxt7jdm4G-32" target="KjJtMANAjizYxt7jdm4G-12" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="770" y="270" as="sourcePoint" />
+            <mxPoint x="250" y="420" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="OT3EzPhoj3UISgfWteh3-1" value="&lt;b&gt;Neo4j Graph Importer&lt;br&gt;&lt;/b&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Component: Technology]&lt;br&gt;&lt;br&gt;Description&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1ba1e2;strokeColor=#006EAF;fontColor=#ffffff;align=center;comic=0;resizable=0;" parent="1" vertex="1">
+          <mxGeometry x="1120" y="760" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="OT3EzPhoj3UISgfWteh3-3" value="Analyze&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Protocol]&lt;/font&gt;" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;flowAnimation=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="OT3EzPhoj3UISgfWteh3-1" target="KjJtMANAjizYxt7jdm4G-32" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="970" y="445" as="sourcePoint" />
+            <mxPoint x="850" y="740" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

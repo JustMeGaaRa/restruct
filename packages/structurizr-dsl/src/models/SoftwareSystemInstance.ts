@@ -7,6 +7,7 @@ import {
 import { ISupportSnapshot } from "../shared";
 import { Relationship } from "./Relationship";
 import { Tag } from "./Tag";
+import { String } from "../utils/string";
 
 type SoftwareSystemInstanceParams = Required<
     Pick<ISoftwareSystemInstance, "identifier" | "softwareSystemIdentifier">
@@ -31,9 +32,15 @@ export class SoftwareSystemInstance
         // this.healthCheck = params.healthCheck;
         this.tags = [
             Tag.SoftwareSystemInstance,
-            ...(params.tags?.filter(
-                (x) => x.name !== Tag.SoftwareSystemInstance.name
-            ) ?? []),
+            ...(params.tags
+                ?.map((t) => new Tag(t.name))
+                ?.filter(
+                    (x) =>
+                        !String.equalsIgnoreCase(
+                            x.name,
+                            Tag.SoftwareSystemInstance.name
+                        )
+                ) ?? []),
         ];
     }
 

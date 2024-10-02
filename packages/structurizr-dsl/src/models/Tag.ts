@@ -1,4 +1,7 @@
-export class Tag {
+import { ITag } from "../interfaces";
+import { ISupportSnapshot } from "../shared";
+
+export class Tag implements ISupportSnapshot<ITag> {
     constructor(name: string) {
         this.name = name;
     }
@@ -22,5 +25,11 @@ export class Tag {
         return (
             text?.split(separator)?.map((name) => new Tag(name.trim())) ?? []
         );
+    }
+
+    public toSnapshot(): ITag {
+        return {
+            name: this.name,
+        };
     }
 }

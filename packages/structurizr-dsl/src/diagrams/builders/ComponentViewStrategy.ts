@@ -66,7 +66,7 @@ export class ComponentViewStrategy
 
         // 4.1.3. include all software systems that are directly connected to the current component
         const visitConnectedSoftwareSystems = (component: IComponent) => {
-            return softwareSystems
+            softwareSystems
                 .filter(
                     (softwareSystem) =>
                         relationshipExistsOverall(
@@ -156,12 +156,9 @@ export class ComponentViewStrategy
             .filter(
                 (relationship) =>
                     relationship.sourceIdentifier !==
-                    this.view.containerIdentifier
-            )
-            .filter(
-                (relationship) =>
+                        this.view.containerIdentifier &&
                     relationship.targetIdentifier !==
-                    this.view.containerIdentifier
+                        this.view.containerIdentifier
             )
             .filter((relationship) =>
                 relationshipExistsForElementsInView(

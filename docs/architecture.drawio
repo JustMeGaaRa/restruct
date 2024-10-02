@@ -1,86 +1,179 @@
-<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.7.8 Chrome/128.0.6613.36 Electron/32.0.1 Safari/537.36" version="24.7.8" pages="2">
-  <diagram name="diagram.system-landscape" id="hiOONMcJBDsX6IdbdMhS">
-    <mxGraphModel dx="3365" dy="1371" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.7.8 Chrome/128.0.6613.36 Electron/32.0.1 Safari/537.36" version="24.7.8" pages="4">
+  <diagram id="4FRJiOt5RNI7YdR-AjZe" name="landscape">
+    <mxGraphModel dx="2640" dy="1565" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="V7YEJKCMWLS9bTxh50kb-15" value="&lt;b&gt;[Software System] Restruct Tools&lt;/b&gt;&lt;br&gt;The set of tools for drafting the architecture documentration in form of diagram as a code" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=bottom;align=left;spacing=8;dashed=1;" vertex="1" parent="1">
-          <mxGeometry x="-240" y="200" width="1080" height="800" as="geometry" />
+        <mxCell id="rFT8Y1PMJQzE_cdbNPqb-1" value="&lt;b&gt;External System&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Software System]&lt;br&gt;Any external software system that reports it&#39;s containers and components to the central metadata store&lt;br&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;strokeColor=#666666;fillColor=#f5f5f5;comic=0;resizable=0;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="-760" y="160" width="200" height="120" as="geometry" />
         </mxCell>
-        <mxCell id="V7YEJKCMWLS9bTxh50kb-10" value="&lt;b&gt;[Software System] Restruct Service&lt;/b&gt;&lt;br&gt;An online software as a service for architecture documentation, monitoring, and review" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=bottom;align=left;spacing=8;dashed=1;" vertex="1" parent="1">
-          <mxGeometry x="-720" y="200" width="440" height="800" as="geometry" />
+        <mxCell id="rFT8Y1PMJQzE_cdbNPqb-2" value="&lt;b&gt;Restruct Desktop&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Software System]&lt;br&gt;The set of tools for drafting the architecture documentration in form of diagram as a code&lt;br&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;strokeColor=#9673a6;fillColor=#e1d5e7;comic=0;resizable=0;" vertex="1" parent="1">
+          <mxGeometry x="120" y="160" width="200" height="120" as="geometry" />
         </mxCell>
-        <mxCell id="V7YEJKCMWLS9bTxh50kb-8" value="report container and component meta&lt;br&gt;[HTTPS / JSON]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" source="V7YEJKCMWLS9bTxh50kb-1" target="V7YEJKCMWLS9bTxh50kb-3">
+        <mxCell id="nASMnIu9WPDd-KT_XbUG-1" value="commit diagrams as a code&lt;br&gt;[HTTPS / Git]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;" edge="1" parent="1" source="rFT8Y1PMJQzE_cdbNPqb-2" target="giSHN4i6NMpJCYmK8flV-1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1230" y="570" as="targetPoint" />
+            <mxPoint x="670" y="570" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="giSHN4i6NMpJCYmK8flV-1" value="&lt;b&gt;GitHub&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Software System]&lt;br&gt;Any external software system that reports it&#39;s containers and components to the central metadata store&lt;br&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;strokeColor=#666666;fillColor=#f5f5f5;comic=0;resizable=0;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="560" y="160" width="200" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="VNsa-KqBkphKMxSGVfv3-1" value="report container and component meta&lt;br&gt;[HTTPS / JSON]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" source="rFT8Y1PMJQzE_cdbNPqb-1" target="PdPfBcx3r97lqFI-SI5_-1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-880" y="550" as="sourcePoint" />
+            <mxPoint x="-600" y="550" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="VNsa-KqBkphKMxSGVfv3-2" value="healthcheck&lt;br&gt;[HTTPS]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.75;entryDx=0;entryDy=0;exitX=0;exitY=0.75;exitDx=0;exitDy=0;dashed=1;" edge="1" parent="1" source="PdPfBcx3r97lqFI-SI5_-1" target="rFT8Y1PMJQzE_cdbNPqb-1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-600" y="610" as="sourcePoint" />
+            <mxPoint x="-880" y="610" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="PdPfBcx3r97lqFI-SI5_-1" value="&lt;b&gt;Restruct SaaS&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Software System]&lt;br&gt;An online software as a service for architecture documentation, monitoring, and review&lt;br&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;strokeColor=#9673a6;fillColor=#e1d5e7;comic=0;resizable=0;" vertex="1" parent="1">
+          <mxGeometry x="-320" y="160" width="200" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="XXuVvaUQIGgVoNqfI5KN-1" value="publish models and diagrams&lt;br&gt;[HTTPS / JSON]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="rFT8Y1PMJQzE_cdbNPqb-2" target="PdPfBcx3r97lqFI-SI5_-1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-320" y="580" as="targetPoint" />
+            <mxPoint x="-70" y="360" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XXuVvaUQIGgVoNqfI5KN-4" value="" style="group" vertex="1" connectable="0" parent="1">
+          <mxGeometry x="-100" y="-220" width="200" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="XXuVvaUQIGgVoNqfI5KN-3" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="XXuVvaUQIGgVoNqfI5KN-4">
+          <mxGeometry x="40" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="XXuVvaUQIGgVoNqfI5KN-2" value="&lt;b&gt;Architect&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Person]&lt;br&gt;An person who drafts out the&amp;nbsp; architecture of the desired solution&lt;br&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;strokeColor=#82b366;fillColor=#d5e8d4;comic=0;resizable=0;" vertex="1" parent="XXuVvaUQIGgVoNqfI5KN-4">
+          <mxGeometry y="100" width="200" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="XXuVvaUQIGgVoNqfI5KN-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="XXuVvaUQIGgVoNqfI5KN-2" target="PdPfBcx3r97lqFI-SI5_-1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="V7YEJKCMWLS9bTxh50kb-1" value="&lt;b&gt;External System&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Software System]&lt;br&gt;Any external software system that reports it&#39;s containers and components to the central metadata store&lt;br&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;strokeColor=#666666;fillColor=#f5f5f5;comic=0;resizable=0;fontColor=#333333;" vertex="1" parent="1">
-          <mxGeometry x="-1080" y="520" width="200" height="120" as="geometry" />
-        </mxCell>
-        <mxCell id="V7YEJKCMWLS9bTxh50kb-5" value="query metadata&lt;br&gt;[HTTPS / JSON]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="V7YEJKCMWLS9bTxh50kb-2" target="V7YEJKCMWLS9bTxh50kb-3">
+        <mxCell id="XXuVvaUQIGgVoNqfI5KN-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="XXuVvaUQIGgVoNqfI5KN-2" target="rFT8Y1PMJQzE_cdbNPqb-2">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="V7YEJKCMWLS9bTxh50kb-2" value="&lt;b&gt;Restruct Web App&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Container: React, Typescript]&lt;br&gt;A web services for architecture diagrams and documentation, as well as visual editing&lt;br&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;strokeColor=#9673a6;fillColor=#e1d5e7;comic=0;resizable=0;" vertex="1" parent="1">
-          <mxGeometry x="-600" y="240" width="200" height="120" as="geometry" />
+        <mxCell id="XXuVvaUQIGgVoNqfI5KN-10" value="" style="group" vertex="1" connectable="0" parent="1">
+          <mxGeometry x="340" y="-220" width="200" height="220" as="geometry" />
         </mxCell>
-        <mxCell id="V7YEJKCMWLS9bTxh50kb-6" value="query persisted data&lt;br&gt;[SQL]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="V7YEJKCMWLS9bTxh50kb-3" target="V7YEJKCMWLS9bTxh50kb-4">
+        <mxCell id="XXuVvaUQIGgVoNqfI5KN-11" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="XXuVvaUQIGgVoNqfI5KN-10">
+          <mxGeometry x="40" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="XXuVvaUQIGgVoNqfI5KN-12" value="&lt;b&gt;Developer&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Person]&lt;br&gt;An person who desires to understand and implement the solution&lt;br&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;strokeColor=#82b366;fillColor=#d5e8d4;comic=0;resizable=0;" vertex="1" parent="XXuVvaUQIGgVoNqfI5KN-10">
+          <mxGeometry y="100" width="200" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="XXuVvaUQIGgVoNqfI5KN-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.75;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="XXuVvaUQIGgVoNqfI5KN-12" target="rFT8Y1PMJQzE_cdbNPqb-2">
           <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="V7YEJKCMWLS9bTxh50kb-9" value="healthcheck&lt;br&gt;[HTTPS]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.75;entryDx=0;entryDy=0;exitX=0;exitY=0.75;exitDx=0;exitDy=0;dashed=1;" edge="1" parent="1" source="V7YEJKCMWLS9bTxh50kb-3" target="V7YEJKCMWLS9bTxh50kb-1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="V7YEJKCMWLS9bTxh50kb-3" value="&lt;b&gt;Restruct Api&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Container: .NET, C#]&lt;br&gt;A backend APi services for providing data and persisting reported data from live systems&lt;br&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;strokeColor=#6c8ebf;fillColor=#dae8fc;comic=0;resizable=0;" vertex="1" parent="1">
-          <mxGeometry x="-600" y="520" width="200" height="120" as="geometry" />
-        </mxCell>
-        <mxCell id="V7YEJKCMWLS9bTxh50kb-4" value="&lt;b&gt;Restruct Api&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Container: NoSQL]&lt;br&gt;A persistent storage for architecture metadata&lt;br&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;strokeColor=#82b366;fillColor=#d5e8d4;comic=0;resizable=0;" vertex="1" parent="1">
-          <mxGeometry x="-600" y="790" width="200" height="120" as="geometry" />
-        </mxCell>
-        <mxCell id="V7YEJKCMWLS9bTxh50kb-14" value="read and render diagram as a code files&lt;br&gt;[Plaintext]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="V7YEJKCMWLS9bTxh50kb-7" target="V7YEJKCMWLS9bTxh50kb-11">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="V7YEJKCMWLS9bTxh50kb-7" value="&lt;b&gt;Restruct Visual Studio Code Extension&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Container: React, Typescript]&lt;br&gt;An extension for Visual Studio Code editor for preview of Structurizr diagram as a code files&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;strokeColor=#9673a6;fillColor=#e1d5e7;comic=0;resizable=0;" vertex="1" parent="1">
-          <mxGeometry x="200" y="240" width="200" height="120" as="geometry" />
-        </mxCell>
-        <mxCell id="V7YEJKCMWLS9bTxh50kb-13" value="commit diagrams as a code&lt;br&gt;[HTTPS / Git]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;" edge="1" parent="1" source="V7YEJKCMWLS9bTxh50kb-11" target="V7YEJKCMWLS9bTxh50kb-12">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="V7YEJKCMWLS9bTxh50kb-11" value="&lt;b&gt;Workspace Files&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Container: Structurizr, Typescript]&lt;br&gt;A set of workspace files written in Structurizr for Typescript diagram as a code&lt;br&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;strokeColor=#6c8ebf;fillColor=#dae8fc;comic=0;resizable=0;" vertex="1" parent="1">
-          <mxGeometry x="200" y="520" width="200" height="120" as="geometry" />
-        </mxCell>
-        <mxCell id="V7YEJKCMWLS9bTxh50kb-12" value="&lt;b&gt;GitHub&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Software System]&lt;br&gt;Any external software system that reports it&#39;s containers and components to the central metadata store&lt;br&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;strokeColor=#666666;fillColor=#f5f5f5;comic=0;resizable=0;fontColor=#333333;" vertex="1" parent="1">
-          <mxGeometry x="960" y="520" width="200" height="120" as="geometry" />
-        </mxCell>
-        <mxCell id="V7YEJKCMWLS9bTxh50kb-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.25;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="V7YEJKCMWLS9bTxh50kb-16" target="V7YEJKCMWLS9bTxh50kb-11">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="V7YEJKCMWLS9bTxh50kb-16" value="&lt;b&gt;Restruct Desktop App&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Container: React, Typescript]&lt;br&gt;A desktop app for interactive visual drafting of the architecture diagrams according to C4 model&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;strokeColor=#9673a6;fillColor=#e1d5e7;comic=0;resizable=0;" vertex="1" parent="1">
-          <mxGeometry x="520" y="240" width="200" height="120" as="geometry" />
-        </mxCell>
-        <mxCell id="V7YEJKCMWLS9bTxh50kb-19" value="publish models and diagrams&lt;br&gt;[HTTPS / JSON]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="V7YEJKCMWLS9bTxh50kb-18" target="V7YEJKCMWLS9bTxh50kb-3">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="V7YEJKCMWLS9bTxh50kb-20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0.75;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="V7YEJKCMWLS9bTxh50kb-18" target="V7YEJKCMWLS9bTxh50kb-11">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="V7YEJKCMWLS9bTxh50kb-18" value="&lt;b&gt;Restruct CLI&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Container: .NET]&lt;br&gt;A command line interface for publishing the drafted architecture to the online service or to the community&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;strokeColor=#9673a6;fillColor=#e1d5e7;comic=0;resizable=0;" vertex="1" parent="1">
-          <mxGeometry x="-120" y="240" width="200" height="120" as="geometry" />
-        </mxCell>
-        <mxCell id="V7YEJKCMWLS9bTxh50kb-21" value="&lt;b&gt;Structurizr React&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Component: React, Typescript]&lt;br&gt;A common react library with C4 diagrams components&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;strokeColor=#d6b656;fillColor=#fff2cc;comic=0;resizable=0;" vertex="1" parent="1">
-          <mxGeometry x="40" y="1080" width="200" height="120" as="geometry" />
-        </mxCell>
-        <mxCell id="V7YEJKCMWLS9bTxh50kb-22" value="&lt;b&gt;Structurizr DSL&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Component: Typescript]&lt;br&gt;A common package with structurizr primitives&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;strokeColor=#d6b656;fillColor=#fff2cc;comic=0;resizable=0;" vertex="1" parent="1">
-          <mxGeometry x="-200" y="1080" width="200" height="120" as="geometry" />
-        </mxCell>
-        <mxCell id="V7YEJKCMWLS9bTxh50kb-23" value="&lt;b&gt;Restruct Plugin&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Component: .NET / C#]&lt;br&gt;A plugin used in .NET projects for reporting metadata on startup&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;strokeColor=#d6b656;fillColor=#fff2cc;comic=0;resizable=0;" vertex="1" parent="1">
-          <mxGeometry x="-440" y="1080" width="200" height="120" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
-  <diagram id="bSEWTkrgH1NATW_jAny5" name="Page-2">
-    <mxGraphModel dx="1840" dy="1165" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+  <diagram name="saas.container" id="hiOONMcJBDsX6IdbdMhS">
+    <mxGraphModel dx="3040" dy="1165" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
+        <mxCell id="V7YEJKCMWLS9bTxh50kb-10" value="&lt;b&gt;[Software System] Restruct SaaS&lt;/b&gt;&lt;br&gt;An online software as a service for architecture documentation, monitoring, and review" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=bottom;align=left;spacing=8;dashed=1;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;" parent="1" vertex="1">
+          <mxGeometry x="-720" y="200" width="440" height="800" as="geometry" />
+        </mxCell>
+        <mxCell id="V7YEJKCMWLS9bTxh50kb-8" value="report container and component meta&lt;br&gt;[HTTPS / JSON]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" parent="1" source="V7YEJKCMWLS9bTxh50kb-1" target="V7YEJKCMWLS9bTxh50kb-3" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="V7YEJKCMWLS9bTxh50kb-1" value="&lt;b&gt;External System&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Software System]&lt;br&gt;Any external software system that reports it&#39;s containers and components to the central metadata store&lt;br&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;strokeColor=#666666;fillColor=#f5f5f5;comic=0;resizable=0;fontColor=#333333;" parent="1" vertex="1">
+          <mxGeometry x="-1080" y="520" width="200" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="V7YEJKCMWLS9bTxh50kb-5" value="query metadata&lt;br&gt;[HTTPS / JSON]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="V7YEJKCMWLS9bTxh50kb-2" target="V7YEJKCMWLS9bTxh50kb-3" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="V7YEJKCMWLS9bTxh50kb-2" value="&lt;b&gt;Restruct Web App&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Container: React, Typescript]&lt;br&gt;A web services for architecture diagrams and documentation, as well as visual editing&lt;br&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;strokeColor=#6c8ebf;fillColor=#dae8fc;comic=0;resizable=0;" parent="1" vertex="1">
+          <mxGeometry x="-600" y="240" width="200" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="V7YEJKCMWLS9bTxh50kb-6" value="query persisted data&lt;br&gt;[SQL]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="V7YEJKCMWLS9bTxh50kb-3" target="V7YEJKCMWLS9bTxh50kb-4" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="V7YEJKCMWLS9bTxh50kb-9" value="healthcheck&lt;br&gt;[HTTPS]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.75;entryDx=0;entryDy=0;exitX=0;exitY=0.75;exitDx=0;exitDy=0;dashed=1;" parent="1" source="V7YEJKCMWLS9bTxh50kb-3" target="V7YEJKCMWLS9bTxh50kb-1" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="V7YEJKCMWLS9bTxh50kb-3" value="&lt;b&gt;Restruct Api&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Container: .NET, C#]&lt;br&gt;A backend APi services for providing data and persisting reported data from live systems&lt;br&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;strokeColor=#6c8ebf;fillColor=#dae8fc;comic=0;resizable=0;" parent="1" vertex="1">
+          <mxGeometry x="-600" y="520" width="200" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="V7YEJKCMWLS9bTxh50kb-4" value="&lt;b&gt;Restruct Api&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Container: NoSQL]&lt;br&gt;A persistent storage for architecture metadata&lt;br&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;strokeColor=#82b366;fillColor=#d5e8d4;comic=0;resizable=0;" parent="1" vertex="1">
+          <mxGeometry x="-600" y="790" width="200" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="V7YEJKCMWLS9bTxh50kb-19" value="publish models and diagrams&lt;br&gt;[HTTPS / JSON]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="lIZParwLX--OwHFs8Jti-1" target="V7YEJKCMWLS9bTxh50kb-3" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lIZParwLX--OwHFs8Jti-1" value="&lt;b&gt;Restruct Desktop&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Software System]&lt;br&gt;The set of tools for drafting the architecture documentration in form of diagram as a code&lt;br&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;strokeColor=#9673a6;fillColor=#e1d5e7;comic=0;resizable=0;" vertex="1" parent="1">
+          <mxGeometry x="-120" y="520" width="200" height="120" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="bSEWTkrgH1NATW_jAny5" name="desktop.container">
+    <mxGraphModel dx="2640" dy="1165" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="kz-Q9pJIYIuvVCtaU9hM-1" value="&lt;b&gt;[Software System] Restruct Desktop&lt;/b&gt;&lt;br&gt;The set of tools for drafting the architecture documentration in form of diagram as a code" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=bottom;align=left;spacing=8;dashed=1;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="-240" y="200" width="1080" height="800" as="geometry" />
+        </mxCell>
+        <mxCell id="kz-Q9pJIYIuvVCtaU9hM-2" value="read and render diagram as a code files&lt;br&gt;[Plaintext]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="kz-Q9pJIYIuvVCtaU9hM-3" target="kz-Q9pJIYIuvVCtaU9hM-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="kz-Q9pJIYIuvVCtaU9hM-3" value="&lt;b&gt;Restruct Visual Studio Code Extension&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Container: React, Typescript]&lt;br&gt;An extension for Visual Studio Code editor for preview of Structurizr diagram as a code files&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;strokeColor=#6c8ebf;fillColor=#dae8fc;comic=0;resizable=0;" vertex="1" parent="1">
+          <mxGeometry x="200" y="240" width="200" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="kz-Q9pJIYIuvVCtaU9hM-4" value="commit diagrams as a code&lt;br&gt;[HTTPS / Git]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;" edge="1" parent="1" source="kz-Q9pJIYIuvVCtaU9hM-5" target="JsUU4NW0pS7iODH4kirM-1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="960" y="580" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kz-Q9pJIYIuvVCtaU9hM-5" value="&lt;b&gt;Workspace Files&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Container: Structurizr, Typescript]&lt;br&gt;A set of workspace files written in Structurizr for Typescript diagram as a code&lt;br&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;strokeColor=#6c8ebf;fillColor=#dae8fc;comic=0;resizable=0;" vertex="1" parent="1">
+          <mxGeometry x="200" y="520" width="200" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="kz-Q9pJIYIuvVCtaU9hM-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.25;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="kz-Q9pJIYIuvVCtaU9hM-7" target="kz-Q9pJIYIuvVCtaU9hM-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="kz-Q9pJIYIuvVCtaU9hM-7" value="&lt;b&gt;Restruct Desktop App&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Container: React, Typescript]&lt;br&gt;A desktop app for interactive visual drafting of the architecture diagrams according to C4 model&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;strokeColor=#6c8ebf;fillColor=#dae8fc;comic=0;resizable=0;" vertex="1" parent="1">
+          <mxGeometry x="520" y="240" width="200" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="kz-Q9pJIYIuvVCtaU9hM-8" value="publish models and diagrams&lt;br&gt;[HTTPS / JSON]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="kz-Q9pJIYIuvVCtaU9hM-10" target="h3hIJKJsl1ONWbtwZoI2-1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-400" y="580" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kz-Q9pJIYIuvVCtaU9hM-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0.75;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="kz-Q9pJIYIuvVCtaU9hM-10" target="kz-Q9pJIYIuvVCtaU9hM-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="kz-Q9pJIYIuvVCtaU9hM-10" value="&lt;b&gt;Restruct CLI&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Container: .NET]&lt;br&gt;A command line interface for publishing the drafted architecture to the online service or to the community&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;strokeColor=#6c8ebf;fillColor=#dae8fc;comic=0;resizable=0;" vertex="1" parent="1">
+          <mxGeometry x="-120" y="240" width="200" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="h3hIJKJsl1ONWbtwZoI2-1" value="&lt;b&gt;Restruct SaaS&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Software System]&lt;br&gt;An online software as a service for architecture documentation, monitoring, and review&lt;br&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;strokeColor=#9673a6;fillColor=#e1d5e7;comic=0;resizable=0;" vertex="1" parent="1">
+          <mxGeometry x="-520" y="520" width="200" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="JsUU4NW0pS7iODH4kirM-1" value="&lt;b&gt;GitHub&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Software System]&lt;br&gt;Any external software system that reports it&#39;s containers and components to the central metadata store&lt;br&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;strokeColor=#666666;fillColor=#f5f5f5;comic=0;resizable=0;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="960" y="520" width="200" height="120" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="8oLP3U8ROs6morM9SQcJ" name="shared.component">
+    <mxGraphModel dx="1840" dy="765" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="X3qVCAmc5e1tfZy9lO4R-1" value="&lt;b&gt;Structurizr React&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Component: React, Typescript]&lt;br&gt;A common react library with C4 diagrams components&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;strokeColor=#d6b656;fillColor=#fff2cc;comic=0;resizable=0;" vertex="1" parent="1">
+          <mxGeometry x="560" y="560" width="200" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="X3qVCAmc5e1tfZy9lO4R-2" value="&lt;b&gt;Structurizr DSL&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Component: Typescript]&lt;br&gt;A common package with structurizr primitives&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;strokeColor=#d6b656;fillColor=#fff2cc;comic=0;resizable=0;" vertex="1" parent="1">
+          <mxGeometry x="320" y="560" width="200" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="X3qVCAmc5e1tfZy9lO4R-3" value="&lt;b&gt;Restruct .NET Plugin&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;[Component: .NET / C#]&lt;br&gt;A plugin used in .NET projects for reporting metadata on startup&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=center;strokeColor=#d6b656;fillColor=#fff2cc;comic=0;resizable=0;" vertex="1" parent="1">
+          <mxGeometry x="80" y="560" width="200" height="120" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>

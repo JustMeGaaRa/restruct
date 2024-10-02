@@ -90,7 +90,7 @@ export class ContainerViewStrategy
         const visitContainerArray = (containers: Array<IContainer>) => {
             containers.forEach((container) => {
                 visitedElements.add(container.identifier);
-                return visitor.visitPrimaryElement(container);
+                visitor.visitPrimaryElement(container);
             });
         };
 
@@ -128,12 +128,9 @@ export class ContainerViewStrategy
             .filter(
                 (relationship) =>
                     relationship.sourceIdentifier !==
-                    this.view.softwareSystemIdentifier
-            )
-            .filter(
-                (relationship) =>
+                        this.view.softwareSystemIdentifier &&
                     relationship.targetIdentifier !==
-                    this.view.softwareSystemIdentifier
+                        this.view.softwareSystemIdentifier
             )
             .filter((relationship) =>
                 relationshipExistsForElementsInView(

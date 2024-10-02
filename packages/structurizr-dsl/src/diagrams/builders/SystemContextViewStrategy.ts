@@ -47,8 +47,8 @@ export class SystemContextViewStrategy
                         softwareSystem.identifier !==
                         this.view.softwareSystemIdentifier
                 )
-                .filter((otherSoftwareSystem) => {
-                    return (
+                .filter(
+                    (otherSoftwareSystem) =>
                         relationshipExistsOverall(
                             relationships,
                             softwareSystem.identifier,
@@ -58,8 +58,7 @@ export class SystemContextViewStrategy
                             this.view,
                             otherSoftwareSystem.identifier
                         )
-                    );
-                })
+                )
                 .forEach((softwareSystem) => {
                     visitedElements.add(softwareSystem.identifier);
                     visitor.visitSupportingElement(softwareSystem);
@@ -69,15 +68,14 @@ export class SystemContextViewStrategy
         // 2.1.2. include all people that are directly connected to the current software system
         const visitConnectedPeople = (softwareSystem: ISoftwareSystem) => {
             people
-                .filter((person) => {
-                    return (
+                .filter(
+                    (person) =>
                         relationshipExistsOverall(
                             relationships,
                             softwareSystem.identifier,
                             person.identifier
                         ) || elementIncludedInView(this.view, person.identifier)
-                    );
-                })
+                )
                 .filter((person) => !visitedElements.has(person.identifier))
                 .forEach((person) => {
                     visitedElements.add(person.identifier);
@@ -104,12 +102,9 @@ export class SystemContextViewStrategy
             .filter(
                 (relationship) =>
                     relationship.sourceIdentifier !==
-                    this.view.softwareSystemIdentifier
-            )
-            .filter(
-                (relationship) =>
+                        this.view.softwareSystemIdentifier &&
                     relationship.targetIdentifier !==
-                    this.view.softwareSystemIdentifier
+                        this.view.softwareSystemIdentifier
             )
             .filter((relationship) =>
                 relationshipExistsForElementsInView(
