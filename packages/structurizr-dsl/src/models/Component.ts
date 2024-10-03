@@ -11,7 +11,7 @@ type ComponentParams = Required<Pick<IComponent, "name">> &
 export class Component implements ISupportSnapshot<IComponent> {
     constructor(params: ComponentParams) {
         this.type = ElementType.Component;
-        this.identifier = params.identifier ?? crypto.randomUUID();
+        this.identifier = Identifier.createOrDefault(params.identifier);
         this.name = params.name;
         this.technology = params.technology
             ? params.technology.map((x) => new Technology(x))
@@ -51,7 +51,7 @@ export class Component implements ISupportSnapshot<IComponent> {
     public toSnapshot(): IComponent {
         return {
             type: this.type,
-            identifier: this.identifier,
+            identifier: this.identifier.toString(),
             name: this.name,
             technology: this.technology.map((x) => x.name),
             description: this.description,

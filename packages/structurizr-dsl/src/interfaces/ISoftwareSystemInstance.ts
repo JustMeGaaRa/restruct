@@ -9,8 +9,8 @@ import { Url } from "./Url";
 
 export interface ISoftwareSystemInstance {
     type: ElementType.SoftwareSystemInstance;
-    identifier: Identifier;
-    softwareSystemIdentifier: Identifier;
+    identifier: string;
+    softwareSystemIdentifier: string;
     deploymentGroups?: Identifier[];
     relationships?: IRelationship[];
     description?: string;

@@ -38,7 +38,7 @@ export class ViewBuilder implements IBuilder<IViews> {
     systemLandscapeView(key: string): ISystemLandscapeView {
         this.views.systemLandscape = new SystemLandscapeView({
             key,
-        });
+        }).toSnapshot();
         return this.views.systemLandscape;
     }
 

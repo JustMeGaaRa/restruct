@@ -1,4 +1,3 @@
-import { Identifier } from "./Identifier";
 import { ElementType } from "./ElementType";
 import { Properties } from "./Properties";
 import { Url } from "./Url";
@@ -11,7 +10,7 @@ import { IContainerInstance } from "./IContainerInstance";
 
 export interface IDeploymentNode {
     type: ElementType.DeploymentNode;
-    identifier: Identifier;
+    identifier: string;
     name: string;
     deploymentNodes: IDeploymentNode[];
     infrastructureNodes: IInfrastructureNode[];

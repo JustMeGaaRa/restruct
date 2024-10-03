@@ -21,7 +21,7 @@ export class Tag implements ISupportSnapshot<ITag> {
     static ContainerInstance = new Tag("Container Instance");
     static Relationship = new Tag("Relationship");
 
-    static from(text: string, separator: string = " "): Tag[] {
+    static parse(text: string, separator: string = " "): Tag[] {
         return (
             text?.split(separator)?.map((name) => new Tag(name.trim())) ?? []
         );

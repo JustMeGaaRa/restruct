@@ -10,11 +10,13 @@ type SystemContextViewProps = Required<
 export class SystemContextView implements ISupportSnapshot<ISystemContextView> {
     constructor(values: SystemContextViewProps) {
         this.type = ViewType.SystemContext;
-        this.softwareSystemIdentifier = values.softwareSystemIdentifier;
+        this.softwareSystemIdentifier = Identifier.parse(
+            values.softwareSystemIdentifier
+        );
         this.key = values.key;
         this.description = values.description;
-        this.include = values.include ?? [];
-        this.exclude = values.exclude ?? [];
+        this.include = values.include?.map((x) => Identifier.parse(x)) ?? [];
+        this.exclude = values.exclude?.map((x) => Identifier.parse(x)) ?? [];
         this.autoLayout = values.autoLayout
             ? new AutoLayout(values.autoLayout)
             : new AutoLayout();
@@ -24,7 +26,7 @@ export class SystemContextView implements ISupportSnapshot<ISystemContextView> {
     }
 
     public type: ViewType.SystemContext;
-    public softwareSystemIdentifier: string;
+    public softwareSystemIdentifier: Identifier;
     public key?: string;
     public include: Array<Identifier | All>;
     public exclude: Array<Identifier>;
@@ -37,10 +39,10 @@ export class SystemContextView implements ISupportSnapshot<ISystemContextView> {
     public toSnapshot(): ISystemContextView {
         return {
             type: this.type,
-            softwareSystemIdentifier: this.softwareSystemIdentifier,
+            softwareSystemIdentifier: this.softwareSystemIdentifier.toString(),
             key: this.key,
-            include: this.include,
-            exclude: this.exclude,
+            include: this.include.map((x) => x.toString()),
+            exclude: this.exclude.map((x) => x.toString()),
             autoLayout: this.autoLayout?.toSnapshot(),
             animation: this.animation,
             title: this.title,

@@ -20,13 +20,36 @@ import {
     ElementType,
     RelationshipType,
     ViewType,
+    IModel,
+    IViews,
 } from "../interfaces";
 
 export function isWorkspace(workspace: any): workspace is IWorkspace {
-    throw new Error("Not implemented");
+    return isModel(workspace.model) && isViews(workspace.views);
+}
+export function isModel(model: any): model is IModel {
+    return (
+        model.groups.every((element: any) => isGroup(element)) &&
+        model.people.every((element: any) => isPerson(element)) &&
+        model.softwareSystems.every((element: any) =>
+            isSoftwareSystem(element)
+        ) &&
+        model.deploymentEnvironments.every((element: any) =>
+            isDeploymentEnvironment(element)
+        ) &&
+        model.relationships.every((element: any) => isRelationship(element))
+    );
+}
+export function isViews(views: any): views is IViews {
+    return (
+        views.systemContexts.every((view: any) => isSystemContextView(view)) &&
+        views.containers.every((view: any) => isContainerView(view)) &&
+        views.components.every((view: any) => isComponentView(view)) &&
+        views.deployments.every((view: any) => isDeploymentView(view))
+    );
 }
 export function isGroup(group: any): group is IGroup {
-    throw new Error("Not implemented");
+    return group.type === ElementType.Group;
 }
 export function isPerson(person: any): person is IPerson {
     return person.type === ElementType.Person;
@@ -98,7 +121,7 @@ export function isDeploymentView(
     return deploymentView.type === ViewType.Deployment;
 }
 export function isStyles(styles: any): styles is IStyles {
-    throw new Error("Not implemented");
+    return (
+        Array.isArray(styles.elements) && Array.isArray(styles.relationships)
+    );
 }
-// export function isElementStyle (elementStyle: any): elementStyle is IElementStyle { throw new Error("Not implemented"); }
-// export function isRelationshipStyle (relationshipStyle: any): relationshipStyle is IRelationshipStyle { throw new Error("Not implemented"); }

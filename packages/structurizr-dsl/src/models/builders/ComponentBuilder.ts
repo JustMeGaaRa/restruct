@@ -14,7 +14,10 @@ export class ComponentBuilder implements IBuilder<IComponent> {
     }
 
     tags(...tags: string[]): this {
-        this.component.tags = tags.map((tag) => ({ name: tag }));
+        this.component = new Component({
+            ...this.component,
+            tags: tags.map((tag) => ({ name: tag })),
+        }).toSnapshot();
         return this;
     }
 

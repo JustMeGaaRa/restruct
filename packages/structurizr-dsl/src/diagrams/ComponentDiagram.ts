@@ -11,20 +11,31 @@ import {
 import { IBuilder, IDiagramVisitor } from "../shared";
 import { ComponentViewStrategy } from "./builders";
 
-export class ComponentDiagramBuilder implements IBuilder<IComponentDiagram> {
+export class ComponentDiagram
+    implements IComponentDiagram, IBuilder<IComponentDiagram>
+{
     constructor(
         private readonly workspace: IWorkspace,
         private readonly componentView: IComponentView
-    ) {}
+    ) {
+        this.scope = {} as any;
+        this.primaryElements = [];
+        this.supportingElements = [];
+        this.relationships = [];
+    }
+
+    public scope: IContainer;
+    public primaryElements: IComponent[];
+    public supportingElements: (IContainer | ISoftwareSystem | IPerson)[];
+    public relationships: IRelationship[];
 
     build(): IComponentDiagram {
         const strategy = new ComponentViewStrategy(
             this.workspace.model,
             this.componentView
         );
-        const visitor = new ComponentDiagramVisitor();
-        strategy.accept(visitor);
-        return visitor.diagram;
+        strategy.accept(new ComponentDiagramVisitor(this));
+        return this;
     }
 }
 
@@ -36,14 +47,7 @@ class ComponentDiagramVisitor
             ISoftwareSystem | IContainer | IPerson
         >
 {
-    constructor(
-        public diagram: IComponentDiagram = {
-            scope: {} as any,
-            primaryElements: [],
-            supportingElements: [],
-            relationships: [],
-        }
-    ) {}
+    constructor(public diagram: IComponentDiagram) {}
 
     visitorScopeElement(scope: IContainer): void {
         this.diagram.scope = scope;

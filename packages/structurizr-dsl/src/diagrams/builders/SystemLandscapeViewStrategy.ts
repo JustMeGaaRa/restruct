@@ -30,7 +30,7 @@ export class SystemLandscapeViewStrategy
             softwareSystems: Array<ISoftwareSystem>
         ) => {
             softwareSystems.forEach((softwareSystem) => {
-                visitedElements.add(softwareSystem.identifier);
+                visitedElements.add(softwareSystem.identifier.toString());
                 visitor.visitPrimaryElement(softwareSystem);
             });
         };
@@ -49,7 +49,7 @@ export class SystemLandscapeViewStrategy
             relationships
                 .filter((relationship) =>
                     relationshipExistsForElementsInView(
-                        Array.from(visitedElements),
+                        visitedElements,
                         relationship
                     )
                 )

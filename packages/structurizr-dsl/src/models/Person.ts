@@ -10,7 +10,7 @@ type PersonParams = Required<Pick<IPerson, "name">> &
 export class Person implements ISupportSnapshot<IPerson> {
     constructor(params: PersonParams) {
         this.type = ElementType.Person;
-        this.identifier = params.identifier ?? crypto.randomUUID();
+        this.identifier = Identifier.createOrDefault(params.identifier);
         this.name = params.name;
         this.description = params.description;
         this.url = params.url;
@@ -46,7 +46,7 @@ export class Person implements ISupportSnapshot<IPerson> {
     public toSnapshot(): IPerson {
         return {
             type: this.type,
-            identifier: this.identifier,
+            identifier: this.identifier.toString(),
             name: this.name,
             tags: this.tags,
             description: this.description,

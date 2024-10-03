@@ -16,8 +16,6 @@ export class DeploymentNodeBuilder implements IBuilder<IDeploymentNode> {
 
     constructor(name: string) {
         this.node = new DeploymentNode({
-            // TODO: generate an identifier
-            identifier: "",
             name,
             deploymentNodes: [],
             infrastructureNodes: [],
@@ -39,8 +37,6 @@ export class DeploymentNodeBuilder implements IBuilder<IDeploymentNode> {
 
     infrastructureNode(name: string, description: string): IInfrastructureNode {
         const infrastructureNode = new InfrastructureNode({
-            // TODO: generate an identifier
-            identifier: "",
             name,
             description,
         }).toSnapshot();
@@ -52,9 +48,7 @@ export class DeploymentNodeBuilder implements IBuilder<IDeploymentNode> {
         softwareSystemIdentifier: Identifier
     ): ISoftwareSystemInstance {
         const softwareSystemInstance = new SoftwareSystemInstance({
-            // TODO: generate an identifier
-            identifier: "",
-            softwareSystemIdentifier,
+            softwareSystemIdentifier: softwareSystemIdentifier.identifier,
         }).toSnapshot();
         this.node.softwareSystemInstances.push(softwareSystemInstance);
         return softwareSystemInstance;
@@ -62,9 +56,7 @@ export class DeploymentNodeBuilder implements IBuilder<IDeploymentNode> {
 
     containerInstance(containerIdentifier: Identifier): IContainerInstance {
         const containerInstance = new ContainerInstance({
-            // TODO: generate an identifier
-            identifier: "",
-            containerIdentifier,
+            containerIdentifier: containerIdentifier.identifier,
         }).toSnapshot();
         this.node.containerInstances.push(containerInstance);
         return containerInstance;

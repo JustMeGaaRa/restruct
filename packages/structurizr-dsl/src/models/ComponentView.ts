@@ -10,11 +10,11 @@ type ComponentViewProps = Required<
 export class ComponentView implements ISupportSnapshot<IComponentView> {
     constructor(values: ComponentViewProps) {
         this.type = ViewType.Component;
-        this.containerIdentifier = values.containerIdentifier;
+        this.containerIdentifier = Identifier.parse(values.containerIdentifier);
         this.key = values.key;
         this.description = values.description;
-        this.include = values.include ?? [];
-        this.exclude = values.exclude ?? [];
+        this.include = values.include?.map((x) => Identifier.parse(x)) ?? [];
+        this.exclude = values.exclude?.map((x) => Identifier.parse(x)) ?? [];
         this.autoLayout = values.autoLayout
             ? new AutoLayout(values.autoLayout)
             : new AutoLayout();
@@ -24,7 +24,7 @@ export class ComponentView implements ISupportSnapshot<IComponentView> {
     }
 
     public type: ViewType.Component;
-    public containerIdentifier: string;
+    public containerIdentifier: Identifier;
     public key?: string;
     public include: Array<Identifier | All>;
     public exclude: Array<Identifier>;
@@ -37,9 +37,9 @@ export class ComponentView implements ISupportSnapshot<IComponentView> {
     public toSnapshot(): IComponentView {
         return {
             type: this.type,
-            containerIdentifier: this.containerIdentifier,
+            containerIdentifier: this.containerIdentifier.toString(),
             key: this.key,
-            include: this.include,
+            include: this.include.map((x) => x.toString()),
             autoLayout: this.autoLayout?.toSnapshot(),
             animation: this.animation,
             title: this.title,

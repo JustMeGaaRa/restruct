@@ -134,7 +134,7 @@ export class ContainerViewStrategy
             )
             .filter((relationship) =>
                 relationshipExistsForElementsInView(
-                    Array.from(visitedElements),
+                    visitedElements,
                     relationship
                 )
             )

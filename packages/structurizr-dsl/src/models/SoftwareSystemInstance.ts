@@ -19,8 +19,10 @@ export class SoftwareSystemInstance
 {
     constructor(params: SoftwareSystemInstanceParams) {
         this.type = ElementType.SoftwareSystemInstance;
-        this.identifier = params.identifier ?? crypto.randomUUID();
-        this.softwareSystemIdentifier = params.softwareSystemIdentifier;
+        this.identifier = Identifier.createOrDefault(params.identifier);
+        this.softwareSystemIdentifier = Identifier.parse(
+            params.softwareSystemIdentifier
+        );
         this.deploymentGroups = params.deploymentGroups ?? [];
         this.relationships = params.relationships
             ? params.relationships.map((r) => new Relationship(r))
@@ -59,8 +61,8 @@ export class SoftwareSystemInstance
     public toSnapshot(): ISoftwareSystemInstance {
         return {
             type: this.type,
-            identifier: this.identifier,
-            softwareSystemIdentifier: this.softwareSystemIdentifier,
+            identifier: this.identifier.toString(),
+            softwareSystemIdentifier: this.softwareSystemIdentifier.toString(),
             deploymentGroups: this.deploymentGroups,
             relationships: this.relationships?.map((r) => r.toSnapshot()),
             description: this.description,

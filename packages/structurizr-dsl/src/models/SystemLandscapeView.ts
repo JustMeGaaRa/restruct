@@ -12,8 +12,8 @@ export class SystemLandscapeView
         this.key = values.key;
         this.title = values.title;
         this.description = values.description;
-        this.include = values.include ?? [];
-        this.exclude = values.exclude ?? [];
+        this.include = values.include?.map((x) => Identifier.parse(x)) ?? [];
+        this.exclude = values.exclude?.map((x) => Identifier.parse(x)) ?? [];
         this.autoLayout = values.autoLayout
             ? new AutoLayout(values.autoLayout)
             : new AutoLayout();
@@ -36,7 +36,7 @@ export class SystemLandscapeView
             type: this.type,
             key: this.key,
             description: this.description,
-            include: this.include,
+            include: this.include.map((x) => x.toString()),
             autoLayout: this.autoLayout?.toSnapshot(),
             animation: this.animation,
             title: this.title,

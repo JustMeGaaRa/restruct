@@ -1,4 +1,5 @@
 import {
+    DeploymentGroup,
     ElementType,
     IContainerInstance,
     Identifier,
@@ -17,8 +18,8 @@ type ContainerInstanceParams = Required<
 export class ContainerInstance implements ISupportSnapshot<IContainerInstance> {
     constructor(params: ContainerInstanceParams) {
         this.type = ElementType.ContainerInstance;
-        this.identifier = params.identifier ?? crypto.randomUUID();
-        this.containerIdentifier = params.containerIdentifier;
+        this.identifier = Identifier.createOrDefault(params.identifier);
+        this.containerIdentifier = Identifier.parse(params.containerIdentifier);
         this.deploymentGroups = params.deploymentGroups ?? [];
         this.relationships = params.relationships
             ? params.relationships.map((r) => new Relationship(r))
@@ -45,7 +46,7 @@ export class ContainerInstance implements ISupportSnapshot<IContainerInstance> {
     public readonly type: ElementType.ContainerInstance;
     public readonly identifier: Identifier;
     public readonly containerIdentifier: Identifier;
-    public readonly deploymentGroups?: Identifier[];
+    public readonly deploymentGroups?: DeploymentGroup[];
     public readonly relationships?: Relationship[];
     public readonly description?: string;
     public readonly tags?: Tag[];
@@ -57,8 +58,8 @@ export class ContainerInstance implements ISupportSnapshot<IContainerInstance> {
     public toSnapshot(): IContainerInstance {
         return {
             type: this.type,
-            identifier: this.identifier,
-            containerIdentifier: this.containerIdentifier,
+            identifier: this.identifier.toString(),
+            containerIdentifier: this.containerIdentifier.toString(),
             deploymentGroups: this.deploymentGroups,
             relationships: this.relationships?.map((r) => r.toSnapshot()) ?? [],
             description: this.description,

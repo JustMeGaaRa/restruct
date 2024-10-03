@@ -1,5 +1,5 @@
 import {
-    ContainerDiagramBuilder,
+    ContainerDiagram as Diagram,
     IContainerDiagram,
     IContainerView,
     isPerson,
@@ -34,7 +34,7 @@ export const ContainerDiagram: FC<PropsWithChildren<{
             if (workspace) {
                 const containerView = workspace.views.containers.find(x => x.key === value.key)
                     ?? createDefaultContainerView(value.softwareSystemIdentifier);
-                const builder = new ContainerDiagramBuilder(workspace, containerView);
+                const builder = new Diagram(workspace, containerView);
                 setDiagram(builder.build());
             }
         }, [workspace, value.key, value.softwareSystemIdentifier, onZoomInClick, onZoomOutClick]);
@@ -65,11 +65,8 @@ export const ContainerDiagram: FC<PropsWithChildren<{
                 ))}
                 {diagram?.relationships.map((relationship) => (
                     <Relationship
-                        key={`${relationship.sourceIdentifier}_${relationship.targetIdentifier}`}
-                        value={{
-                            identifier: `${relationship.sourceIdentifier}_${relationship.targetIdentifier}`,
-                            ...relationship
-                        }}
+                        key={relationship.identifier}
+                        value={relationship}
                     />
                 ))}
                 {children}

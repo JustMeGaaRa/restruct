@@ -1,7 +1,8 @@
-import { IComponent, IContainer } from "../../interfaces";
+import { IComponent, IContainer, IGroup } from "../../interfaces";
 import { BuilderCallback, IBuilder } from "../../shared";
 import { Container } from "../Container";
 import { ComponentBuilder } from "./ComponentBuilder";
+import { GroupBuilder } from "./GroupBuilder";
 
 export class ContainerBuilder implements IBuilder<IContainer> {
     private container: IContainer;
@@ -13,6 +14,22 @@ export class ContainerBuilder implements IBuilder<IContainer> {
             groups: [],
             components: [],
         }).toSnapshot();
+    }
+
+    tags(...tags: string[]): this {
+        this.container = new Container({
+            ...this.container,
+            tags: tags.map((tag) => ({ name: tag })),
+        }).toSnapshot();
+        return this;
+    }
+
+    group(name: string, callback: BuilderCallback<GroupBuilder>): IGroup {
+        const groupBuilder = new GroupBuilder(name);
+        callback(groupBuilder);
+        const group = groupBuilder.build();
+        this.container.groups.push(group);
+        return group;
     }
 
     component(

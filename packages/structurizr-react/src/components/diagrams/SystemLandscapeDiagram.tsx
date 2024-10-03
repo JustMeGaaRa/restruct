@@ -1,7 +1,7 @@
 import {
     ISystemLandscapeDiagram,
     ISystemLandscapeView,
-    SystemLandscapeDiagramBuilder,
+    SystemLandscapeDiagram as Diagram,
     isPerson,
     isSoftwareSystem
 } from "@structurizr/dsl";
@@ -33,7 +33,7 @@ export const SystemLandscapeDiagram: FC<PropsWithChildren<{
             if (workspace) {
                 const systemLandscapeView = [workspace.views.systemLandscape].find(x => x?.key === value?.key)
                     ?? createDefaultSystemLandscapeView();
-                const builder = new SystemLandscapeDiagramBuilder(workspace, systemLandscapeView);
+                const builder = new Diagram(workspace, systemLandscapeView);
                 setDiagram(builder.build());
             }
         }, [workspace, onZoomInClick, onZoomOutClick]);
@@ -48,11 +48,8 @@ export const SystemLandscapeDiagram: FC<PropsWithChildren<{
                 ))}
                 {diagram?.relationships.map((relationship) => (
                     <Relationship
-                        key={`${relationship.sourceIdentifier}_${relationship.targetIdentifier}`}
-                        value={{
-                            identifier: `${relationship.sourceIdentifier}_${relationship.targetIdentifier}`,
-                            ...relationship
-                        }}
+                        key={relationship.identifier}
+                        value={relationship}
                     />
                 ))}
                 {children}

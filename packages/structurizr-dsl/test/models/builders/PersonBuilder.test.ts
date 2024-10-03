@@ -26,7 +26,7 @@ describe("Person Builder", () => {
         expect(person.tags.some((x) => x.name === "Character")).toBe(true);
     });
 
-    test("should add tags except default one", () => {
+    test("should add tags and skip default duplicates", () => {
         const builder = new PersonBuilder("Alice", "A person.");
         const person = builder.tags("Person", "Character").build();
 

@@ -1,4 +1,3 @@
-import { Identifier } from "./Identifier";
 import { ElementType } from "./ElementType";
 import { Properties } from "./Properties";
 import { Url } from "./Url";
@@ -8,7 +7,7 @@ import { IRelationship } from "./IRelationship";
 
 export interface IComponent {
     type: ElementType.Component;
-    identifier: Identifier;
+    identifier: string;
     name: string;
     technology: string[];
     description?: string;

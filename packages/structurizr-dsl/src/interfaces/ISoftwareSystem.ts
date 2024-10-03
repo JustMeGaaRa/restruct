@@ -4,13 +4,12 @@ import { IGroup } from "./IGroup";
 import { Properties } from "./Properties";
 import { IRelationship } from "./IRelationship";
 import { ITag } from "./ITag";
-import { Identifier } from "./Identifier";
 import { Perspectives } from "./Perspectives";
 import { Url } from "./Url";
 
 export interface ISoftwareSystem {
     type: ElementType.SoftwareSystem;
-    identifier: Identifier;
+    identifier: string;
     name: string;
     groups: IGroup[];
     containers: IContainer[];

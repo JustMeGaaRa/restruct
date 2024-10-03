@@ -9,36 +9,38 @@ import {
 import { IBuilder, IDiagramVisitor } from "../shared";
 import { SystemLandscapeViewStrategy } from "./builders";
 
-export class SystemLandscapeDiagramBuilder
-    implements IBuilder<ISystemLandscapeDiagram>
+export class SystemLandscapeDiagram
+    implements ISystemLandscapeDiagram, IBuilder<ISystemLandscapeDiagram>
 {
     constructor(
         private readonly workspace: IWorkspace,
         private readonly systemLandscapeView: ISystemLandscapeView
-    ) {}
+    ) {
+        this.scope = undefined;
+        this.primaryElements = [];
+        this.supportingElements = [];
+        this.relationships = [];
+    }
+
+    public scope: unknown;
+    public primaryElements: (ISoftwareSystem | IPerson)[];
+    public supportingElements: unknown[];
+    public relationships: IRelationship[];
 
     build(): ISystemLandscapeDiagram {
         const strategy = new SystemLandscapeViewStrategy(
             this.workspace.model,
             this.systemLandscapeView
         );
-        const visitor = new SystemLandscapeDiagramVisitor();
-        strategy.accept(visitor);
-        return visitor.diagram;
+        strategy.accept(new SystemLandscapeDiagramVisitor(this));
+        return this;
     }
 }
 
 export class SystemLandscapeDiagramVisitor
     implements IDiagramVisitor<unknown, ISoftwareSystem | IPerson, unknown>
 {
-    constructor(
-        public diagram: ISystemLandscapeDiagram = {
-            scope: undefined,
-            primaryElements: [],
-            supportingElements: [],
-            relationships: [],
-        }
-    ) {}
+    constructor(private diagram: ISystemLandscapeDiagram) {}
 
     visitorScopeElement(scope: unknown): void {
         this.diagram.scope = scope;

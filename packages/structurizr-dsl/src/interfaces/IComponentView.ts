@@ -1,15 +1,15 @@
 import { ViewType } from "./ViewType";
-import { All, Identifier } from "./Identifier";
+import { All } from "./Identifier";
 import { Properties } from "./Properties";
 import { IAutoLayout } from "./IAutoLayout";
 import { IAnimation } from "./IAnimation";
 
 export interface IComponentView {
     type: ViewType.Component;
-    containerIdentifier: Identifier;
+    containerIdentifier: string;
     key?: string;
-    include?: Array<Identifier | All>;
-    exclude?: Array<Identifier>;
+    include?: Array<string | All>;
+    exclude?: Array<string>;
     autoLayout?: IAutoLayout;
     animation?: IAnimation;
     title?: string;

@@ -16,7 +16,7 @@ export class DeploymentEnvironment
     implements ISupportSnapshot<IDeploymentEnvironment>
 {
     constructor(params: DeploymentEnvironmentParams) {
-        this.identifier = params.identifier ?? crypto.randomUUID();
+        this.identifier = Identifier.createOrDefault(params.identifier);
         this.name = params.name;
         this.deploymentGroups = params.deploymentGroups ?? [];
         this.deploymentNodes = params.deploymentNodes
@@ -35,7 +35,7 @@ export class DeploymentEnvironment
 
     public toSnapshot(): IDeploymentEnvironment {
         return {
-            identifier: this.identifier,
+            identifier: this.identifier.toString(),
             name: this.name,
             deploymentGroups: this.deploymentGroups,
             deploymentNodes: this.deploymentNodes.map((n) => n.toSnapshot()),

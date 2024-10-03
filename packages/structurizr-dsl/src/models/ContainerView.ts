@@ -10,11 +10,13 @@ type ContainerViewProps = Required<
 export class ContainerView implements ISupportSnapshot<IContainerView> {
     constructor(values: ContainerViewProps) {
         this.type = ViewType.Container;
-        this.softwareSystemIdentifier = values.softwareSystemIdentifier;
+        this.softwareSystemIdentifier = Identifier.parse(
+            values.softwareSystemIdentifier
+        );
         this.key = values.key;
         this.description = values.description;
-        this.include = values.include ?? [];
-        this.exclude = values.exclude ?? [];
+        this.include = values.include?.map((i) => Identifier.parse(i)) ?? [];
+        this.exclude = values.exclude?.map((i) => Identifier.parse(i)) ?? [];
         this.autoLayout = values.autoLayout
             ? new AutoLayout(values.autoLayout)
             : new AutoLayout();
@@ -24,7 +26,7 @@ export class ContainerView implements ISupportSnapshot<IContainerView> {
     }
 
     public type: ViewType.Container;
-    public softwareSystemIdentifier: string;
+    public softwareSystemIdentifier: Identifier;
     public key?: string;
     public include: Array<Identifier | All>;
     public exclude: Array<Identifier>;
@@ -37,9 +39,9 @@ export class ContainerView implements ISupportSnapshot<IContainerView> {
     public toSnapshot(): IContainerView {
         return {
             type: this.type,
-            softwareSystemIdentifier: this.softwareSystemIdentifier,
+            softwareSystemIdentifier: this.softwareSystemIdentifier.toString(),
             key: this.key,
-            include: this.include,
+            include: this.include.map((i) => i.toString()),
             autoLayout: this.autoLayout?.toSnapshot(),
             animation: this.animation,
             title: this.title,

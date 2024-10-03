@@ -14,7 +14,7 @@ type DeploymentNodeValues = Required<Pick<IDeploymentNode, "name">> &
 export class DeploymentNode implements ISupportSnapshot<IDeploymentNode> {
     constructor(params: DeploymentNodeValues) {
         this.type = ElementType.DeploymentNode;
-        this.identifier = params.identifier ?? crypto.randomUUID();
+        this.identifier = Identifier.createOrDefault(params.identifier);
         this.name = params.name;
         this.deploymentNodes = params.deploymentNodes
             ? params.deploymentNodes.map((d) => new DeploymentNode(d))
@@ -78,7 +78,7 @@ export class DeploymentNode implements ISupportSnapshot<IDeploymentNode> {
     public toSnapshot(): IDeploymentNode {
         return {
             type: this.type,
-            identifier: this.identifier,
+            identifier: this.identifier.toString(),
             name: this.name,
             deploymentNodes: this.deploymentNodes.map((d) => d.toSnapshot()),
             infrastructureNodes: this.infrastructureNodes.map((i) =>

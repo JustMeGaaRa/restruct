@@ -42,7 +42,7 @@ describe("Software System Builder", () => {
         expect(softwareSystem.tags.some((x) => x.name === "SaaS")).toBe(true);
     });
 
-    test("should add tags except default one", () => {
+    test("should add tags and skip default duplicates", () => {
         const builder = new SoftwareSystemBuilder(
             "Software System",
             "A software system."

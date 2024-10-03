@@ -5,11 +5,15 @@ This is a package for building Structurizr workspaces and C4 diagrams. It provid
 Features:
 
 -   [x] Worskapce structure support
-    -   Imperative style
-    -   Fluent style
--   [x] C4 diagrams
-    -   System Landscape ([see this example](./docs/examples/bigbankplc/README.md))
-    -   System Context
-    -   Container
-    -   Component
-    -   Deployment ([see this example](./docs/examples/pet-clinic/README.md))
+    -   [x] Imperative style
+    -   [x] Fluent style
+-   [x] C4 diagrams support
+    -   Diagram as a code coding styles:
+        -   [ ] Imperative style support
+        -   [ ] Fluent style support
+    -   [x] Diagram types:
+        -   [x] System Landscape ([see this example](./docs/examples/bigbankplc/README.md))
+        -   [x] System Context
+        -   [x] Container
+        -   [x] Component
+        -   [ ] Deployment ([see this example](./docs/examples/pet-clinic/README.md))

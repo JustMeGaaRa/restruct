@@ -1,5 +1,5 @@
 import {
-    ComponentDiagramBuilder,
+    ComponentDiagram as Diagram,
     IComponentDiagram,
     IComponentView,
     isContainer,
@@ -36,7 +36,7 @@ export const ComponentDiagram: FC<PropsWithChildren<{
             if (workspace) {
                 const componentView = workspace.views.components.find(x => x.key === value.key)
                     ?? createDefaultComponentView(value.containerIdentifier);
-                const builder = new ComponentDiagramBuilder(workspace, componentView);
+                const builder = new Diagram(workspace, componentView);
                 setDiagram(builder.build());
             }
         }, [workspace, value.key, value.containerIdentifier, onZoomInClick, onZoomOutClick]);
@@ -79,11 +79,8 @@ export const ComponentDiagram: FC<PropsWithChildren<{
                 ))}
                 {diagram?.relationships.map((relationship) => (
                     <Relationship
-                        key={`${relationship.sourceIdentifier}_${relationship.targetIdentifier}`}
-                        value={{
-                            identifier: `${relationship.sourceIdentifier}_${relationship.targetIdentifier}`,
-                            ...relationship
-                        }}
+                        key={relationship.identifier}
+                        value={relationship}
                     />
                 ))}
                 {children}

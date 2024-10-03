@@ -1,4 +1,3 @@
-import { Identifier } from "./Identifier";
 import { ElementType } from "./ElementType";
 import { Properties } from "./Properties";
 import { Url } from "./Url";
@@ -10,7 +9,7 @@ import { IComponent } from "./IComponent";
 
 export interface IContainer {
     type: ElementType.Container;
-    identifier: Identifier;
+    identifier: string;
     name: string;
     groups: IGroup[];
     components: IComponent[];

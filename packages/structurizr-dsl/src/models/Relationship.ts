@@ -12,14 +12,20 @@ type RelationshipParams = Required<
     Pick<IRelationship, "sourceIdentifier" | "targetIdentifier">
 > &
     Partial<
-        Omit<IRelationship, "sourceIdentifier" | "targetIdentifier" | "type">
+        Omit<
+            IRelationship,
+            "type" | "identifier" | "sourceIdentifier" | "targetIdentifier"
+        >
     >;
 
 export class Relationship implements ISupportSnapshot<IRelationship> {
     constructor(params: RelationshipParams) {
         this.type = RelationshipType.Relationship;
-        this.sourceIdentifier = params.sourceIdentifier;
-        this.targetIdentifier = params.targetIdentifier;
+        this.identifier = Identifier.createOrDefault(
+            `${params.sourceIdentifier}-${params.targetIdentifier}`
+        );
+        this.sourceIdentifier = Identifier.parse(params.sourceIdentifier);
+        this.targetIdentifier = Identifier.parse(params.targetIdentifier);
         this.description = params.description;
         this.technology = params.technology
             ? params.technology.map((x) => new Technology(x))
@@ -34,6 +40,7 @@ export class Relationship implements ISupportSnapshot<IRelationship> {
     }
 
     public readonly type: RelationshipType.Relationship;
+    public readonly identifier: Identifier;
     public readonly sourceIdentifier: Identifier;
     public readonly targetIdentifier: Identifier;
     public readonly description?: string;
@@ -46,8 +53,9 @@ export class Relationship implements ISupportSnapshot<IRelationship> {
     public toSnapshot(): IRelationship {
         return {
             type: this.type,
-            sourceIdentifier: this.sourceIdentifier,
-            targetIdentifier: this.targetIdentifier,
+            identifier: this.identifier.toString(),
+            sourceIdentifier: this.sourceIdentifier.toString(),
+            targetIdentifier: this.targetIdentifier.toString(),
             description: this.description,
             technology: this.technology.map((x) => x.name),
             tags: this.tags,

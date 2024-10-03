@@ -13,7 +13,7 @@ type ContainerParams = Required<Pick<IContainer, "name">> &
 export class Container implements ISupportSnapshot<IContainer> {
     constructor(params: ContainerParams) {
         this.type = ElementType.Container;
-        this.identifier = params.identifier ?? crypto.randomUUID();
+        this.identifier = Identifier.createOrDefault(params.identifier);
         this.name = params.name;
         this.groups = params.groups
             ? params.groups.map((g) => new Group(g))
@@ -61,7 +61,7 @@ export class Container implements ISupportSnapshot<IContainer> {
     public toSnapshot(): IContainer {
         return {
             type: this.type,
-            identifier: this.identifier,
+            identifier: this.identifier.toString(),
             name: this.name,
             groups: this.groups.map((g) => g.toSnapshot()),
             components: this.components.map((c) => c.toSnapshot()),

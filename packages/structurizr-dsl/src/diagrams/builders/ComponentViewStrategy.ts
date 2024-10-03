@@ -162,7 +162,7 @@ export class ComponentViewStrategy
             )
             .filter((relationship) =>
                 relationshipExistsForElementsInView(
-                    Array.from(visitedElements),
+                    visitedElements,
                     relationship
                 )
             )

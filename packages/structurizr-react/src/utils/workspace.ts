@@ -3,7 +3,6 @@ import {
     IRelationship,
     ISoftwareSystem,
     IWorkspace,
-    Identifier,
     IGroup,
     IPerson,
     IComponent,
@@ -95,8 +94,8 @@ export const createDefaultInfrastructureNode = (): IInfrastructureNode => {
 };
 
 export const createRelationship = (
-    sourceIdentifier: Identifier,
-    targetIdentifier: Identifier
+    sourceIdentifier: string,
+    targetIdentifier: string
 ): IRelationship => {
     return new Relationship({
         sourceIdentifier,
@@ -119,7 +118,7 @@ export const createDefaultSystemLandscapeView = (): ISystemLandscapeView => {
 };
 
 export const createDefaultSystemContextView = (
-    softwareSystemIdentifier: Identifier
+    softwareSystemIdentifier: string
 ): ISystemContextView => {
     const uniqueId = new String(v4()).substring(0, 8);
     return new SystemContextView({
@@ -135,7 +134,7 @@ export const createDefaultSystemContextView = (
 };
 
 export const createDefaultContainerView = (
-    softwareSystemIdentifier: Identifier
+    softwareSystemIdentifier: string
 ): IContainerView => {
     const uniqueId = new String(v4()).substring(0, 8);
     return new ContainerView({
@@ -151,7 +150,7 @@ export const createDefaultContainerView = (
 };
 
 export const createDefaultComponentView = (
-    containerIdentifier: Identifier
+    containerIdentifier: string
 ): IComponentView => {
     const uniqueId = new String(v4()).substring(0, 8);
     return new ComponentView({

@@ -1,6 +1,5 @@
 import {
     IContainer,
-    IElement,
     IModel,
     IRelationship,
     ISoftwareSystem,
@@ -9,8 +8,8 @@ import {
     View,
     ITag,
     ViewType,
-    Identifier,
     RelationshipType,
+    IComponent,
 } from "../interfaces";
 import { Style } from "../models";
 
@@ -89,7 +88,7 @@ export const findViewByKey = (
 export const findViewForElement = (
     workspace: IWorkspace,
     viewType: ViewType,
-    elementIdentifier?: Identifier
+    elementIdentifier?: string
 ): View | undefined => {
     return (
         [workspace.views.systemLandscape].find((x) => x?.type === viewType) ??
@@ -141,8 +140,8 @@ export const findAnyExisting = (workspace: IWorkspace): View | undefined => {
 
 export const findElement = (
     model: IModel,
-    identifier: Identifier
-): IElement | undefined => {
+    identifier: string
+): ISoftwareSystem | IContainer | IComponent | undefined => {
     const softwareSystems = model.groups
         .flatMap((group) => group.softwareSystems)
         .concat(model.softwareSystems);
@@ -178,8 +177,8 @@ export const findElement = (
 
 export const findElementPath = (
     model: IModel,
-    identifier: Identifier
-): Array<IElement> => {
+    identifier: string
+): Array<ISoftwareSystem | IContainer | IComponent> => {
     const softwareSystems = model.groups
         .flatMap((group) => group.softwareSystems)
         .concat(model.softwareSystems);
@@ -213,13 +212,13 @@ export const findElementPath = (
     return [];
 };
 
-export const findSoftwareSystem = (model: IModel, identifier: Identifier) => {
+export const findSoftwareSystem = (model: IModel, identifier: string) => {
     return model.softwareSystems
         .concat(model.groups.flatMap((x) => x.softwareSystems))
         .find((x) => x.identifier === identifier);
 };
 
-export const findContainer = (model: IModel, identifier: Identifier) => {
+export const findContainer = (model: IModel, identifier: string) => {
     return model.softwareSystems
         .flatMap((x) => x.containers)
         .concat(
@@ -232,7 +231,7 @@ export const findContainer = (model: IModel, identifier: Identifier) => {
 
 export const findContainerParent = (
     model: IModel,
-    containerId: Identifier
+    containerId: string
 ): ISoftwareSystem | undefined => {
     return model.softwareSystems
         .concat(model.groups.flatMap((x) => x.softwareSystems))
@@ -241,7 +240,7 @@ export const findContainerParent = (
 
 export const findComponentParent = (
     model: IModel,
-    componentId: Identifier
+    componentId: string
 ): IContainer | undefined => {
     const groupContainers = model.groups
         .flatMap((x) => x.softwareSystems)
@@ -256,8 +255,8 @@ export const findComponentParent = (
 
 export const relationshipExistsOverall = (
     relationships: IRelationship[],
-    sourceIdentifier: Identifier,
-    targetIdentifier: Identifier
+    sourceIdentifier: string,
+    targetIdentifier: string
 ) => {
     return relationships.some(
         (x) =>
@@ -269,18 +268,18 @@ export const relationshipExistsOverall = (
 };
 
 export const relationshipExistsForElementsInView = (
-    elementsInView: Identifier[],
+    elementsInView: Set<string>,
     relationship: IRelationship
 ) => {
     return (
-        elementsInView.some((x) => x === relationship.sourceIdentifier) &&
-        elementsInView.some((x) => x === relationship.targetIdentifier)
+        elementsInView.has(relationship.sourceIdentifier) &&
+        elementsInView.has(relationship.targetIdentifier)
     );
 };
 
 export const elementIncludedInView = (
     view: View,
-    elementIdentifier: Identifier
+    elementIdentifier: string
 ) => {
     switch (view.type) {
         case ViewType.SystemLandscape:
@@ -305,8 +304,8 @@ export const getRelationships = (model: IModel, implied: boolean) => {
     // TODO: include implied relationships from element scope with this template 'someId -> this'
 
     function addRelationship(
-        source: Identifier,
-        target: Identifier,
+        source: string,
+        target: string,
         description?: string
     ) {
         if (
@@ -318,6 +317,7 @@ export const getRelationships = (model: IModel, implied: boolean) => {
         ) {
             relationships.push({
                 type: RelationshipType.Relationship,
+                identifier: `${source}-${target}`,
                 sourceIdentifier: source,
                 targetIdentifier: target,
                 description,

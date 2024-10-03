@@ -10,8 +10,8 @@ This is a monorepo project setup using Turbo.
 
 -   [x] monorepo setup (turborepo)
 -   [x] code formatter setup (prettier)
--   [ ] initial app setup (vite for web view and vs code extension as host)
--   [ ] ui library integration (nextui or shadcn)
+-   [x] initial app setup (vite for web view and vs code extension as host)
+-   [x] ui library integration (nextui or shadcn)
 
 ### Apps and Packages
 

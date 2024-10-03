@@ -1,7 +1,7 @@
 import {
     ISystemContextDiagram,
     ISystemContextView,
-    SystemContextDiagramBuilder,
+    SystemContextDiagram as Diagram,
     isPerson,
     isSoftwareSystem
 } from "@structurizr/dsl";
@@ -33,7 +33,7 @@ export const SystemContextDiagram: FC<PropsWithChildren<{
             if (workspace) {
                 const systemContextView = workspace.views.systemContexts.find(x => x.key === value.key)
                     ?? createDefaultSystemContextView(value.softwareSystemIdentifier);
-                const builder = new SystemContextDiagramBuilder(workspace, systemContextView);
+                const builder = new Diagram(workspace, systemContextView);
                 setDiagram(builder.build());
             }
         }, [workspace, value.key, value.softwareSystemIdentifier, onZoomInClick, onZoomOutClick]);
@@ -51,11 +51,8 @@ export const SystemContextDiagram: FC<PropsWithChildren<{
                 ))}
                 {diagram?.relationships.map((relationship) => (
                     <Relationship
-                        key={`${relationship.sourceIdentifier}_${relationship.targetIdentifier}`}
-                        value={{
-                            identifier: `${relationship.sourceIdentifier}_${relationship.targetIdentifier}`,
-                            ...relationship
-                        }}
+                        key={relationship.identifier}
+                        value={relationship}
                     />
                 ))}
                 {children}

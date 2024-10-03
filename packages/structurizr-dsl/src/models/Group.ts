@@ -12,7 +12,7 @@ type GroupParams = Required<Pick<IGroup, "name">> &
 export class Group implements ISupportSnapshot<IGroup> {
     constructor(params: GroupParams) {
         this.type = ElementType.Group;
-        this.identifier = params.identifier ?? crypto.randomUUID();
+        this.identifier = Identifier.createOrDefault(params.identifier);
         this.name = params.name;
         this.people = params.people
             ? params.people.map((p) => new Person(p))
@@ -48,7 +48,7 @@ export class Group implements ISupportSnapshot<IGroup> {
     public toSnapshot(): IGroup {
         return {
             type: this.type,
-            identifier: this.identifier,
+            identifier: this.identifier.toString(),
             name: this.name,
             tags: this.tags,
             people: this.people.map((p) => p.toSnapshot()),

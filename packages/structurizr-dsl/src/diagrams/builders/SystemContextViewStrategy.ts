@@ -76,7 +76,10 @@ export class SystemContextViewStrategy
                             person.identifier
                         ) || elementIncludedInView(this.view, person.identifier)
                 )
-                .filter((person) => !visitedElements.has(person.identifier))
+                .filter(
+                    (person) =>
+                        !visitedElements.has(person.identifier.toString())
+                )
                 .forEach((person) => {
                     visitedElements.add(person.identifier);
                     visitor.visitSupportingElement(person);
@@ -108,7 +111,7 @@ export class SystemContextViewStrategy
             )
             .filter((relationship) =>
                 relationshipExistsForElementsInView(
-                    Array.from(visitedElements),
+                    visitedElements,
                     relationship
                 )
             )

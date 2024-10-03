@@ -18,7 +18,7 @@ export class InfrastructureNode
 {
     constructor(params: InfrastructureNodeValues) {
         this.type = ElementType.InfrastructureNode;
-        this.identifier = params.identifier ?? crypto.randomUUID();
+        this.identifier = Identifier.createOrDefault(params.identifier);
         this.name = params.name;
         this.description = params.description;
         this.technology = params.technology
@@ -62,7 +62,7 @@ export class InfrastructureNode
     public toSnapshot(): IInfrastructureNode {
         return {
             type: this.type,
-            identifier: this.identifier,
+            identifier: this.identifier.toString(),
             name: this.name,
             description: this.description,
             technology: this.technology.map((x) => x.name),

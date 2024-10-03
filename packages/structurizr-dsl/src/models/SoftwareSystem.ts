@@ -12,7 +12,7 @@ export type SoftwareSystemParams = Required<Pick<ISoftwareSystem, "name">> &
 export class SoftwareSystem implements ISupportSnapshot<ISoftwareSystem> {
     constructor(params: SoftwareSystemParams) {
         this.type = ElementType.SoftwareSystem;
-        this.identifier = params.identifier ?? crypto.randomUUID();
+        this.identifier = Identifier.createOrDefault(params.identifier);
         this.name = params.name;
         this.groups = params.groups
             ? params.groups.map((g) => new Group(g))
@@ -60,7 +60,7 @@ export class SoftwareSystem implements ISupportSnapshot<ISoftwareSystem> {
     public toSnapshot(): ISoftwareSystem {
         return {
             type: this.type,
-            identifier: this.identifier,
+            identifier: this.identifier.toString(),
             name: this.name,
             groups: this.groups.map((g) => g.toSnapshot()),
             containers: this.containers.map((c) => c.toSnapshot()),
