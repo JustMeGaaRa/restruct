@@ -1,7 +1,7 @@
 import { IModel, IViews, IWorkspace } from "../../interfaces";
 import { BuilderCallback, IBuilder } from "../../shared";
 import { ModelBuilder } from "./ModelBuilder";
-import { ViewBuilder } from "./ViewBuilder";
+import { ViewsBuilder } from "./ViewsBuilder";
 
 export class WorkspaceBuilder implements IBuilder<IWorkspace> {
     private workspace: IWorkspace;
@@ -48,8 +48,8 @@ export class WorkspaceBuilder implements IBuilder<IWorkspace> {
         return model;
     }
 
-    views(callback: BuilderCallback<ViewBuilder>): IViews {
-        const viewBuilder = new ViewBuilder();
+    views(callback: BuilderCallback<ViewsBuilder>): IViews {
+        const viewBuilder = new ViewsBuilder();
         callback(viewBuilder);
         const views = viewBuilder.build();
         this.workspace.views = views;

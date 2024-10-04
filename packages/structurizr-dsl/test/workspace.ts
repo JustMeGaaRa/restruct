@@ -6,28 +6,27 @@ import {
     workspace,
 } from "../src";
 
-let customer: IPerson;
-let supportStuff: IPerson;
-let internetBankingSystem: ISoftwareSystem;
-let backoffice: IPerson;
-let mainframe: ISoftwareSystem;
-let email: ISoftwareSystem;
-let atm: ISoftwareSystem;
-let singlePageApplication: IContainer;
-let mobileApp: IContainer;
-let webApplication: IContainer;
-let apiApplication: IContainer;
-let database: IContainer;
-let signinController: IComponent;
-let accountsSummaryController: IComponent;
-let resetPasswordController: IComponent;
-let securityComponent: IComponent;
-let mainframeBankingSystemFacade: IComponent;
-let emailSystemFacade: IComponent;
+export const createBigBankPlcWorkspace = () => {
+    let customer: IPerson;
+    let supportStuff: IPerson;
+    let internetBankingSystem: ISoftwareSystem;
+    let backoffice: IPerson;
+    let mainframe: ISoftwareSystem;
+    let email: ISoftwareSystem;
+    let atm: ISoftwareSystem;
+    let singlePageApplication: IContainer;
+    let mobileApp: IContainer;
+    let webApplication: IContainer;
+    let apiApplication: IContainer;
+    let database: IContainer;
+    let signinController: IComponent;
+    let accountsSummaryController: IComponent;
+    let resetPasswordController: IComponent;
+    let securityComponent: IComponent;
+    let mainframeBankingSystemFacade: IComponent;
+    let emailSystemFacade: IComponent;
 
-// Example usage of the fluent API with callbacks
-export const createBigBankPlcWorkspace = () =>
-    workspace("Big Bank plc.", "", (_) => {
+    return workspace("Big Bank plc.", "", (_) => {
         _.description("A default architecture for Big Bank plc.");
 
         _.model((_) => {
@@ -221,3 +220,26 @@ export const createBigBankPlcWorkspace = () =>
             _.componentView(apiApplication.identifier, "Components");
         });
     });
+};
+
+export const createImpliedReltionshipsDummy = () => {
+    let person: IPerson;
+    let softwareSystem: ISoftwareSystem;
+    let webApp: IContainer;
+
+    return workspace("Implied Relationships", "", (_) => {
+        _.model((_) => {
+            person = _.person("User");
+
+            softwareSystem = _.softwareSystem("Software System", "", (_) => {
+                webApp = _.container("Web Application", "");
+            });
+
+            _.uses(person.identifier, webApp.identifier, "Uses");
+        });
+
+        _.views((_) => {
+            _.systemContextView(softwareSystem.identifier, "System Context");
+        });
+    });
+};

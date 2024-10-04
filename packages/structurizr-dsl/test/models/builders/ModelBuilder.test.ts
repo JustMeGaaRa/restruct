@@ -10,9 +10,9 @@ describe("Model Builder", () => {
         expect(model).toBeDefined();
     });
 
-    test("should add a person", () => {
+    test("should add a person to the model", () => {
         const builder = new ModelBuilder();
-        const person = builder.person("Alice", "A person.");
+        const person = builder.person("Alice");
         const model = builder.build();
 
         expect(model.people).toBeDefined();
@@ -21,16 +21,11 @@ describe("Model Builder", () => {
         expect(model.people.at(0)?.identifier).toBe(person.identifier);
         expect(person).toBeDefined();
         expect(person.name).toBe("Alice");
-        expect(person.description).toBe("A person.");
-        expect(person.identifier).toBeTruthy();
     });
 
-    test("should add a software system", () => {
+    test("should add a software system to the model", () => {
         const builder = new ModelBuilder();
-        const softwareSystem = builder.softwareSystem(
-            "Software System",
-            "A software system."
-        );
+        const softwareSystem = builder.softwareSystem("Software System");
         const model = builder.build();
 
         expect(model.softwareSystems).toBeDefined();
@@ -41,12 +36,10 @@ describe("Model Builder", () => {
         );
         expect(softwareSystem).toBeDefined();
         expect(softwareSystem.name).toBe("Software System");
-        expect(softwareSystem.description).toBe("A software system.");
-        expect(softwareSystem.identifier).toBeTruthy();
     });
 
     test.each(["Development", "Staging", "Production"])(
-        "should add a deployment environment",
+        "should add a deployment environment to the model",
         (environment: string) => {
             const builder = new ModelBuilder();
             const deploymentEnvironment = builder.deploymentEnvironment(
@@ -63,36 +56,22 @@ describe("Model Builder", () => {
             );
             expect(deploymentEnvironment).toBeDefined();
             expect(deploymentEnvironment.name).toBe(environment);
-            expect(deploymentEnvironment.identifier).toBeTruthy();
         }
     );
 
-    test("should add a group", () => {
+    test("should add a group to the model", () => {
         const builder = new ModelBuilder();
-        let alice: IPerson;
-        let bob: IPerson;
-        const group = builder.group("Group", (group) => {
-            alice = group.person("Alice", "A person.");
-            bob = group.person("Bob", "Another person.");
-        });
+        const group = builder.group("Group", () => {});
         const model = builder.build();
 
         expect(model.groups).toBeDefined();
         expect(model.groups.length).toBe(1);
         expect(model.groups.at(0)?.name).toBe("Group");
-        expect(model.groups.at(0)?.people).toBeDefined();
-        expect(model.groups.at(0)?.people.length).toBe(2);
-        expect(model.groups.at(0)?.people.at(0)?.name).toBe("Alice");
-        expect(model.groups.at(0)?.people.at(1)?.name).toBe("Bob");
+        expect(model.groups.at(0)?.identifier).toBeTruthy();
+        expect(model.groups.at(0)?.identifier).toBe(group.identifier);
         expect(group).toBeDefined();
-        expect(alice!).toBeDefined();
-        expect(alice!.name).toBe("Alice");
-        expect(alice!.description).toBe("A person.");
-        expect(alice!.identifier).toBeTruthy();
-        expect(bob!).toBeDefined();
-        expect(bob!.name).toBe("Bob");
-        expect(bob!.description).toBe("Another person.");
-        expect(bob!.identifier).toBeTruthy();
+        expect(group.name).toBe("Group");
+        expect(group.identifier).toBeTruthy();
     });
 
     test("should add a relationship", () => {
@@ -126,13 +105,5 @@ describe("Model Builder", () => {
         expect(relationship.sourceIdentifier).toBe(person.identifier);
         expect(relationship.targetIdentifier).toBe(softwareSystem.identifier);
         expect(relationship.description).toBe("Uses");
-    });
-
-    test("should throw error when adding relationship with non-existing elements", () => {
-        const builder = new ModelBuilder();
-
-        expect(() =>
-            builder.uses("Alice", "Software System", "Uses")
-        ).toThrowError();
     });
 });

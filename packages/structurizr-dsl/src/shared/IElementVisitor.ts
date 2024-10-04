@@ -11,46 +11,49 @@ import { ISoftwareSystemInstance } from "../interfaces/ISoftwareSystemInstance";
 import { IWorkspace } from "../interfaces/IWorkspace";
 
 export interface IElementVisitor<T = any> {
-    visitWorkspace(workspace: IWorkspace, params?: { children?: Array<T> }): T;
-    visitGroup(
+    visitWorkspace?: (
+        workspace: IWorkspace,
+        params?: { children?: Array<T> }
+    ) => T;
+    visitGroup?: (
         group: IGroup,
         params?: { parentId?: string; children?: Array<T> }
-    ): T;
-    visitPerson(
+    ) => T;
+    visitPerson?: (
         person: IPerson,
         params?: { parentId?: string; children?: Array<T> }
-    ): T;
-    visitSoftwareSystem(
+    ) => T;
+    visitSoftwareSystem?: (
         softwareSystem: ISoftwareSystem,
         params?: { parentId?: string; children?: Array<T> }
-    ): T;
-    visitContainer(
+    ) => T;
+    visitContainer?: (
         container: IContainer,
         params?: { parentId?: string; children?: Array<T> }
-    ): T;
-    visitComponent(
+    ) => T;
+    visitComponent?: (
         component: IComponent,
 
         params?: { parentId?: string; children?: Array<T> }
-    ): T;
-    visitDeploymentNode(
+    ) => T;
+    visitDeploymentNode?: (
         deploymentNode: IDeploymentNode,
         params?: { parentId?: string; children?: Array<T> }
-    ): T;
-    visitInfrastructureNode(
+    ) => T;
+    visitInfrastructureNode?: (
         infrastructureNode: IInfrastructureNode,
         params?: { parentId?: string; children?: Array<T> }
-    ): T;
-    visitSoftwareSystemInstance(
+    ) => T;
+    visitSoftwareSystemInstance?: (
         softwareSystemInstance: ISoftwareSystemInstance,
         params?: { parentId?: string; children?: Array<T> }
-    ): T;
-    visitContainerInstance(
+    ) => T;
+    visitContainerInstance?: (
         containerInstance: IContainerInstance,
         params?: { parentId?: string; children?: Array<T> }
-    ): T;
-    visitRelationship(
+    ) => T;
+    visitRelationship?: (
         relationship: IRelationship,
         params?: { children?: Array<T> }
-    ): T;
+    ) => T;
 }

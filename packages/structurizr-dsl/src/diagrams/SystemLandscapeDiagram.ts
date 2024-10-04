@@ -1,4 +1,5 @@
 import {
+    IGroup,
     IPerson,
     IRelationship,
     ISoftwareSystem,
@@ -23,9 +24,9 @@ export class SystemLandscapeDiagram
     }
 
     public scope: unknown;
-    public primaryElements: (ISoftwareSystem | IPerson)[];
-    public supportingElements: unknown[];
-    public relationships: IRelationship[];
+    public primaryElements: Array<ISoftwareSystem | IPerson>;
+    public supportingElements: Array<unknown>;
+    public relationships: Array<IRelationship>;
 
     build(): ISystemLandscapeDiagram {
         const strategy = new SystemLandscapeViewStrategy(
@@ -38,7 +39,8 @@ export class SystemLandscapeDiagram
 }
 
 export class SystemLandscapeDiagramVisitor
-    implements IDiagramVisitor<unknown, ISoftwareSystem | IPerson, unknown>
+    implements
+        IDiagramVisitor<unknown, IGroup | ISoftwareSystem | IPerson, unknown>
 {
     constructor(private diagram: ISystemLandscapeDiagram) {}
 

@@ -1,4 +1,5 @@
 import {
+    IGroup,
     IModel,
     IPerson,
     IRelationship,
@@ -7,12 +8,17 @@ import {
 } from "../../interfaces";
 import { IDiagramVisitor, ISupportVisitor } from "../../shared";
 import {
-    getRelationships,
-    relationshipExistsForElementsInView,
+    visitImpliedRelationships,
+    isRelationshipBetweenElementsInView,
+    visitWorkspaceHierarchy,
+    isSoftwareSystem,
+    cacheElements,
+    isPerson,
 } from "../../utils";
 
 export class SystemLandscapeViewStrategy
-    implements ISupportVisitor<unknown, ISoftwareSystem | IPerson, unknown>
+    implements
+        ISupportVisitor<unknown, IGroup | ISoftwareSystem | IPerson, unknown>
 {
     constructor(
         private readonly model: IModel,
@@ -20,10 +26,16 @@ export class SystemLandscapeViewStrategy
     ) {}
 
     accept(
-        visitor: IDiagramVisitor<unknown, ISoftwareSystem | IPerson, unknown>
+        visitor: IDiagramVisitor<
+            unknown,
+            IGroup | ISoftwareSystem | IPerson,
+            unknown
+        >
     ): void {
         const visitedElements = new Set<string>();
-        const relationships = getRelationships(this.model, false);
+        const relationships = visitImpliedRelationships(this.model);
+        const elements = visitWorkspaceHierarchy(this.model);
+        const elementBag = cacheElements(elements);
 
         // 2.1. include all software systems
         const visitSoftwareSystemArray = (
@@ -48,7 +60,8 @@ export class SystemLandscapeViewStrategy
         ) => {
             relationships
                 .filter((relationship) =>
-                    relationshipExistsForElementsInView(
+                    // filter for elements that are present on view
+                    isRelationshipBetweenElementsInView(
                         visitedElements,
                         relationship
                     )
@@ -63,6 +76,7 @@ export class SystemLandscapeViewStrategy
             // 1.1.1.2. include people and software systems in the group
             visitSoftwareSystemArray(group.softwareSystems);
             visitPersonArray(group.people);
+            visitor.visitPrimaryElement(group);
 
             // 1.1.1.1. include the software system group as a boundary element
             visitedElements.add(group.identifier);

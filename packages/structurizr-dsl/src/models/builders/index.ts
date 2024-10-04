@@ -7,6 +7,6 @@ export * from "./ModelBuilder";
 export * from "./PersonBuilder";
 export * from "./SoftwareSystemBuilder";
 export * from "./StylesBuilder";
-export * from "./ViewBuilder";
+export * from "./ViewsBuilder";
 export * from "./WorkspaceBuilder";
 export * from "./utils";

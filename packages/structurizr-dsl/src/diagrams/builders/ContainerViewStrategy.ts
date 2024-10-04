@@ -7,10 +7,10 @@ import {
 } from "../../interfaces";
 import { IDiagramVisitor, ISupportVisitor } from "../../shared";
 import {
-    elementIncludedInView,
-    getRelationships,
-    relationshipExistsForElementsInView,
-    relationshipExistsOverall,
+    isElementExplicitlyIncludedInView,
+    visitImpliedRelationships,
+    isRelationshipBetweenElementsInView,
+    isRelationshipInWorkspace,
 } from "../../utils";
 
 export class ContainerViewStrategy
@@ -30,7 +30,7 @@ export class ContainerViewStrategy
         >
     ): void {
         const visitedElements = new Set<string>();
-        const relationships = getRelationships(this.model, false);
+        const relationships = visitImpliedRelationships(this.model);
         const people = this.model.groups
             .flatMap((x) => x.people)
             .concat(this.model.people);
@@ -48,12 +48,12 @@ export class ContainerViewStrategy
                 )
                 .filter(
                     (softwareSystem) =>
-                        relationshipExistsOverall(
+                        isRelationshipInWorkspace(
                             relationships,
                             container.identifier,
                             softwareSystem.identifier
                         ) ||
-                        elementIncludedInView(
+                        isElementExplicitlyIncludedInView(
                             this.view,
                             softwareSystem.identifier
                         )
@@ -73,11 +73,15 @@ export class ContainerViewStrategy
             people
                 .filter(
                     (person) =>
-                        relationshipExistsOverall(
+                        isRelationshipInWorkspace(
                             relationships,
                             container.identifier,
                             person.identifier
-                        ) || elementIncludedInView(this.view, person.identifier)
+                        ) ||
+                        isElementExplicitlyIncludedInView(
+                            this.view,
+                            person.identifier
+                        )
                 )
                 .filter((person) => !visitedElements.has(person.identifier))
                 .forEach((person) => {
@@ -133,7 +137,7 @@ export class ContainerViewStrategy
                         this.view.softwareSystemIdentifier
             )
             .filter((relationship) =>
-                relationshipExistsForElementsInView(
+                isRelationshipBetweenElementsInView(
                     visitedElements,
                     relationship
                 )

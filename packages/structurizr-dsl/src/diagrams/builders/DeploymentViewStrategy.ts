@@ -1,8 +1,8 @@
 import { IDeploymentNode, IDeploymentView, IModel } from "../../interfaces";
-import { IElementVisitor, ISupportVisitor } from "../../shared";
+import { IElementVisitor } from "../../shared";
 import {
-    getRelationships,
-    relationshipExistsForElementsInView,
+    visitImpliedRelationships,
+    isRelationshipBetweenElementsInView,
 } from "../../utils";
 
 // TODO: implement the ISupportVisitor interface
@@ -12,9 +12,9 @@ export class DeploymentViewStrategy {
         private readonly view: IDeploymentView
     ) {}
 
-    accept<T>(visitor: IElementVisitor<T>): Array<T> {
+    accept<T>(visitor: IElementVisitor<T | undefined>): Array<T | undefined> {
         const visitedElements = new Set<string>();
-        const relationships = getRelationships(this.model, true);
+        const relationships = visitImpliedRelationships(this.model);
         const softwareSystems = this.model.softwareSystems.concat(
             this.model.groups.flatMap((x) => x.softwareSystems)
         );
@@ -25,12 +25,12 @@ export class DeploymentViewStrategy {
         const visitDeploymentNode = (
             deploymentNode: IDeploymentNode,
             parentId?: string
-        ): T => {
+        ): T | undefined => {
             const visitedInfrastructureNodes =
                 deploymentNode.infrastructureNodes?.map(
                     (infrastructureNode) => {
                         visitedElements.add(infrastructureNode.identifier);
-                        return visitor.visitInfrastructureNode(
+                        return visitor.visitInfrastructureNode?.(
                             infrastructureNode,
                             { parentId: deploymentNode.identifier }
                         );
@@ -46,11 +46,11 @@ export class DeploymentViewStrategy {
                                 softwareSystemInstance.softwareSystemIdentifier
                         )!;
                         const visitedSoftwareSystem =
-                            visitor.visitSoftwareSystem(softwareSystem);
+                            visitor.visitSoftwareSystem?.(softwareSystem);
 
                         visitedElements.add(softwareSystemInstance.identifier!);
                         visitedElements.add(softwareSystem.identifier);
-                        return visitor.visitSoftwareSystemInstance(
+                        return visitor.visitSoftwareSystemInstance?.(
                             softwareSystemInstance,
                             {
                                 parentId: deploymentNode.identifier,
@@ -67,11 +67,12 @@ export class DeploymentViewStrategy {
                             container.identifier ===
                             containerInstance.containerIdentifier
                     )!;
-                    const visitedContainer = visitor.visitContainer(container);
+                    const visitedContainer =
+                        visitor.visitContainer?.(container);
 
                     visitedElements.add(containerInstance.identifier!);
                     visitedElements.add(container.identifier);
-                    return visitor.visitContainerInstance(containerInstance, {
+                    return visitor.visitContainerInstance?.(containerInstance, {
                         parentId: deploymentNode.identifier,
                         children: [visitedContainer],
                     });
@@ -93,7 +94,7 @@ export class DeploymentViewStrategy {
                 .concat(visitedContainerInstances)
                 .concat(visistedDeploymentNodes);
 
-            return visitor.visitDeploymentNode(deploymentNode, {
+            return visitor.visitDeploymentNode?.(deploymentNode, {
                 parentId,
                 children,
             });
@@ -115,12 +116,12 @@ export class DeploymentViewStrategy {
 
         const visitedRelationships = relationships
             .filter((relationship) =>
-                relationshipExistsForElementsInView(
-                    Array.from(visitedElements),
+                isRelationshipBetweenElementsInView(
+                    visitedElements,
                     relationship
                 )
             )
-            .map((relationship) => visitor.visitRelationship(relationship));
+            .map((relationship) => visitor.visitRelationship?.(relationship));
         return visitedDeploymentEnvironment.concat(visitedRelationships);
     }
 }

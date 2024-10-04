@@ -8,10 +8,10 @@ import {
 } from "../../interfaces";
 import { IDiagramVisitor, ISupportVisitor } from "../../shared";
 import {
-    elementIncludedInView,
-    getRelationships,
-    relationshipExistsForElementsInView,
-    relationshipExistsOverall,
+    isElementExplicitlyIncludedInView,
+    visitImpliedRelationships,
+    isRelationshipBetweenElementsInView,
+    isRelationshipInWorkspace,
 } from "../../utils";
 
 export class ComponentViewStrategy
@@ -35,7 +35,7 @@ export class ComponentViewStrategy
         >
     ): void {
         const visitedElements = new Set<string>();
-        const relationships = getRelationships(this.model, false);
+        const relationships = visitImpliedRelationships(this.model);
         const people = this.model.people.concat(
             this.model.groups.flatMap((x) => x.people)
         );
@@ -51,11 +51,15 @@ export class ComponentViewStrategy
             people
                 .filter(
                     (person) =>
-                        relationshipExistsOverall(
+                        isRelationshipInWorkspace(
                             relationships,
                             component.identifier,
                             person.identifier
-                        ) || elementIncludedInView(this.view, person.identifier)
+                        ) ||
+                        isElementExplicitlyIncludedInView(
+                            this.view,
+                            person.identifier
+                        )
                 )
                 .filter((person) => !visitedElements.has(person.identifier))
                 .forEach((person) => {
@@ -69,12 +73,12 @@ export class ComponentViewStrategy
             softwareSystems
                 .filter(
                     (softwareSystem) =>
-                        relationshipExistsOverall(
+                        isRelationshipInWorkspace(
                             relationships,
                             component.identifier,
                             softwareSystem.identifier
                         ) ||
-                        elementIncludedInView(
+                        isElementExplicitlyIncludedInView(
                             this.view,
                             softwareSystem.identifier
                         )
@@ -98,12 +102,15 @@ export class ComponentViewStrategy
                 )
                 .filter(
                     (container) =>
-                        relationshipExistsOverall(
+                        isRelationshipInWorkspace(
                             relationships,
                             component.identifier,
                             container.identifier
                         ) ||
-                        elementIncludedInView(this.view, container.identifier)
+                        isElementExplicitlyIncludedInView(
+                            this.view,
+                            container.identifier
+                        )
                 )
                 .filter(
                     (container) => !visitedElements.has(container.identifier)
@@ -161,7 +168,7 @@ export class ComponentViewStrategy
                         this.view.containerIdentifier
             )
             .filter((relationship) =>
-                relationshipExistsForElementsInView(
+                isRelationshipBetweenElementsInView(
                     visitedElements,
                     relationship
                 )

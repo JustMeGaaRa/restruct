@@ -15,13 +15,8 @@ import { SoftwareSystemBuilder } from "./SoftwareSystemBuilder";
 
 export class ModelBuilder implements IBuilder<IModel> {
     private model: IModel;
-    private elementLookup: Map<
-        string,
-        IGroup | IPerson | ISoftwareSystem | IDeploymentEnvironment
-    >;
 
     constructor() {
-        this.elementLookup = new Map();
         this.model = {
             groups: [],
             people: [],
@@ -36,7 +31,6 @@ export class ModelBuilder implements IBuilder<IModel> {
         callback(groupBuilder);
         const group = groupBuilder.build();
         this.model.groups.push(group);
-        this.elementLookup.set(group.identifier, group);
         return group;
     }
 
@@ -49,7 +43,6 @@ export class ModelBuilder implements IBuilder<IModel> {
         callback?.(personBuilder);
         const person = personBuilder.build();
         this.model.people.push(person);
-        this.elementLookup.set(person.identifier, person);
         return person;
     }
 
@@ -65,7 +58,6 @@ export class ModelBuilder implements IBuilder<IModel> {
         callback?.(softwareSystemBuilder);
         const softareSystem = softwareSystemBuilder.build();
         this.model.softwareSystems.push(softareSystem);
-        this.elementLookup.set(softareSystem.identifier, softareSystem);
         return softareSystem;
     }
 
@@ -79,20 +71,10 @@ export class ModelBuilder implements IBuilder<IModel> {
         callback(deploymentEnvironmentBuilder);
         const deploymentEnvironment = deploymentEnvironmentBuilder.build();
         this.model.deploymentEnvironments.push(deploymentEnvironment);
-        this.elementLookup.set(
-            deploymentEnvironment.identifier,
-            deploymentEnvironment
-        );
         return deploymentEnvironment;
     }
 
     uses(source: string, target: string, description?: string): IRelationship {
-        if (!this.elementLookup.has(source)) {
-            throw new Error(`Element with identifier ${source} not found.`);
-        }
-        if (!this.elementLookup.has(target)) {
-            throw new Error(`Element with identifier ${target} not found.`);
-        }
         const relationship = new Relationship({
             sourceIdentifier: source,
             targetIdentifier: target,

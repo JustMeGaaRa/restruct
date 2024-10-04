@@ -15,7 +15,7 @@ import { SystemContextView } from "../SystemContextView";
 import { SystemLandscapeView } from "../SystemLandscapeView";
 import { StylesBuilder } from "./StylesBuilder";
 
-export class ViewBuilder implements IBuilder<IViews> {
+export class ViewsBuilder implements IBuilder<IViews> {
     private views: IViews;
 
     constructor() {

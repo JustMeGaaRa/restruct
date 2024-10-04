@@ -1,28 +1,32 @@
-import { beforeEach, describe, expect, test } from "vitest";
+import { describe, expect, test } from "vitest";
+import { ISystemLandscapeDiagram } from "../../../src/interfaces";
 import {
-    IWorkspace,
     SystemLandscapeDiagramVisitor,
     SystemLandscapeViewStrategy,
-} from "../../../src";
+} from "../../../src/diagrams";
 import { createBigBankPlcWorkspace } from "../../workspace";
 
 describe("System Landscape View Strategy", () => {
-    let workspace: IWorkspace = createBigBankPlcWorkspace();
-
-    beforeEach(() => {
-        workspace = createBigBankPlcWorkspace();
-    });
-
     test("should create a system landscape view", () => {
-        const view = workspace.views.systemLandscape;
-        expect(view).toBeDefined();
+        const workspace = createBigBankPlcWorkspace();
 
         const strategy = new SystemLandscapeViewStrategy(
             workspace.model,
-            view!
+            workspace.views.systemLandscape!
         );
-        const visitor = new SystemLandscapeDiagramVisitor();
+        const diagram: ISystemLandscapeDiagram = {
+            scope: undefined,
+            primaryElements: [],
+            supportingElements: [],
+            relationships: [],
+        };
+        const visitor = new SystemLandscapeDiagramVisitor(diagram);
         strategy.accept(visitor);
-        expect(visitor.diagram).toBeDefined();
+
+        expect(diagram).toBeDefined();
+        expect(diagram.scope).toBeUndefined();
+        expect(diagram.primaryElements).toBeDefined();
+        expect(diagram.supportingElements).toBeDefined();
+        expect(diagram.relationships).toBeDefined();
     });
 });

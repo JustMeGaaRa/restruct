@@ -8,25 +8,26 @@ export class ModelViewStrategy {
     public static PlaceholderModelWorkspaceId = "workspace";
 
     accept<T>(visitor: IElementVisitor<T>): Array<T> {
-        const visitedWorkspace = visitor.visitWorkspace(this.workspace);
+        const visitedWorkspace = visitor.visitWorkspace?.(this.workspace);
 
         const visitedGroups = this.workspace.model.groups
             .flatMap((group) => group.softwareSystems)
             .concat(this.workspace.model.softwareSystems)
-            .flatMap((softwareSystem, index) => {
+            .flatMap((softwareSystem) => {
                 const visitedGroups = softwareSystem.groups
                     .flatMap((group) => group.containers)
                     .concat(softwareSystem.containers)
-                    .flatMap((container, index) => {
+                    .flatMap((container) => {
                         const visitedGroups = container.groups
                             .flatMap((group) => group.components)
                             .concat(container.components)
-                            .flatMap((component, index) => {
+                            .flatMap((component) => {
                                 const visistedComponent =
-                                    visitor.visitComponent(component);
+                                    visitor.visitComponent?.(component);
                                 const visitedRelationships =
-                                    visitor.visitRelationship({
+                                    visitor.visitRelationship?.({
                                         type: RelationshipType.Relationship,
+                                        identifier: `${container.identifier}-${component.identifier}`,
                                         sourceIdentifier: container.identifier,
                                         targetIdentifier: component.identifier,
                                         tags: [],
@@ -37,13 +38,15 @@ export class ModelViewStrategy {
                             });
 
                         const visitedContainer =
-                            visitor.visitContainer(container);
-                        const visitedRelationships = visitor.visitRelationship({
-                            type: RelationshipType.Relationship,
-                            sourceIdentifier: softwareSystem.identifier,
-                            targetIdentifier: container.identifier,
-                            tags: [],
-                        });
+                            visitor.visitContainer?.(container);
+                        const visitedRelationships =
+                            visitor.visitRelationship?.({
+                                type: RelationshipType.Relationship,
+                                identifier: `${softwareSystem.identifier}-${container.identifier}`,
+                                sourceIdentifier: softwareSystem.identifier,
+                                targetIdentifier: container.identifier,
+                                tags: [],
+                            });
 
                         return [visitedContainer]
                             .concat(visitedGroups)
@@ -51,9 +54,10 @@ export class ModelViewStrategy {
                     });
 
                 const visitedSoftwareSystem =
-                    visitor.visitSoftwareSystem(softwareSystem);
-                const visitedRelationships = visitor.visitRelationship({
+                    visitor.visitSoftwareSystem?.(softwareSystem);
+                const visitedRelationships = visitor.visitRelationship?.({
                     type: RelationshipType.Relationship,
+                    identifier: `${ModelViewStrategy.PlaceholderModelWorkspaceId}-${softwareSystem.identifier}`,
                     sourceIdentifier:
                         ModelViewStrategy.PlaceholderModelWorkspaceId,
                     targetIdentifier: softwareSystem.identifier,
@@ -68,10 +72,11 @@ export class ModelViewStrategy {
         const visitedPeople = this.workspace.model.groups
             .flatMap((group) => group.people)
             .concat(this.workspace.model.people)
-            .flatMap((person, index) => {
-                const visitedPerson = visitor.visitPerson(person);
-                const visitedRelationships = visitor.visitRelationship({
+            .flatMap((person) => {
+                const visitedPerson = visitor.visitPerson?.(person);
+                const visitedRelationships = visitor.visitRelationship?.({
                     type: RelationshipType.Relationship,
+                    identifier: `${ModelViewStrategy.PlaceholderModelWorkspaceId}-${person.identifier}`,
                     sourceIdentifier:
                         ModelViewStrategy.PlaceholderModelWorkspaceId,
                     targetIdentifier: person.identifier,
@@ -81,6 +86,9 @@ export class ModelViewStrategy {
             });
 
         // TODO: add environments with deployment nodes to model view
-        return [visitedWorkspace].concat(visitedGroups).concat(visitedPeople);
+        return [visitedWorkspace]
+            .concat(visitedGroups)
+            .concat(visitedPeople)
+            .filter((element) => element !== undefined) as Array<T>;
     }
 }

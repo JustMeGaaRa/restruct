@@ -6,10 +6,10 @@ import {
 } from "../../interfaces";
 import { IDiagramVisitor, ISupportVisitor } from "../../shared";
 import {
-    elementIncludedInView,
-    getRelationships,
-    relationshipExistsForElementsInView,
-    relationshipExistsOverall,
+    isElementExplicitlyIncludedInView,
+    visitImpliedRelationships,
+    isRelationshipBetweenElementsInView,
+    isRelationshipInWorkspace,
 } from "../../utils";
 
 export class SystemContextViewStrategy
@@ -29,7 +29,7 @@ export class SystemContextViewStrategy
         >
     ): void {
         const visitedElements = new Set<string>();
-        const relationships = getRelationships(this.model, false);
+        const relationships = visitImpliedRelationships(this.model);
         const people = this.model.groups
             .flatMap((x) => x.people)
             .concat(this.model.people);
@@ -49,12 +49,12 @@ export class SystemContextViewStrategy
                 )
                 .filter(
                     (otherSoftwareSystem) =>
-                        relationshipExistsOverall(
+                        isRelationshipInWorkspace(
                             relationships,
                             softwareSystem.identifier,
                             otherSoftwareSystem.identifier
                         ) ||
-                        elementIncludedInView(
+                        isElementExplicitlyIncludedInView(
                             this.view,
                             otherSoftwareSystem.identifier
                         )
@@ -70,11 +70,15 @@ export class SystemContextViewStrategy
             people
                 .filter(
                     (person) =>
-                        relationshipExistsOverall(
+                        isRelationshipInWorkspace(
                             relationships,
                             softwareSystem.identifier,
                             person.identifier
-                        ) || elementIncludedInView(this.view, person.identifier)
+                        ) ||
+                        isElementExplicitlyIncludedInView(
+                            this.view,
+                            person.identifier
+                        )
                 )
                 .filter(
                     (person) =>
@@ -110,7 +114,7 @@ export class SystemContextViewStrategy
                         this.view.softwareSystemIdentifier
             )
             .filter((relationship) =>
-                relationshipExistsForElementsInView(
+                isRelationshipBetweenElementsInView(
                     visitedElements,
                     relationship
                 )

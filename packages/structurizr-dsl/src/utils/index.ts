@@ -8,7 +8,6 @@ import {
     View,
     ITag,
     ViewType,
-    RelationshipType,
     IComponent,
 } from "../interfaces";
 import { Style } from "../models";
@@ -253,7 +252,7 @@ export const findComponentParent = (
         .find((x) => x.components.some((c) => c.identifier === componentId));
 };
 
-export const relationshipExistsOverall = (
+export const isRelationshipInWorkspace = (
     relationships: IRelationship[],
     sourceIdentifier: string,
     targetIdentifier: string
@@ -267,7 +266,7 @@ export const relationshipExistsOverall = (
     );
 };
 
-export const relationshipExistsForElementsInView = (
+export const isRelationshipBetweenElementsInView = (
     elementsInView: Set<string>,
     relationship: IRelationship
 ) => {
@@ -277,7 +276,7 @@ export const relationshipExistsForElementsInView = (
     );
 };
 
-export const elementIncludedInView = (
+export const isElementExplicitlyIncludedInView = (
     view: View,
     elementIdentifier: string
 ) => {
@@ -295,307 +294,6 @@ export const elementIncludedInView = (
     }
 };
 
-export const getRelationships = (model: IModel, implied: boolean) => {
-    const relationships = Array.from<IRelationship>([]);
-
-    // TODO: optimize performance by caching the relationships
-    // TODO: implied relationships should have same attributes as the original relationship
-    // TODO: exclude implied relationships from child to it's own parent
-    // TODO: include implied relationships from element scope with this template 'someId -> this'
-
-    function addRelationship(
-        source: string,
-        target: string,
-        description?: string
-    ) {
-        if (
-            !relationships.some(
-                (x) =>
-                    x.sourceIdentifier === source &&
-                    x.targetIdentifier === target
-            )
-        ) {
-            relationships.push({
-                type: RelationshipType.Relationship,
-                identifier: `${source}-${target}`,
-                sourceIdentifier: source,
-                targetIdentifier: target,
-                description,
-                tags: [],
-            });
-        }
-    }
-
-    model.groups
-        .flatMap((x) => x.softwareSystems)
-        .concat(model.softwareSystems)
-        .forEach((system) => {
-            // Implied relationships from current system to target
-            system.groups
-                .flatMap((x) => x.containers)
-                .concat(system.containers)
-                .forEach((container) => {
-                    // Implied relationships from current container to target
-                    container.groups
-                        .flatMap((x) => x.components)
-                        .concat(container.components)
-                        .forEach((component) => {
-                            // Implied relationships from component scope to target
-                            component.relationships.forEach((relationship) => {
-                                addRelationship(
-                                    component.identifier,
-                                    relationship.targetIdentifier,
-                                    relationship.description
-                                );
-
-                                if (implied) {
-                                    addRelationship(
-                                        container.identifier,
-                                        relationship.targetIdentifier,
-                                        relationship.description
-                                    );
-                                    addRelationship(
-                                        system.identifier,
-                                        relationship.targetIdentifier,
-                                        relationship.description
-                                    );
-                                }
-                            });
-
-                            // Implied relationships outgoing from current component
-                            model.relationships
-                                .filter(
-                                    (relationship) =>
-                                        relationship.sourceIdentifier ===
-                                        component.identifier
-                                )
-                                .forEach((relationship) => {
-                                    addRelationship(
-                                        component.identifier,
-                                        relationship.targetIdentifier,
-                                        relationship.description
-                                    );
-
-                                    if (implied) {
-                                        addRelationship(
-                                            container.identifier,
-                                            relationship.targetIdentifier,
-                                            relationship.description
-                                        );
-                                        addRelationship(
-                                            system.identifier,
-                                            relationship.targetIdentifier,
-                                            relationship.description
-                                        );
-                                    }
-                                });
-
-                            // Implied relationships incoming into current component
-                            model.relationships
-                                .filter(
-                                    (relationship) =>
-                                        relationship.targetIdentifier ===
-                                        component.identifier
-                                )
-                                .forEach((relationship) => {
-                                    addRelationship(
-                                        relationship.sourceIdentifier,
-                                        component.identifier,
-                                        relationship.description
-                                    );
-
-                                    if (implied) {
-                                        addRelationship(
-                                            relationship.sourceIdentifier,
-                                            container.identifier,
-                                            relationship.description
-                                        );
-                                        addRelationship(
-                                            relationship.sourceIdentifier,
-                                            system.identifier,
-                                            relationship.description
-                                        );
-                                    }
-                                });
-                        });
-
-                    // Implied relationships from container scope to target
-                    container.relationships.forEach((relationship) => {
-                        addRelationship(
-                            container.identifier,
-                            relationship.targetIdentifier,
-                            relationship.description
-                        );
-
-                        if (implied) {
-                            addRelationship(
-                                system.identifier,
-                                relationship.targetIdentifier,
-                                relationship.description
-                            );
-                        }
-                    });
-
-                    // Implied relationships outgoing from current container
-                    model.relationships
-                        .filter(
-                            (relationship) =>
-                                relationship.sourceIdentifier ===
-                                container.identifier
-                        )
-                        .forEach((relationship) => {
-                            addRelationship(
-                                container.identifier,
-                                relationship.targetIdentifier,
-                                relationship.description
-                            );
-
-                            if (implied) {
-                                addRelationship(
-                                    system.identifier,
-                                    relationship.targetIdentifier,
-                                    relationship.description
-                                );
-                            }
-                        });
-
-                    // Implied relationships incoming into current container
-                    model.relationships
-                        .filter(
-                            (relationship) =>
-                                relationship.targetIdentifier ===
-                                container.identifier
-                        )
-                        .forEach((relationship) => {
-                            addRelationship(
-                                relationship.sourceIdentifier,
-                                container.identifier,
-                                relationship.description
-                            );
-
-                            if (implied) {
-                                addRelationship(
-                                    relationship.sourceIdentifier,
-                                    system.identifier,
-                                    relationship.description
-                                );
-                            }
-                        });
-                });
-
-            // Implied relationships from system scope to target
-            system.relationships.forEach((relationship) => {
-                addRelationship(
-                    system.identifier,
-                    relationship.targetIdentifier,
-                    relationship.description
-                );
-            });
-
-            // Implied relationships outgoing from current system
-            model.relationships
-                .filter(
-                    (relationship) =>
-                        relationship.sourceIdentifier === system.identifier
-                )
-                .forEach((relationship) => {
-                    addRelationship(
-                        system.identifier,
-                        relationship.targetIdentifier,
-                        relationship.description
-                    );
-                });
-
-            // Implied relationships incoming into current system
-            model.relationships
-                .filter(
-                    (relationship) =>
-                        relationship.targetIdentifier === system.identifier
-                )
-                .forEach((relationship) => {
-                    addRelationship(
-                        relationship.sourceIdentifier,
-                        system.identifier,
-                        relationship.description
-                    );
-                });
-        });
-
-    model.groups
-        .flatMap((x) => x.people)
-        .concat(model.people)
-        .forEach((person) => {
-            person.relationships.forEach((relationship) => {
-                // Implied relationships from people to systems
-                model.groups
-                    .flatMap((x) => x.softwareSystems)
-                    .concat(model.softwareSystems)
-                    .forEach((system) => {
-                        if (
-                            relationship.targetIdentifier === system.identifier
-                        ) {
-                            addRelationship(
-                                person.identifier,
-                                system.identifier,
-                                relationship.description
-                            );
-                        }
-
-                        system.groups
-                            .flatMap((x) => x.containers)
-                            .concat(system.containers)
-                            .forEach((container) => {
-                                if (
-                                    relationship.targetIdentifier ===
-                                    container.identifier
-                                ) {
-                                    addRelationship(
-                                        person.identifier,
-                                        container.identifier,
-                                        relationship.description
-                                    );
-
-                                    if (implied) {
-                                        addRelationship(
-                                            person.identifier,
-                                            system.identifier,
-                                            relationship.description
-                                        );
-                                    }
-                                }
-
-                                container.groups
-                                    .flatMap((x) => x.components)
-                                    .concat(container.components)
-                                    .forEach((component) => {
-                                        if (
-                                            relationship.targetIdentifier ===
-                                            component.identifier
-                                        ) {
-                                            addRelationship(
-                                                person.identifier,
-                                                component.identifier,
-                                                relationship.description
-                                            );
-
-                                            if (implied) {
-                                                addRelationship(
-                                                    person.identifier,
-                                                    container.identifier,
-                                                    relationship.description
-                                                );
-                                                addRelationship(
-                                                    person.identifier,
-                                                    system.identifier,
-                                                    relationship.description
-                                                );
-                                            }
-                                        }
-                                    });
-                            });
-                    });
-            });
-        });
-
-    return relationships;
-};
+export * from "./guards";
+export * from "./relationship";
+export * from "./string";
