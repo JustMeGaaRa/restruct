@@ -1,7 +1,7 @@
 import { IDeploymentNode, IDeploymentView, IModel } from "../../interfaces";
 import { IElementVisitor } from "../../shared";
 import {
-    visitImpliedRelationships,
+    visitWorkspaceRelationships,
     isRelationshipBetweenElementsInView,
 } from "../../utils";
 
@@ -14,7 +14,7 @@ export class DeploymentViewStrategy {
 
     accept<T>(visitor: IElementVisitor<T | undefined>): Array<T | undefined> {
         const visitedElements = new Set<string>();
-        const relationships = visitImpliedRelationships(this.model);
+        const relationships = visitWorkspaceRelationships(this.model);
         const softwareSystems = this.model.softwareSystems.concat(
             this.model.groups.flatMap((x) => x.softwareSystems)
         );
