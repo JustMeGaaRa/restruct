@@ -10,7 +10,7 @@ import {
     isElementExplicitlyIncludedInView,
     isRelationshipBetweenElementsInView,
     doesRelationshipExist,
-    getImpliedRelationshipsForSystemContextView,
+    getImpliedRelationships,
 } from "../../utils";
 
 export class SystemContextViewStrategy
@@ -30,10 +30,7 @@ export class SystemContextViewStrategy
         >
     ): void {
         const visitedElements = new Set<string>();
-        const relationships = getImpliedRelationshipsForSystemContextView(
-            this.model,
-            this.view.softwareSystemIdentifier
-        );
+        const relationships = getImpliedRelationships(this.model, this.view);
         const people = this.model.groups
             .flatMap((group) => group.people)
             .concat(this.model.people);

@@ -1,10 +1,14 @@
 import {
     IComponent,
     IContainer,
+    IContainerView,
     IModel,
     IPerson,
     IRelationship,
     ISoftwareSystem,
+    ISystemContextView,
+    ISystemLandscapeView,
+    ViewType,
 } from "../interfaces";
 import { Relationship } from "../models";
 
@@ -175,8 +179,9 @@ export const creteImpliedRelationship = (
     }
 };
 
-export const getImpliedRelationshipsForSystemLandscapeView = (
-    model: IModel
+export const getImpliedRelationships = (
+    model: IModel,
+    view?: ISystemLandscapeView | ISystemContextView | IContainerView
 ) => {
     const relationships = visitWorkspaceRelationships(model);
     const people = model.groups
@@ -186,22 +191,37 @@ export const getImpliedRelationshipsForSystemLandscapeView = (
         .flatMap((group) => group.softwareSystems)
         .concat(model.softwareSystems);
 
+    const isSystemLandscapeView = view?.type === ViewType.SystemLandscape;
+    const isSystemContextView = view?.type === ViewType.SystemContext;
+    const isContainerView = view?.type === ViewType.Container;
+
     const impliedRelationships = getRelationshipMap(relationships);
 
-    // RESTRICTION: System Context View only allows realtionships from:
+    // RESTRICTION: System Landscape and System Context views only allow realtionships from:
     // - Software System --> Person
     // - Software System <-- Person
     // - Software System --> Software System
-    softwareSystems.forEach((softwareSystem) => {
+    // RESTRICTION: Container View only allows realtionships from:
+    // - Container --> Person | Software System
+    // - Container <-- Person | Software System
+    // - Container --> Container (in the same scope)
+    const softwareSystemsInScope =
+        isSystemContextView || isContainerView
+            ? softwareSystems.filter(
+                  (x) => x.identifier === view.softwareSystemIdentifier
+              )
+            : softwareSystems;
+
+    softwareSystemsInScope.forEach((softwareSystemScope) => {
         // filter out the current software system to avoid self-referencing
         const otherSoftwareSystems = softwareSystems.filter(
-            (x) => x.identifier !== softwareSystem.identifier
+            (x) => x.identifier !== softwareSystemScope.identifier
         );
         const externalSystemsOrPeople = [...otherSoftwareSystems, ...people];
 
-        const childContainers = softwareSystem.groups
+        const childContainers = softwareSystemScope.groups
             .flatMap((group) => group.containers)
-            .concat(softwareSystem.containers);
+            .concat(softwareSystemScope.containers);
 
         childContainers.forEach((container) => {
             const childComponents = container.groups
@@ -210,7 +230,7 @@ export const getImpliedRelationshipsForSystemLandscapeView = (
 
             childComponents.forEach((component) => {
                 // CASE: Check if any Components have explicit relationship with any Software System or Person
-                // and create an implied relationship from this Software System to the Software System or Person
+                // and create an implied relationship from this Container to the Software System or Person
                 filterRelationshipsBetweenElements(
                     relationships,
                     component,
@@ -218,164 +238,15 @@ export const getImpliedRelationshipsForSystemLandscapeView = (
                 ).forEach((relationship) => {
                     creteImpliedRelationship(
                         component.identifier,
-                        softwareSystem.identifier,
+                        isContainerView
+                            ? container.identifier
+                            : softwareSystemScope.identifier,
                         relationship,
                         impliedRelationships
                     );
                 });
-            });
 
-            // CASE: Check if any Containers have explicit relationship with any Software System or Person
-            // and create an implied relationship from this Software System to the Software System or Person
-            filterRelationshipsBetweenElements(
-                relationships,
-                container,
-                externalSystemsOrPeople
-            ).forEach((relationship) => {
-                creteImpliedRelationship(
-                    container.identifier,
-                    softwareSystem.identifier,
-                    relationship,
-                    impliedRelationships
-                );
-            });
-        });
-    });
-
-    return [...impliedRelationships.values()];
-};
-
-export const getImpliedRelationshipsForSystemContextView = (
-    model: IModel,
-    softwareSystemIdentifier: string
-) => {
-    const relationships = visitWorkspaceRelationships(model);
-    const people = model.groups
-        .flatMap((group) => group.people)
-        .concat(model.people);
-    const softwareSystems = model.groups
-        .flatMap((group) => group.softwareSystems)
-        .concat(model.softwareSystems);
-
-    const impliedRelationships = getRelationshipMap(relationships);
-
-    // RESTRICTION: System Context View only allows realtionships from:
-    // - Software System --> Person
-    // - Software System <-- Person
-    // - Software System --> Software System
-    softwareSystems
-        .filter((x) => x.identifier === softwareSystemIdentifier)
-        .forEach((softwareSystemScope) => {
-            // filter out the current software system to avoid self-referencing
-            const otherSoftwareSystems = softwareSystems.filter(
-                (x) => x.identifier !== softwareSystemScope.identifier
-            );
-            const externalSystemsOrPeople = [
-                ...otherSoftwareSystems,
-                ...people,
-            ];
-
-            const childContainers = softwareSystemScope.groups
-                .flatMap((group) => group.containers)
-                .concat(softwareSystemScope.containers);
-
-            childContainers.forEach((container) => {
-                const childComponents = container.groups
-                    .flatMap((group) => group.components)
-                    .concat(container.components);
-
-                childComponents.forEach((component) => {
-                    // CASE: Check if any Components have explicit relationship with any Software System or Person
-                    // and create an implied relationship from this Software System to the Software System or Person
-                    filterRelationshipsBetweenElements(
-                        relationships,
-                        component,
-                        externalSystemsOrPeople
-                    ).forEach((relationship) => {
-                        creteImpliedRelationship(
-                            component.identifier,
-                            softwareSystemScope.identifier,
-                            relationship,
-                            impliedRelationships
-                        );
-                    });
-                });
-
-                // CASE: Check if any Containers have explicit relationship with any Software System or Person
-                // and create an implied relationship from this Software System to the Software System or Person
-                filterRelationshipsBetweenElements(
-                    relationships,
-                    container,
-                    externalSystemsOrPeople
-                ).forEach((relationship) => {
-                    creteImpliedRelationship(
-                        container.identifier,
-                        softwareSystemScope.identifier,
-                        relationship,
-                        impliedRelationships
-                    );
-                });
-            });
-        });
-
-    return [...impliedRelationships.values()];
-};
-
-export const getImpliedRelationshipsForContainerView = (
-    model: IModel,
-    softwareSystemIdentifier: string
-) => {
-    const relationships = visitWorkspaceRelationships(model);
-    const people = model.groups
-        .flatMap((group) => group.people)
-        .concat(model.people);
-    const softwareSystems = model.groups
-        .flatMap((group) => group.softwareSystems)
-        .concat(model.softwareSystems);
-
-    const impliedRelationships = getRelationshipMap(relationships);
-
-    // RESTRICTION: Container View only allows realtionships from:
-    // - Container --> Person | Software System
-    // - Container <-- Person | Software System
-    // - Container --> Container (in the same scope)
-    softwareSystems
-        .filter((x) => x.identifier === softwareSystemIdentifier)
-        .forEach((softwareSystemScope) => {
-            // filter out the current software system to avoid self-referencing
-            const otherSoftwareSystems = softwareSystems.filter(
-                (x) => x.identifier !== softwareSystemScope.identifier
-            );
-            const externalSystemsOrPeople = [
-                ...otherSoftwareSystems,
-                ...people,
-            ];
-
-            const childContainers = softwareSystemScope.groups
-                .flatMap((group) => group.containers)
-                .concat(softwareSystemScope.containers);
-
-            childContainers.forEach((container) => {
-                const childComponents = container.groups
-                    .flatMap((group) => group.components)
-                    .concat(container.components);
-
-                childComponents.forEach((component) => {
-                    // CASE: Check if any Components have explicit relationship with any Software System or Person
-                    // and create an implied relationship from this Container to the Software System or Person
-                    filterRelationshipsBetweenElements(
-                        relationships,
-                        component,
-                        externalSystemsOrPeople
-                    ).forEach((relationship) => {
-                        creteImpliedRelationship(
-                            component.identifier,
-                            container.identifier,
-                            relationship,
-                            impliedRelationships
-                        );
-                    });
-
+                if (isContainerView) {
                     const otherScopeContainers = childContainers.filter(
                         (x) => x.identifier !== container.identifier
                     );
@@ -393,9 +264,27 @@ export const getImpliedRelationshipsForContainerView = (
                             impliedRelationships
                         );
                     });
-                });
+                }
             });
+
+            if (isSystemLandscapeView || isSystemContextView) {
+                // CASE: Check if any Containers have explicit relationship with any Software System or Person
+                // and create an implied relationship from this Software System to the Software System or Person
+                filterRelationshipsBetweenElements(
+                    relationships,
+                    container,
+                    externalSystemsOrPeople
+                ).forEach((relationship) => {
+                    creteImpliedRelationship(
+                        container.identifier,
+                        softwareSystemScope.identifier,
+                        relationship,
+                        impliedRelationships
+                    );
+                });
+            }
         });
+    });
 
     return [...impliedRelationships.values()];
 };

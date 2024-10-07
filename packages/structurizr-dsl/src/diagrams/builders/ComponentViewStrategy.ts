@@ -34,7 +34,7 @@ export class ComponentViewStrategy
             ISoftwareSystem | IContainer | IPerson
         >
     ): void {
-        const visitedElements = new Set<string>();
+        const visitedElements = new Map<string, string>();
         const relationships = visitWorkspaceRelationships(this.model);
         const people = this.model.people.concat(
             this.model.groups.flatMap((x) => x.people)
@@ -63,7 +63,7 @@ export class ComponentViewStrategy
                 )
                 .filter((person) => !visitedElements.has(person.identifier))
                 .forEach((person) => {
-                    visitedElements.add(person.identifier);
+                    visitedElements.set(person.identifier, person.name);
                     visitor.visitSupportingElement(person);
                 });
         };
@@ -88,7 +88,10 @@ export class ComponentViewStrategy
                         !visitedElements.has(softwareSystem.identifier)
                 )
                 .forEach((softwareSystem) => {
-                    visitedElements.add(softwareSystem.identifier);
+                    visitedElements.set(
+                        softwareSystem.identifier,
+                        softwareSystem.name
+                    );
                     visitor.visitSupportingElement(softwareSystem);
                 });
         };
@@ -116,7 +119,7 @@ export class ComponentViewStrategy
                     (container) => !visitedElements.has(container.identifier)
                 )
                 .forEach((container) => {
-                    visitedElements.add(container.identifier);
+                    visitedElements.set(container.identifier, container.name);
                     visitor.visitSupportingElement(container);
                 });
         };
@@ -124,7 +127,7 @@ export class ComponentViewStrategy
         // 4.1. iterate over all components and include them
         const visitComponentArray = (components: Array<IComponent>) => {
             components.forEach((component) => {
-                visitedElements.add(component.identifier);
+                visitedElements.set(component.identifier, component.name);
                 visitor.visitPrimaryElement(component);
             });
         };
@@ -142,7 +145,7 @@ export class ComponentViewStrategy
 
                 // 3.1.2. iterate over all groups in the container and the group itself
                 container.groups.forEach((group) => {
-                    visitedElements.add(group.identifier);
+                    visitedElements.set(group.identifier, group.name);
                     visitComponentArray(group.components);
                     // visitor.visitGroup(group);
                 });
@@ -155,7 +158,7 @@ export class ComponentViewStrategy
                 components.forEach(visitConnectedContainers);
 
                 // 3.1.1. include the current container
-                visitedElements.add(container.identifier);
+                visitedElements.set(container.identifier, container.name);
                 visitor.visitorScopeElement(container);
             });
 

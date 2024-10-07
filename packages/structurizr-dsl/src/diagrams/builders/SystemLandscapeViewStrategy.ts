@@ -9,7 +9,7 @@ import {
 import { IDiagramVisitor, ISupportVisitor } from "../../shared";
 import {
     isRelationshipBetweenElementsInView,
-    getImpliedRelationshipsForSystemLandscapeView,
+    getImpliedRelationships,
 } from "../../utils";
 
 export class SystemLandscapeViewStrategy
@@ -33,9 +33,7 @@ export class SystemLandscapeViewStrategy
         >
     ): void {
         const visitedElements = new Set<string>();
-        const relationships = getImpliedRelationshipsForSystemLandscapeView(
-            this.model
-        );
+        const relationships = getImpliedRelationships(this.model, this.view);
 
         // include all software systems
         const visitSoftwareSystemArray = (

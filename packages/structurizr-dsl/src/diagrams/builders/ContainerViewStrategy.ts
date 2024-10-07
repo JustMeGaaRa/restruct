@@ -12,7 +12,7 @@ import {
     isElementExplicitlyIncludedInView,
     isRelationshipBetweenElementsInView,
     doesRelationshipExist,
-    getImpliedRelationshipsForContainerView,
+    getImpliedRelationships,
 } from "../../utils";
 
 export class ContainerViewStrategy
@@ -36,10 +36,7 @@ export class ContainerViewStrategy
         >
     ): void {
         const visitedElements = new Map<string, string>();
-        const relationships = getImpliedRelationshipsForContainerView(
-            this.model,
-            this.view.softwareSystemIdentifier
-        );
+        const relationships = getImpliedRelationships(this.model, this.view);
         const people = this.model.groups
             .flatMap((x) => x.people)
             .concat(this.model.people);
