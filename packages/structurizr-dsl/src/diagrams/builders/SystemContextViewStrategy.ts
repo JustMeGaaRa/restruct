@@ -1,20 +1,21 @@
 import {
     IModel,
     IPerson,
+    IRelationship,
     ISoftwareSystem,
     ISystemContextView,
 } from "../../interfaces";
 import { IDiagramVisitor, ISupportVisitor } from "../../shared";
 import {
     isElementExplicitlyIncludedInView,
-    visitImpliedRelationships,
     isRelationshipBetweenElementsInView,
-    isRelationshipInWorkspace,
+    doesRelationshipExist,
+    getImpliedRelationshipsForSystemContextView,
 } from "../../utils";
 
 export class SystemContextViewStrategy
     implements
-        ISupportVisitor<unknown, ISoftwareSystem, ISoftwareSystem | IPerson>
+        ISupportVisitor<ISoftwareSystem, ISoftwareSystem | IPerson, unknown>
 {
     constructor(
         private model: IModel,
@@ -23,33 +24,35 @@ export class SystemContextViewStrategy
 
     accept(
         visitor: IDiagramVisitor<
-            unknown,
             ISoftwareSystem,
-            ISoftwareSystem | IPerson
+            ISoftwareSystem | IPerson,
+            unknown
         >
     ): void {
         const visitedElements = new Set<string>();
-        const relationships = visitImpliedRelationships(this.model);
+        const relationships = getImpliedRelationshipsForSystemContextView(
+            this.model,
+            this.view.softwareSystemIdentifier
+        );
         const people = this.model.groups
-            .flatMap((x) => x.people)
+            .flatMap((group) => group.people)
             .concat(this.model.people);
         const softwareSystems = this.model.groups
-            .flatMap((x) => x.softwareSystems)
+            .flatMap((group) => group.softwareSystems)
             .concat(this.model.softwareSystems);
 
-        // 2.1.3. include all software systems that are directly connected to the current container
         const visitConnectedSoftwareSystems = (
             softwareSystem: ISoftwareSystem
         ) => {
             softwareSystems
                 .filter(
-                    (softwareSystem) =>
-                        softwareSystem.identifier !==
+                    (otherSoftwareSystem) =>
+                        otherSoftwareSystem.identifier !==
                         this.view.softwareSystemIdentifier
                 )
                 .filter(
                     (otherSoftwareSystem) =>
-                        isRelationshipInWorkspace(
+                        doesRelationshipExist(
                             relationships,
                             softwareSystem.identifier,
                             otherSoftwareSystem.identifier
@@ -61,16 +64,15 @@ export class SystemContextViewStrategy
                 )
                 .forEach((softwareSystem) => {
                     visitedElements.add(softwareSystem.identifier);
-                    visitor.visitSupportingElement(softwareSystem);
+                    visitor.visitPrimaryElement(softwareSystem);
                 });
         };
 
-        // 2.1.2. include all people that are directly connected to the current software system
         const visitConnectedPeople = (softwareSystem: ISoftwareSystem) => {
             people
                 .filter(
                     (person) =>
-                        isRelationshipInWorkspace(
+                        doesRelationshipExist(
                             relationships,
                             softwareSystem.identifier,
                             person.identifier
@@ -80,45 +82,45 @@ export class SystemContextViewStrategy
                             person.identifier
                         )
                 )
-                .filter(
-                    (person) =>
-                        !visitedElements.has(person.identifier.toString())
-                )
+                .filter((person) => !visitedElements.has(person.identifier))
                 .forEach((person) => {
                     visitedElements.add(person.identifier);
-                    visitor.visitSupportingElement(person);
+                    visitor.visitPrimaryElement(person);
                 });
         };
 
-        softwareSystems
-            .filter(
-                (softwareSystem) =>
-                    softwareSystem.identifier ===
-                    this.view.softwareSystemIdentifier
-            )
-            .forEach((softwareSystem) => {
-                // 2.1.1. include the current software and all software systems
-                visitedElements.add(softwareSystem.identifier);
-                visitor.visitPrimaryElement(softwareSystem);
-
-                visitConnectedPeople(softwareSystem);
-                visitConnectedSoftwareSystems(softwareSystem);
-            });
-
-        relationships
-            .filter(
-                (relationship) =>
-                    relationship.sourceIdentifier !==
-                        this.view.softwareSystemIdentifier &&
-                    relationship.targetIdentifier !==
+        const visitSoftwareSystemInScope = () => {
+            softwareSystems
+                .filter(
+                    (softwareSystem) =>
+                        softwareSystem.identifier ===
                         this.view.softwareSystemIdentifier
-            )
-            .filter((relationship) =>
-                isRelationshipBetweenElementsInView(
-                    visitedElements,
-                    relationship
                 )
-            )
-            .forEach((relationship) => visitor.visitRelationship(relationship));
+                .forEach((softwareSystem) => {
+                    visitedElements.add(softwareSystem.identifier);
+                    visitor.visitorScopeElement(softwareSystem);
+
+                    visitConnectedPeople(softwareSystem);
+                    visitConnectedSoftwareSystems(softwareSystem);
+                });
+        };
+
+        const visitRelationshipArray = (
+            relationships: Array<IRelationship>
+        ) => {
+            relationships
+                .filter((relationship) =>
+                    isRelationshipBetweenElementsInView(
+                        visitedElements,
+                        relationship
+                    )
+                )
+                .forEach((relationship) =>
+                    visitor.visitRelationship(relationship)
+                );
+        };
+
+        visitSoftwareSystemInScope();
+        visitRelationshipArray(relationships);
     }
 }

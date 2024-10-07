@@ -10,13 +10,16 @@ This is a monorepo project setup using Turbo.
 
 -   [x] monorepo setup (turborepo)
 -   [x] code formatter setup (prettier)
--   [x] initial app setup (vite for web view and vs code extension as host)
--   [x] ui library integration (nextui or shadcn)
+-   [x] initial vscode extension app setup (vite)
+-   [x] testing library setup (vitest)
+-   [x] ui library integration (nextui or shadcn/ui)
 
 ### Apps and Packages
 
 -   `docs`: a [Next.js](https://nextjs.org/) app
 -   `web`: another [Next.js](https://nextjs.org/) app
+-   `@structurizr/dsl`: a library for building Structurizr workspaces and C4 diagrams with typescript.
+-   `@structurizr/react`: a React component library for buiding Structurizr workspaces and rendering C4 diagrams.
 -   `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
 -   `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
 -   `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo

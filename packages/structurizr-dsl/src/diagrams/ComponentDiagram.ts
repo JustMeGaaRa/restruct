@@ -3,6 +3,7 @@ import {
     IComponentDiagram,
     IComponentView,
     IContainer,
+    IGroup,
     IPerson,
     IRelationship,
     ISoftwareSystem,
@@ -25,9 +26,9 @@ export class ComponentDiagram
     }
 
     public scope: IContainer;
-    public primaryElements: IComponent[];
-    public supportingElements: (IContainer | ISoftwareSystem | IPerson)[];
-    public relationships: IRelationship[];
+    public primaryElements: Array<IGroup | IComponent>;
+    public supportingElements: Array<IContainer | ISoftwareSystem | IPerson>;
+    public relationships: Array<IRelationship>;
 
     build(): IComponentDiagram {
         const strategy = new ComponentViewStrategy(
@@ -43,7 +44,7 @@ class ComponentDiagramVisitor
     implements
         IDiagramVisitor<
             IContainer,
-            IComponent,
+            IGroup | IComponent,
             ISoftwareSystem | IContainer | IPerson
         >
 {
@@ -52,7 +53,7 @@ class ComponentDiagramVisitor
     visitorScopeElement(scope: IContainer): void {
         this.diagram.scope = scope;
     }
-    visitPrimaryElement(primaryElement: IComponent): void {
+    visitPrimaryElement(primaryElement: IGroup | IComponent): void {
         this.diagram.primaryElements.push(primaryElement);
     }
     visitSupportingElement(

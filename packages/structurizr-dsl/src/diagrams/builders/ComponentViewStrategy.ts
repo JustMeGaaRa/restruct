@@ -9,9 +9,9 @@ import {
 import { IDiagramVisitor, ISupportVisitor } from "../../shared";
 import {
     isElementExplicitlyIncludedInView,
-    visitImpliedRelationships,
     isRelationshipBetweenElementsInView,
-    isRelationshipInWorkspace,
+    doesRelationshipExist,
+    visitWorkspaceRelationships,
 } from "../../utils";
 
 export class ComponentViewStrategy
@@ -35,7 +35,7 @@ export class ComponentViewStrategy
         >
     ): void {
         const visitedElements = new Set<string>();
-        const relationships = visitImpliedRelationships(this.model);
+        const relationships = visitWorkspaceRelationships(this.model);
         const people = this.model.people.concat(
             this.model.groups.flatMap((x) => x.people)
         );
@@ -51,7 +51,7 @@ export class ComponentViewStrategy
             people
                 .filter(
                     (person) =>
-                        isRelationshipInWorkspace(
+                        doesRelationshipExist(
                             relationships,
                             component.identifier,
                             person.identifier
@@ -73,7 +73,7 @@ export class ComponentViewStrategy
             softwareSystems
                 .filter(
                     (softwareSystem) =>
-                        isRelationshipInWorkspace(
+                        doesRelationshipExist(
                             relationships,
                             component.identifier,
                             softwareSystem.identifier
@@ -102,7 +102,7 @@ export class ComponentViewStrategy
                 )
                 .filter(
                     (container) =>
-                        isRelationshipInWorkspace(
+                        doesRelationshipExist(
                             relationships,
                             component.identifier,
                             container.identifier

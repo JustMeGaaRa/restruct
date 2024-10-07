@@ -8,17 +8,17 @@ import {
 } from "../../interfaces";
 import { IDiagramVisitor, ISupportVisitor } from "../../shared";
 import {
-    visitImpliedRelationships,
     isRelationshipBetweenElementsInView,
-    visitWorkspaceHierarchy,
-    isSoftwareSystem,
-    cacheElements,
-    isPerson,
+    getImpliedRelationshipsForSystemLandscapeView,
 } from "../../utils";
 
 export class SystemLandscapeViewStrategy
     implements
-        ISupportVisitor<unknown, IGroup | ISoftwareSystem | IPerson, unknown>
+        ISupportVisitor<
+            "workspace",
+            IGroup | ISoftwareSystem | IPerson,
+            unknown
+        >
 {
     constructor(
         private readonly model: IModel,
@@ -27,17 +27,17 @@ export class SystemLandscapeViewStrategy
 
     accept(
         visitor: IDiagramVisitor<
-            unknown,
+            "workspace",
             IGroup | ISoftwareSystem | IPerson,
             unknown
         >
     ): void {
         const visitedElements = new Set<string>();
-        const relationships = visitImpliedRelationships(this.model);
-        const elements = visitWorkspaceHierarchy(this.model);
-        const elementBag = cacheElements(elements);
+        const relationships = getImpliedRelationshipsForSystemLandscapeView(
+            this.model
+        );
 
-        // 2.1. include all software systems
+        // include all software systems
         const visitSoftwareSystemArray = (
             softwareSystems: Array<ISoftwareSystem>
         ) => {
@@ -47,7 +47,7 @@ export class SystemLandscapeViewStrategy
             });
         };
 
-        // 2.1. include all people
+        // include all people
         const visitPersonArray = (people: Array<IPerson>) => {
             people.forEach((person) => {
                 visitedElements.add(person.identifier);
@@ -60,7 +60,6 @@ export class SystemLandscapeViewStrategy
         ) => {
             relationships
                 .filter((relationship) =>
-                    // filter for elements that are present on view
                     isRelationshipBetweenElementsInView(
                         visitedElements,
                         relationship
@@ -71,18 +70,16 @@ export class SystemLandscapeViewStrategy
                 );
         };
 
-        // 1.1. iterate over all groups and find software system for the view
+        // iterate over all groups and find software system for the view
         this.model.groups.flatMap((group) => {
-            // 1.1.1.2. include people and software systems in the group
-            visitSoftwareSystemArray(group.softwareSystems);
-            visitPersonArray(group.people);
+            visitedElements.add(group.identifier);
             visitor.visitPrimaryElement(group);
 
-            // 1.1.1.1. include the software system group as a boundary element
-            visitedElements.add(group.identifier);
+            visitSoftwareSystemArray(group.softwareSystems);
+            visitPersonArray(group.people);
         });
 
-        // 1.2. iterate over all software systems and find software system for the view
+        // iterate over all software systems and find software system for the view
         visitSoftwareSystemArray(this.model.softwareSystems);
         visitPersonArray(this.model.people);
         visitRelationshipArray(relationships);

@@ -1,19 +1,17 @@
-import { beforeAll, describe, expect, test } from "vitest";
-import { createImpliedReltionshipsDummy } from "../workspace";
+import { describe, expect, test } from "vitest";
+import { createImpliedRelationshipsDummy } from "../workspace";
 import {
-    IWorkspace,
-    getElementTree,
+    getElementParentMap,
     isContainer,
     isPerson,
     isSoftwareSystem,
-    visitImpliedRelationships,
     visitWorkspaceHierarchy,
     visitWorkspaceRelationships,
 } from "../../src";
 
 describe("visitWorkspaceHierarchy", () => {
     test("should have 1 person, 1 software system, 1 container", () => {
-        const workspace = createImpliedReltionshipsDummy();
+        const workspace = createImpliedRelationshipsDummy();
         const elements = visitWorkspaceHierarchy(workspace.model);
 
         expect(elements).toBeDefined();
@@ -26,7 +24,7 @@ describe("visitWorkspaceHierarchy", () => {
 
 describe("visitWorkspaceRelationships", () => {
     test("should have 1 relationship", () => {
-        const workspace = createImpliedReltionshipsDummy();
+        const workspace = createImpliedRelationshipsDummy();
         const relationships = visitWorkspaceRelationships(workspace.model);
 
         expect(relationships).toBeDefined();
@@ -36,20 +34,10 @@ describe("visitWorkspaceRelationships", () => {
 
 describe("getElementTree", () => {
     test("should have 1 person, 1 software system, 1 container", () => {
-        const workspace = createImpliedReltionshipsDummy();
-        const elementTree = getElementTree(workspace.model);
+        const workspace = createImpliedRelationshipsDummy();
+        const elementTree = getElementParentMap(workspace.model);
 
         expect(elementTree).toBeDefined();
         expect(elementTree.size).toBe(3);
-    });
-});
-
-describe("visitImpliedRelationships", () => {
-    test("should have 2 relationships ncluding implied ones", () => {
-        const workspace = createImpliedReltionshipsDummy();
-        const impliedRelationships = visitImpliedRelationships(workspace.model);
-
-        expect(impliedRelationships).toBeDefined();
-        expect(impliedRelationships.length).toBe(2);
     });
 });

@@ -16,16 +16,16 @@ export class SystemContextDiagram
         private readonly workspace: IWorkspace,
         private readonly systemContextView: ISystemContextView
     ) {
-        this.scope = undefined;
+        this.scope = {} as any;
         this.primaryElements = [];
         this.supportingElements = [];
         this.relationships = [];
     }
 
-    public scope: unknown;
-    public primaryElements: ISoftwareSystem[];
-    public supportingElements: (ISoftwareSystem | IPerson)[];
-    public relationships: IRelationship[];
+    public scope: ISoftwareSystem;
+    public primaryElements: Array<ISoftwareSystem | IPerson>;
+    public supportingElements: Array<unknown>;
+    public relationships: Array<IRelationship>;
 
     build(): ISystemContextDiagram {
         const strategy = new SystemContextViewStrategy(
@@ -39,17 +39,17 @@ export class SystemContextDiagram
 
 class SystemContextDiagramVisitor
     implements
-        IDiagramVisitor<unknown, ISoftwareSystem, ISoftwareSystem | IPerson>
+        IDiagramVisitor<ISoftwareSystem, ISoftwareSystem | IPerson, unknown>
 {
     constructor(public diagram: ISystemContextDiagram) {}
 
-    visitorScopeElement(scope: unknown): void {
+    visitorScopeElement(scope: ISoftwareSystem): void {
         this.diagram.scope = scope;
     }
-    visitPrimaryElement(primaryElement: ISoftwareSystem): void {
+    visitPrimaryElement(primaryElement: ISoftwareSystem | IPerson): void {
         this.diagram.primaryElements.push(primaryElement);
     }
-    visitSupportingElement(supportingElement: IPerson): void {
+    visitSupportingElement(supportingElement: unknown): void {
         this.diagram.supportingElements.push(supportingElement);
     }
     visitRelationship(relationship: IRelationship): void {

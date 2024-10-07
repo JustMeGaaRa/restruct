@@ -53,7 +53,7 @@ export const createBigBankPlcWorkspace = () => {
                 atm = _.softwareSystem("ATM", "");
 
                 internetBankingSystem = _.softwareSystem(
-                    "Mainframe Banking System",
+                    "Internet Banking System",
                     "",
                     (_) => {
                         singlePageApplication = _.container(
@@ -205,9 +205,13 @@ export const createBigBankPlcWorkspace = () => {
             _.uses(
                 mainframeBankingSystemFacade.identifier,
                 mainframe.identifier,
-                "Uses"
+                "Makes API calls to"
             );
-            _.uses(emailSystemFacade.identifier, email.identifier, "Uses");
+            _.uses(
+                emailSystemFacade.identifier,
+                email.identifier,
+                "Sends e-mail using"
+            );
         });
 
         _.views((_) => {
@@ -222,7 +226,7 @@ export const createBigBankPlcWorkspace = () => {
     });
 };
 
-export const createImpliedReltionshipsDummy = () => {
+export const createImpliedRelationshipsDummy = () => {
     let person: IPerson;
     let softwareSystem: ISoftwareSystem;
     let webApp: IContainer;
@@ -240,6 +244,54 @@ export const createImpliedReltionshipsDummy = () => {
 
         _.views((_) => {
             _.systemContextView(softwareSystem.identifier, "System Context");
+        });
+    });
+};
+
+export const createImpliedRelationshipDummy2 = () => {
+    let systemA: ISoftwareSystem;
+    let containerA: IContainer;
+    let componentA: IComponent;
+    let componentB: IComponent;
+    let containerB: IContainer;
+    let systemB: ISoftwareSystem;
+    let systemC: ISoftwareSystem;
+
+    return workspace("Implied Relationships 2", "", (_) => {
+        _.model((_) => {
+            systemA = _.softwareSystem("Software System A", "", (_) => {
+                containerA = _.container("Container A", "", (_) => {
+                    componentA = _.component("Component A", "");
+                    componentB = _.component("Component B", "");
+                });
+                containerB = _.container("Container B", "");
+            });
+
+            systemB = _.softwareSystem("Software System B", "");
+            systemC = _.softwareSystem("Software System C", "");
+
+            _.uses(
+                componentA.identifier,
+                containerB.identifier,
+                "Component A uses Container B"
+            );
+            _.uses(
+                componentB.identifier,
+                systemC.identifier,
+                "Component B uses System C"
+            );
+            _.uses(
+                containerA.identifier,
+                systemB.identifier,
+                "Container A uses System B"
+            );
+        });
+
+        _.views((_) => {
+            _.systemLandscapeView("System Landscape");
+            _.systemContextView(systemA.identifier, "System Context");
+            _.containerView(systemA.identifier, "Containers");
+            _.componentView(containerA.identifier, "Components");
         });
     });
 };

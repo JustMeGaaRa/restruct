@@ -1,21 +1,27 @@
 import {
     IContainer,
     IContainerView,
+    IGroup,
     IModel,
     IPerson,
+    IRelationship,
     ISoftwareSystem,
 } from "../../interfaces";
 import { IDiagramVisitor, ISupportVisitor } from "../../shared";
 import {
     isElementExplicitlyIncludedInView,
-    visitImpliedRelationships,
     isRelationshipBetweenElementsInView,
-    isRelationshipInWorkspace,
+    doesRelationshipExist,
+    getImpliedRelationshipsForContainerView,
 } from "../../utils";
 
 export class ContainerViewStrategy
     implements
-        ISupportVisitor<ISoftwareSystem, IContainer, ISoftwareSystem | IPerson>
+        ISupportVisitor<
+            ISoftwareSystem,
+            IGroup | IContainer,
+            ISoftwareSystem | IPerson
+        >
 {
     constructor(
         private model: IModel,
@@ -25,12 +31,15 @@ export class ContainerViewStrategy
     accept(
         visitor: IDiagramVisitor<
             ISoftwareSystem,
-            IContainer,
+            IGroup | IContainer,
             ISoftwareSystem | IPerson
         >
     ): void {
-        const visitedElements = new Set<string>();
-        const relationships = visitImpliedRelationships(this.model);
+        const visitedElements = new Map<string, string>();
+        const relationships = getImpliedRelationshipsForContainerView(
+            this.model,
+            this.view.softwareSystemIdentifier
+        );
         const people = this.model.groups
             .flatMap((x) => x.people)
             .concat(this.model.people);
@@ -42,20 +51,20 @@ export class ContainerViewStrategy
         const visitConnectedSoftwareSystems = (container: IContainer) => {
             softwareSystems
                 .filter(
-                    (softwareSystem) =>
-                        softwareSystem.identifier !==
+                    (otherSoftwareSystem) =>
+                        otherSoftwareSystem.identifier !==
                         this.view.softwareSystemIdentifier
                 )
                 .filter(
-                    (softwareSystem) =>
-                        isRelationshipInWorkspace(
+                    (otherSoftwareSystem) =>
+                        doesRelationshipExist(
                             relationships,
                             container.identifier,
-                            softwareSystem.identifier
+                            otherSoftwareSystem.identifier
                         ) ||
                         isElementExplicitlyIncludedInView(
                             this.view,
-                            softwareSystem.identifier
+                            otherSoftwareSystem.identifier
                         )
                 )
                 .filter(
@@ -63,7 +72,10 @@ export class ContainerViewStrategy
                         !visitedElements.has(softwareSystem.identifier)
                 )
                 .forEach((softwareSystem) => {
-                    visitedElements.add(softwareSystem.identifier);
+                    visitedElements.set(
+                        softwareSystem.identifier,
+                        softwareSystem.name
+                    );
                     visitor.visitSupportingElement(softwareSystem);
                 });
         };
@@ -73,7 +85,7 @@ export class ContainerViewStrategy
             people
                 .filter(
                     (person) =>
-                        isRelationshipInWorkspace(
+                        doesRelationshipExist(
                             relationships,
                             container.identifier,
                             person.identifier
@@ -85,63 +97,72 @@ export class ContainerViewStrategy
                 )
                 .filter((person) => !visitedElements.has(person.identifier))
                 .forEach((person) => {
-                    visitedElements.add(person.identifier);
+                    visitedElements.set(person.identifier, person.name);
                     visitor.visitSupportingElement(person);
                 });
         };
 
-        // 3.1. iterate over all containers and include them
         const visitContainerArray = (containers: Array<IContainer>) => {
             containers.forEach((container) => {
-                visitedElements.add(container.identifier);
+                visitedElements.set(container.identifier, container.name);
                 visitor.visitPrimaryElement(container);
+
+                visitConnectedPeople(container);
+                visitConnectedSoftwareSystems(container);
             });
         };
 
-        // 2.1. iterate over all software systems and find software system for the view
-        softwareSystems
-            .filter(
-                (softwareSystem) =>
-                    softwareSystem.identifier ===
-                    this.view.softwareSystemIdentifier
-            )
-            .flatMap((softwareSystem) => {
-                const containers = softwareSystem.groups
-                    .flatMap((x) => x.containers)
-                    .concat(softwareSystem.containers);
-
-                // 2.1.2.2 include all containers in the group and the group itself
-                softwareSystem.groups.forEach((group) => {
-                    visitedElements.add(group.identifier);
-                    visitContainerArray(group.containers);
-                    // visitor.visitGroup(group);
-                });
-
-                // 2.1.3. include all containers in the software system
-                visitContainerArray(softwareSystem.containers);
-
-                containers.forEach(visitConnectedPeople);
-                containers.forEach(visitConnectedSoftwareSystems);
-
-                // 2.1.1. include the software system as a boundary element
-                visitedElements.add(softwareSystem.identifier);
-                visitor.visitorScopeElement(softwareSystem);
-            });
-
-        relationships
-            .filter(
-                (relationship) =>
-                    relationship.sourceIdentifier !==
-                        this.view.softwareSystemIdentifier &&
-                    relationship.targetIdentifier !==
+        const visitSoftwareSystemInScope = () => {
+            softwareSystems
+                .filter(
+                    (softwareSystem) =>
+                        softwareSystem.identifier ===
                         this.view.softwareSystemIdentifier
-            )
-            .filter((relationship) =>
-                isRelationshipBetweenElementsInView(
-                    visitedElements,
-                    relationship
                 )
-            )
-            .forEach((relationship) => visitor.visitRelationship(relationship));
+                .flatMap((softwareSystem) => {
+                    visitedElements.set(
+                        softwareSystem.identifier,
+                        softwareSystem.name
+                    );
+                    visitor.visitorScopeElement(softwareSystem);
+
+                    softwareSystem.groups.forEach((group) => {
+                        visitedElements.set(group.identifier, group.name);
+                        visitor.visitPrimaryElement(group);
+
+                        visitContainerArray(group.containers);
+                    });
+
+                    visitContainerArray(softwareSystem.containers);
+                });
+        };
+
+        const isRelationshipWithScope = (relationship: IRelationship) => {
+            return (
+                relationship.sourceIdentifier ===
+                    this.view.softwareSystemIdentifier ||
+                relationship.targetIdentifier ===
+                    this.view.softwareSystemIdentifier
+            );
+        };
+
+        const visitRelationshipArray = (
+            relationships: Array<IRelationship>
+        ) => {
+            const filtered = relationships.filter(
+                (relationship) =>
+                    !isRelationshipWithScope(relationship) &&
+                    isRelationshipBetweenElementsInView(
+                        visitedElements,
+                        relationship
+                    )
+            );
+            filtered.forEach((relationship) =>
+                visitor.visitRelationship(relationship)
+            );
+        };
+
+        visitSoftwareSystemInScope();
+        visitRelationshipArray(relationships);
     }
 }

@@ -252,22 +252,8 @@ export const findComponentParent = (
         .find((x) => x.components.some((c) => c.identifier === componentId));
 };
 
-export const isRelationshipInWorkspace = (
-    relationships: IRelationship[],
-    sourceIdentifier: string,
-    targetIdentifier: string
-) => {
-    return relationships.some(
-        (x) =>
-            (x.sourceIdentifier === sourceIdentifier &&
-                x.targetIdentifier === targetIdentifier) ||
-            (x.sourceIdentifier === targetIdentifier &&
-                x.targetIdentifier === sourceIdentifier)
-    );
-};
-
 export const isRelationshipBetweenElementsInView = (
-    elementsInView: Set<string>,
+    elementsInView: Set<string> | Map<string, string>,
     relationship: IRelationship
 ) => {
     return (
@@ -277,21 +263,10 @@ export const isRelationshipBetweenElementsInView = (
 };
 
 export const isElementExplicitlyIncludedInView = (
-    view: View,
+    view: { include?: string[] },
     elementIdentifier: string
 ) => {
-    switch (view.type) {
-        case ViewType.SystemLandscape:
-        case ViewType.SystemContext:
-        case ViewType.Container:
-        case ViewType.Component:
-        case ViewType.Deployment:
-            return view.include?.some(
-                (identifier) => identifier === elementIdentifier
-            );
-        default:
-            return false;
-    }
+    return view.include?.includes(elementIdentifier);
 };
 
 export * from "./guards";

@@ -17,13 +17,13 @@ export class SystemLandscapeDiagram
         private readonly workspace: IWorkspace,
         private readonly systemLandscapeView: ISystemLandscapeView
     ) {
-        this.scope = undefined;
+        this.scope = "workspace";
         this.primaryElements = [];
         this.supportingElements = [];
         this.relationships = [];
     }
 
-    public scope: unknown;
+    public scope: "workspace";
     public primaryElements: Array<ISoftwareSystem | IPerson>;
     public supportingElements: Array<unknown>;
     public relationships: Array<IRelationship>;
@@ -44,7 +44,7 @@ export class SystemLandscapeDiagramVisitor
 {
     constructor(private diagram: ISystemLandscapeDiagram) {}
 
-    visitorScopeElement(scope: unknown): void {
+    visitorScopeElement(scope: "workspace"): void {
         this.diagram.scope = scope;
     }
     visitPrimaryElement(primaryElement: ISoftwareSystem): void {

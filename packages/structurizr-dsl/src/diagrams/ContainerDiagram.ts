@@ -2,6 +2,7 @@ import {
     IContainer,
     IContainerDiagram,
     IContainerView,
+    IGroup,
     IPerson,
     IRelationship,
     ISoftwareSystem,
@@ -24,9 +25,9 @@ export class ContainerDiagram
     }
 
     public scope: ISoftwareSystem;
-    public primaryElements: IContainer[];
-    public supportingElements: (ISoftwareSystem | IPerson)[];
-    public relationships: IRelationship[];
+    public primaryElements: Array<IGroup | IContainer>;
+    public supportingElements: Array<ISoftwareSystem | IPerson>;
+    public relationships: Array<IRelationship>;
 
     build(): IContainerDiagram {
         const strategy = new ContainerViewStrategy(
@@ -40,14 +41,18 @@ export class ContainerDiagram
 
 class ContainerDiagramVisitor
     implements
-        IDiagramVisitor<ISoftwareSystem, IContainer, ISoftwareSystem | IPerson>
+        IDiagramVisitor<
+            ISoftwareSystem,
+            IGroup | IContainer,
+            ISoftwareSystem | IPerson
+        >
 {
     constructor(public diagram: IContainerDiagram) {}
 
     visitorScopeElement(scope: ISoftwareSystem): void {
         this.diagram.scope = scope;
     }
-    visitPrimaryElement(primaryElement: IContainer): void {
+    visitPrimaryElement(primaryElement: IGroup | IContainer): void {
         this.diagram.primaryElements.push(primaryElement);
     }
     visitSupportingElement(supportingElement: ISoftwareSystem | IPerson): void {
