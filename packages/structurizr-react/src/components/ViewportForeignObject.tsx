@@ -1,5 +1,6 @@
 import { FC, PropsWithChildren } from "react";
-import { useBox, useWorkspace } from "../components";
+import { useWorkspace } from "../containers";
+import { useBox } from "./Box";
 
 export const ViewportForeignObject: FC<PropsWithChildren<{
     position?: { x: number; y: number; };

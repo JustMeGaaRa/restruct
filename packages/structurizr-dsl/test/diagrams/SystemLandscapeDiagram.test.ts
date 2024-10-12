@@ -3,10 +3,10 @@ import {
     createBigBankPlcWorkspace,
     createImpliedRelationshipDummy2,
 } from "../workspace";
-import { SystemLandscapeDiagram } from "../../src/diagrams";
 import {
     ISystemLandscapeDiagram,
     IWorkspace,
+    createSystemLandscapeDiagram,
     isGroup,
     isPerson,
     isSoftwareSystem,
@@ -18,10 +18,10 @@ describe("System Landscape Diagram (Big Bank Plc.)", () => {
 
     beforeAll(() => {
         workspace = createBigBankPlcWorkspace();
-        diagram = new SystemLandscapeDiagram(
+        diagram = createSystemLandscapeDiagram(
             workspace,
             workspace.views.systemLandscape!
-        ).build();
+        );
     });
 
     test("should create a system landscape diagram", () => {
@@ -66,10 +66,10 @@ describe("System Landscape Diagram (Implied Relationships)", () => {
 
     beforeAll(() => {
         workspace = createImpliedRelationshipDummy2();
-        diagram = new SystemLandscapeDiagram(
+        diagram = createSystemLandscapeDiagram(
             workspace,
             workspace.views.systemLandscape!
-        ).build();
+        );
     });
 
     test("should create a container diagram", () => {

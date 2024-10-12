@@ -63,22 +63,22 @@ export const useViewNavigation = () => {
         }
 
         if (element?.type === ElementType.SoftwareSystem) {
-            const view = findViewForElement(workspace, ViewType.Container, element.identifier)
-                ?? createDefaultContainerView(element.identifier);
+            const view = findViewForElement(workspace, ViewType.Container, element.identifier.identifier)
+                ?? createDefaultContainerView(element.identifier.identifier);
             setCurrentView(view);
         }
 
         if (element?.type === ElementType.Container) {
-            const view = findViewForElement(workspace, ViewType.Component, element.identifier)
-                ?? createDefaultComponentView(element.identifier);
+            const view = findViewForElement(workspace, ViewType.Component, element.identifier.identifier)
+                ?? createDefaultComponentView(element.identifier.identifier);
             setCurrentView(view);
         }
     }, [setCurrentView]);
 
     const zoomOutOfElement = useCallback((workspace: IWorkspace, element: IElement) => {
-        const parent = findContainerParent(workspace.model, element?.identifier);
+        const parent = findContainerParent(workspace.model, element?.identifier.identifier);
         if (parent) {
-            zoomIntoElement(workspace, parent);
+            zoomIntoElement(workspace, parent as any);
         }
     }, [zoomIntoElement]);
 

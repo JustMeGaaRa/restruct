@@ -53,7 +53,7 @@ const BigBankPlc = workspace("Big Bank plc.", "", (_) => {
             atm = _.softwareSystem("ATM", "");
 
             internetBankingSystem = _.softwareSystem(
-                "Mainframe Banking System",
+                "Internet Banking System",
                 "",
                 (_) => {
                     singlePageApplication = _.container(
@@ -201,9 +201,13 @@ const BigBankPlc = workspace("Big Bank plc.", "", (_) => {
         _.uses(
             mainframeBankingSystemFacade.identifier,
             mainframe.identifier,
-            "Uses"
+            "Makes API calls to"
         );
-        _.uses(emailSystemFacade.identifier, email.identifier, "Uses");
+        _.uses(
+            emailSystemFacade.identifier,
+            email.identifier,
+            "Sends e-mail using"
+        );
     });
 
     _.views((_) => {

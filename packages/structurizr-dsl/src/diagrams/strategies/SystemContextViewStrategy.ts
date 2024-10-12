@@ -61,7 +61,7 @@ export class SystemContextViewStrategy
                 )
                 .forEach((softwareSystem) => {
                     visitedElements.add(softwareSystem.identifier);
-                    visitor.visitPrimaryElement(softwareSystem);
+                    visitor.visitPrimaryElement?.(softwareSystem);
                 });
         };
 
@@ -82,7 +82,7 @@ export class SystemContextViewStrategy
                 .filter((person) => !visitedElements.has(person.identifier))
                 .forEach((person) => {
                     visitedElements.add(person.identifier);
-                    visitor.visitPrimaryElement(person);
+                    visitor.visitPrimaryElement?.(person);
                 });
         };
 
@@ -95,7 +95,7 @@ export class SystemContextViewStrategy
                 )
                 .forEach((softwareSystem) => {
                     visitedElements.add(softwareSystem.identifier);
-                    visitor.visitorScopeElement(softwareSystem);
+                    visitor.visitorScopeElement?.(softwareSystem);
 
                     visitConnectedPeople(softwareSystem);
                     visitConnectedSoftwareSystems(softwareSystem);
@@ -113,7 +113,7 @@ export class SystemContextViewStrategy
                     )
                 )
                 .forEach((relationship) =>
-                    visitor.visitRelationship(relationship)
+                    visitor.visitRelationship?.(relationship)
                 );
         };
 

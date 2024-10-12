@@ -1,15 +1,17 @@
 import {
     ISystemContextDiagram,
     ISystemContextView,
-    SystemContextDiagram as Diagram,
+    createSystemContextDiagram,
     isPerson,
     isSoftwareSystem
 } from "@structurizr/dsl";
 import { FC, PropsWithChildren, useEffect, useState } from "react";
-import { IViewMetadata, ViewMetadataProvider } from "../../containers";
+import { IViewMetadata, ViewMetadataProvider, useWorkspace } from "../../containers";
 import { ZoomCallback } from "../../types";
-import { createDefaultSystemContextView } from "../../utils";
-import { useWorkspace } from "./Workspace";
+import {
+    createDefaultSystemContextView,
+    getMetadataFromDiagram,
+} from "../../utils";
 import { SoftwareSystem } from "./SoftwareSystem";
 import { Relationship } from "./Relationship";
 import { Person } from "./Person";
@@ -22,38 +24,39 @@ export const SystemContextDiagram: FC<PropsWithChildren<{
 }>> = ({
     children,
     value,
-    metadata,
     onZoomInClick,
     onZoomOutClick,
 }) => {
         const { workspace } = useWorkspace();
         const [diagram, setDiagram] = useState<ISystemContextDiagram | null>(null);
+        const [metadata, setMetadata] = useState<IViewMetadata>({ elements: {}, relationships: {} });
 
         useEffect(() => {
             if (workspace) {
                 const systemContextView = workspace.views.systemContexts.find(x => x.key === value.key)
                     ?? createDefaultSystemContextView(value.softwareSystemIdentifier);
-                const builder = new Diagram(workspace, systemContextView);
-                setDiagram(builder.build());
+
+                const diagram = createSystemContextDiagram(workspace, systemContextView);
+                setDiagram(diagram);
+
+                const metadataAuto = getMetadataFromDiagram(diagram);
+                setMetadata(metadataAuto);
             }
         }, [workspace, value.key, value.softwareSystemIdentifier, onZoomInClick, onZoomOutClick]);
 
         return (
-            <ViewMetadataProvider metadata={metadata}>
-                {diagram?.primaryElements.map((element) => (
-                    <SoftwareSystem key={element.identifier} value={element} />
-                ))}
-                {diagram?.supportingElements.filter(isSoftwareSystem).map((element) => (
-                    <SoftwareSystem key={element.identifier} value={element} />
-                ))}
-                {diagram?.supportingElements.filter(isPerson).map((element) => (
+            <ViewMetadataProvider metadata={metadata} setMetadata={setMetadata}>
+                {diagram?.scope && (
+                    <SoftwareSystem key={diagram.scope.identifier} value={diagram.scope} />
+                )}
+                {diagram?.primaryElements.filter(isPerson).map((element) => (
                     <Person key={element.identifier} value={element} />
                 ))}
+                {diagram?.primaryElements.filter(isSoftwareSystem).map((element) => (
+                    <SoftwareSystem key={element.identifier} value={element} />
+                ))}
                 {diagram?.relationships.map((relationship) => (
-                    <Relationship
-                        key={relationship.identifier}
-                        value={relationship}
-                    />
+                    <Relationship key={relationship.identifier} value={relationship} />
                 ))}
                 {children}
             </ViewMetadataProvider>

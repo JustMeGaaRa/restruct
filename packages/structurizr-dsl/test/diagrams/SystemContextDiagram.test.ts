@@ -2,7 +2,7 @@ import { beforeAll, describe, expect, test } from "vitest";
 import {
     ISystemContextDiagram,
     IWorkspace,
-    SystemContextDiagram,
+    createSystemContextDiagram,
     isPerson,
     isSoftwareSystem,
 } from "../../src";
@@ -17,10 +17,10 @@ describe("System Context Diagram (Big Bank Plc.)", () => {
 
     beforeAll(() => {
         workspace = createBigBankPlcWorkspace();
-        diagram = new SystemContextDiagram(
+        diagram = createSystemContextDiagram(
             workspace,
             workspace.views.systemContexts.at(0)!
-        ).build();
+        );
     });
 
     test("should create a system context diagram", () => {
@@ -61,10 +61,10 @@ describe("System Context Diagram (Implied Relationships)", () => {
 
     beforeAll(() => {
         workspace = createImpliedRelationshipDummy2();
-        diagram = new SystemContextDiagram(
+        diagram = createSystemContextDiagram(
             workspace,
             workspace.views.systemContexts.at(0)!
-        ).build();
+        );
     });
 
     test("should create a container diagram", () => {

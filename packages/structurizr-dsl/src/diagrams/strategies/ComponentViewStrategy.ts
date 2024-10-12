@@ -64,7 +64,7 @@ export class ComponentViewStrategy
                 .filter((person) => !visitedElements.has(person.identifier))
                 .forEach((person) => {
                     visitedElements.set(person.identifier, person.name);
-                    visitor.visitSupportingElement(person);
+                    visitor.visitSupportingElement?.(person);
                 });
         };
 
@@ -92,7 +92,7 @@ export class ComponentViewStrategy
                         softwareSystem.identifier,
                         softwareSystem.name
                     );
-                    visitor.visitSupportingElement(softwareSystem);
+                    visitor.visitSupportingElement?.(softwareSystem);
                 });
         };
 
@@ -120,7 +120,7 @@ export class ComponentViewStrategy
                 )
                 .forEach((container) => {
                     visitedElements.set(container.identifier, container.name);
-                    visitor.visitSupportingElement(container);
+                    visitor.visitSupportingElement?.(container);
                 });
         };
 
@@ -128,7 +128,7 @@ export class ComponentViewStrategy
         const visitComponentArray = (components: Array<IComponent>) => {
             components.forEach((component) => {
                 visitedElements.set(component.identifier, component.name);
-                visitor.visitPrimaryElement(component);
+                visitor.visitPrimaryElement?.(component);
             });
         };
 
@@ -159,7 +159,7 @@ export class ComponentViewStrategy
 
                 // 3.1.1. include the current container
                 visitedElements.set(container.identifier, container.name);
-                visitor.visitorScopeElement(container);
+                visitor.visitorScopeElement?.(container);
             });
 
         relationships
@@ -176,6 +176,8 @@ export class ComponentViewStrategy
                     relationship
                 )
             )
-            .forEach((relationship) => visitor.visitRelationship(relationship));
+            .forEach((relationship) =>
+                visitor.visitRelationship?.(relationship)
+            );
     }
 }

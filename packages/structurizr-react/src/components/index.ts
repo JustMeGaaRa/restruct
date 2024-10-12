@@ -1,4 +1,5 @@
 export * from "./diagrams";
+export * from "./models";
 export * from "./shapes";
 
 export * from "./BackgroundDotPattern";

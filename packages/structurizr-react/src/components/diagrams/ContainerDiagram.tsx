@@ -1,15 +1,18 @@
 import {
-    ContainerDiagram as Diagram,
     IContainerDiagram,
     IContainerView,
+    createContainerDiagram,
+    isContainer,
     isPerson,
     isSoftwareSystem
 } from "@structurizr/dsl";
 import { FC, PropsWithChildren, useEffect, useState } from "react";
-import { IViewMetadata, ViewMetadataProvider } from "../../containers";
+import { IViewMetadata, ViewMetadataProvider, useWorkspace } from "../../containers";
 import { ZoomCallback } from "../../types";
-import { createDefaultContainerView } from "../../utils";
-import { useWorkspace } from "./Workspace";
+import {
+    createDefaultContainerView,
+    getMetadataFromDiagram
+} from "../../utils";
 import { SoftwareSystem } from "./SoftwareSystem";
 import { Container } from "./Container";
 import { Relationship } from "./Relationship";
@@ -23,30 +26,34 @@ export const ContainerDiagram: FC<PropsWithChildren<{
 }>> = ({
     children,
     value,
-    metadata,
     onZoomInClick,
     onZoomOutClick,
 }) => {
         const { workspace } = useWorkspace();
         const [diagram, setDiagram] = useState<IContainerDiagram | null>(null);
+        const [metadata, setMetadata] = useState<IViewMetadata>({ elements: {}, relationships: {} });
 
         useEffect(() => {
             if (workspace) {
                 const containerView = workspace.views.containers.find(x => x.key === value.key)
                     ?? createDefaultContainerView(value.softwareSystemIdentifier);
-                const builder = new Diagram(workspace, containerView);
-                setDiagram(builder.build());
+
+                const diagram = createContainerDiagram(workspace, containerView);
+                setDiagram(diagram);
+
+                const metadataAuto = getMetadataFromDiagram(diagram);
+                setMetadata(metadataAuto);
             }
         }, [workspace, value.key, value.softwareSystemIdentifier, onZoomInClick, onZoomOutClick]);
 
         return (
-            <ViewMetadataProvider metadata={metadata}>
+            <ViewMetadataProvider metadata={metadata} setMetadata={setMetadata}>
                 {diagram?.scope && (
                     <SoftwareSystem
                         key={diagram.scope.identifier}
                         value={diagram.scope}
                     >
-                        {diagram?.primaryElements.map((element) => (
+                        {diagram?.primaryElements.filter(isContainer).map((element) => (
                             <Container
                                 key={element.identifier}
                                 value={{
@@ -57,17 +64,14 @@ export const ContainerDiagram: FC<PropsWithChildren<{
                         ))}
                     </SoftwareSystem>
                 )}
-                {diagram?.supportingElements.filter(isSoftwareSystem).map((element) => (
-                    <SoftwareSystem key={element.identifier} value={element} />
-                ))}
                 {diagram?.supportingElements.filter(isPerson).map((element) => (
                     <Person key={element.identifier} value={element} />
                 ))}
+                {diagram?.supportingElements.filter(isSoftwareSystem).map((element) => (
+                    <SoftwareSystem key={element.identifier} value={element} />
+                ))}
                 {diagram?.relationships.map((relationship) => (
-                    <Relationship
-                        key={relationship.identifier}
-                        value={relationship}
-                    />
+                    <Relationship key={relationship.identifier} value={relationship} />
                 ))}
                 {children}
             </ViewMetadataProvider>

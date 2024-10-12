@@ -73,7 +73,7 @@ export class ContainerViewStrategy
                         softwareSystem.identifier,
                         softwareSystem.name
                     );
-                    visitor.visitSupportingElement(softwareSystem);
+                    visitor.visitSupportingElement?.(softwareSystem);
                 });
         };
 
@@ -95,14 +95,14 @@ export class ContainerViewStrategy
                 .filter((person) => !visitedElements.has(person.identifier))
                 .forEach((person) => {
                     visitedElements.set(person.identifier, person.name);
-                    visitor.visitSupportingElement(person);
+                    visitor.visitSupportingElement?.(person);
                 });
         };
 
         const visitContainerArray = (containers: Array<IContainer>) => {
             containers.forEach((container) => {
                 visitedElements.set(container.identifier, container.name);
-                visitor.visitPrimaryElement(container);
+                visitor.visitPrimaryElement?.(container);
 
                 visitConnectedPeople(container);
                 visitConnectedSoftwareSystems(container);
@@ -121,11 +121,11 @@ export class ContainerViewStrategy
                         softwareSystem.identifier,
                         softwareSystem.name
                     );
-                    visitor.visitorScopeElement(softwareSystem);
+                    visitor.visitorScopeElement?.(softwareSystem);
 
                     softwareSystem.groups.forEach((group) => {
                         visitedElements.set(group.identifier, group.name);
-                        visitor.visitPrimaryElement(group);
+                        visitor.visitPrimaryElement?.(group);
 
                         visitContainerArray(group.containers);
                     });
@@ -155,7 +155,7 @@ export class ContainerViewStrategy
                     )
             );
             filtered.forEach((relationship) =>
-                visitor.visitRelationship(relationship)
+                visitor.visitRelationship?.(relationship)
             );
         };
 

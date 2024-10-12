@@ -6,8 +6,8 @@ export const Box: FC<PropsWithChildren<{
     id?: string;
     className?: string;
     position?: { x: number; y: number };
-    onMouseOver?: (event: React.MouseEvent<SVGGraphicsElement>) => void;
-    onMouseOut?: (event: React.MouseEvent<SVGGraphicsElement>) => void;
+    onMouseOver?: React.MouseEventHandler<SVGGraphicsElement>;
+    onMouseOut?: React.MouseEventHandler<SVGGraphicsElement>;
 }>> = ({
     children,
     id,

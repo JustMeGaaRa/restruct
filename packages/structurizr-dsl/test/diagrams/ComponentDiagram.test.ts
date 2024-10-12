@@ -1,8 +1,8 @@
 import { beforeAll, describe, expect, test } from "vitest";
 import {
-    ComponentDiagram,
     IComponentDiagram,
     IWorkspace,
+    createComponentDiagram,
     isComponent,
     isContainer,
     isSoftwareSystem,
@@ -18,10 +18,10 @@ describe("Component Diagram (Big Bank Plc.)", () => {
 
     beforeAll(() => {
         workspace = createBigBankPlcWorkspace();
-        diagram = new ComponentDiagram(
+        diagram = createComponentDiagram(
             workspace,
             workspace.views.components.at(0)!
-        ).build();
+        );
     });
 
     test("should create a component diagram", () => {
@@ -65,10 +65,10 @@ describe("Component Diagram (Implied Relationships)", () => {
 
     beforeAll(() => {
         workspace = createImpliedRelationshipDummy2();
-        diagram = new ComponentDiagram(
+        diagram = createComponentDiagram(
             workspace,
             workspace.views.components.at(0)!
-        ).build();
+        );
     });
 
     test("should create a component diagram", () => {

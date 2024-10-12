@@ -41,7 +41,7 @@ export class SystemLandscapeViewStrategy
         ) => {
             softwareSystems.forEach((softwareSystem) => {
                 visitedElements.add(softwareSystem.identifier.toString());
-                visitor.visitPrimaryElement(softwareSystem);
+                visitor.visitPrimaryElement?.(softwareSystem);
             });
         };
 
@@ -49,7 +49,7 @@ export class SystemLandscapeViewStrategy
         const visitPersonArray = (people: Array<IPerson>) => {
             people.forEach((person) => {
                 visitedElements.add(person.identifier);
-                visitor.visitPrimaryElement(person);
+                visitor.visitPrimaryElement?.(person);
             });
         };
 
@@ -64,14 +64,14 @@ export class SystemLandscapeViewStrategy
                     )
                 )
                 .forEach((relationship) =>
-                    visitor.visitRelationship(relationship)
+                    visitor.visitRelationship?.(relationship)
                 );
         };
 
         // iterate over all groups and find software system for the view
         this.model.groups.flatMap((group) => {
             visitedElements.add(group.identifier);
-            visitor.visitPrimaryElement(group);
+            visitor.visitPrimaryElement?.(group);
 
             visitSoftwareSystemArray(group.softwareSystems);
             visitPersonArray(group.people);

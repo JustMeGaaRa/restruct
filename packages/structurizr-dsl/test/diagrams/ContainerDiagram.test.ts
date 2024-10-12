@@ -1,8 +1,8 @@
 import { beforeAll, describe, expect, test } from "vitest";
 import {
-    ContainerDiagram,
     IContainerDiagram,
     IWorkspace,
+    createContainerDiagram,
     isContainer,
     isPerson,
     isSoftwareSystem,
@@ -18,10 +18,10 @@ describe("Container Diagram (Big Bank Plc.)", () => {
 
     beforeAll(() => {
         workspace = createBigBankPlcWorkspace();
-        diagram = new ContainerDiagram(
+        diagram = createContainerDiagram(
             workspace,
             workspace.views.containers.at(0)!
-        ).build();
+        );
     });
 
     test("should create a container diagram", () => {
@@ -65,10 +65,10 @@ describe("Container Diagram (Implied Relationships)", () => {
 
     beforeAll(() => {
         workspace = createImpliedRelationshipDummy2();
-        diagram = new ContainerDiagram(
+        diagram = createContainerDiagram(
             workspace,
             workspace.views.containers.at(0)!
-        ).build();
+        );
     });
 
     test("should create a container diagram", () => {

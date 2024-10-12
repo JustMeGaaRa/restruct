@@ -16,6 +16,4 @@ export * from "./SoftwareSystem";
 export * from "./SoftwareSystemInstance";
 export * from "./SystemContextDiagram";
 export * from "./SystemLandscapeDiagram";
-export * from "./Themes";
-export * from "./Views";
 export * from "./Workspace";

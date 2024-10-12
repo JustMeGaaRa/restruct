@@ -7,7 +7,6 @@ import {
     useState
 } from "react";
 import { BackgroundDotPattern } from "./BackgroundDotPattern";
-import { BackgroundType } from "./BackgroundType";
 import { MarkerArrowClosed } from "./MarkerArrowClosed";
 import { MarkerCircleOutline } from "./MarkerCircleOutline";
 import { useViewport } from "../containers";
@@ -55,17 +54,17 @@ export const Viewport: FC<PropsWithChildren> = ({ children }) => {
         };
     }, [setViewbox, svgRef]);
 
-    const handleOnPointerDown = useCallback((event: any) => {
+    const handleOnPointerDown = useCallback((event: React.MouseEvent<SVGSVGElement> | React.TouchEvent<SVGSVGElement>) => {
         const pointerTarget = getPointFromEvent(event);
         setIsPointerDown(true);
         setPointerOrigin(pointerTarget);
     }, []);
 
-    const handleOnPointerUp = useCallback((event: any) => {
+    const handleOnPointerUp = useCallback(() => {
         setIsPointerDown(false);
     }, []);
 
-    const handleOnPointerMove = useCallback((event: any) => {
+    const handleOnPointerMove = useCallback((event: React.MouseEvent<SVGSVGElement> | React.TouchEvent<SVGSVGElement>) => {
         if (!isPointerDown || !svgRef.current) return;
 
         event.preventDefault();
@@ -79,8 +78,7 @@ export const Viewport: FC<PropsWithChildren> = ({ children }) => {
         setPointerOrigin(pointerTarget);
     }, [setViewbox, isPointerDown, pointerOrigin.x, pointerOrigin.y]);
 
-    const handleOnWheel = useCallback((event: any) => {
-        // TODO: zooming center should be where the cursor is
+    const handleOnWheel = useCallback((event: React.WheelEvent<SVGSVGElement>) => {
         if (!svgRef?.current) return;
 
         event.preventDefault();
@@ -95,13 +93,13 @@ export const Viewport: FC<PropsWithChildren> = ({ children }) => {
         // Calculate new viewBox dimensions
         const newWidth = viewbox.width * deltaScale;
         const newHeight = viewbox.height * deltaScale;
-        const newX = viewbox.x + (cursorX - viewbox.x) * (1 - deltaScale);
-        const newY = viewbox.y + (cursorY - viewbox.y) * (1 - deltaScale);
+        const newX = viewbox.x + (cursorX / viewbox.width) * (viewbox.width - newWidth);
+        const newY = viewbox.y + (cursorY / viewbox.height) * (viewbox.height - newHeight);
 
         // Update viewBox with new values
-        // setViewbox({ x: newX, y: newY, width: newWidth, height: newHeight });
+        setViewbox({ x: newX, y: newY, width: newWidth, height: newHeight });
         setZoom((scale) => scale / deltaScale);
-    }, [setZoom, viewbox.height, viewbox.width, viewbox.x, viewbox.y]);
+    }, [setZoom, setViewbox, viewbox.height, viewbox.width, viewbox.x, viewbox.y]);
 
     return (
         <svg
