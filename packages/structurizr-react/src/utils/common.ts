@@ -5,14 +5,14 @@ export function cssCompose(...classNames: Array<string | undefined>) {
         .trim();
 }
 
-export function getSvgElementById(identifier: string) {
+export function getSvgGraphicsElementById(identifier: string) {
     const htmlElement = document.getElementById(identifier) as HTMLElement;
     const svgElement =
         htmlElement instanceof SVGGraphicsElement ? htmlElement : null;
     return svgElement;
 }
 
-export function getSvgElementByClassName(
+export function getSvgGraphicsElementByClassName(
     element: HTMLElement,
     className: string
 ) {

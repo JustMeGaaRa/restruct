@@ -1,9 +1,8 @@
-import { FC, PropsWithChildren, useEffect, useLayoutEffect, useState } from "react";
-import { calculateCenterPosition, getSvgElementByClassName, getSvgElementById } from "../utils";
-import { Box, useBox } from "./Box";
+import { FC, PropsWithChildren, useLayoutEffect, useState } from "react";
+import { getAbsoluteCenterOrDefault, getSvgGraphicsElementByClassName, getSvgGraphicsElementById } from "../utils";
+import { Box } from "./Box";
 import { ConnectorId } from "./Connector";
 import { MarkerType } from "./MarkerType";
-import { useViewport } from "../containers";
 
 function getPlacement(
     source: { x: number; y: number },
@@ -19,6 +18,9 @@ function getPlacement(
 
     return source.y > target.y ? "top-center" : "bottom-center";
 }
+
+// TODO: don't use the default dimensions here as they are passed as parameters in other scope
+const defaultDimensions = { x: 0, y: 0, height: 200, width: 200 };
 
 export const Edge: FC<PropsWithChildren<{
     id: string;
@@ -40,54 +42,43 @@ export const Edge: FC<PropsWithChildren<{
     markerStart = MarkerType.CircleOutline,
     markerEnd = MarkerType.ArrowClosed,
 }) => {
-        const { zoom, viewbox } = useViewport();
-        const { getAbsolutePosition } = useBox();
         const [path, setPath] = useState<string>("");
         const [labelCenter, setLabelCenter] = useState({ x: 0, y: 0 });
 
         useLayoutEffect(() => {
-            const absolutePosition = getAbsolutePosition();
             const bendingPoints = points ?? [];
 
-            const sourceNode = getSvgElementById(sourceNodeId);
-            const targetNode = getSvgElementById(targetNodeId);
+            const sourceNode = getSvgGraphicsElementById(sourceNodeId);
+            const targetNode = getSvgGraphicsElementById(targetNodeId);
 
             if (!sourceNode || !targetNode) return;
 
-            const sourceCenter = calculateCenterPosition(viewbox, zoom, sourceNode);
-            const targetCenter = calculateCenterPosition(viewbox, zoom, targetNode);
+            const sourceCenter = getAbsoluteCenterOrDefault(sourceNode, defaultDimensions);
+            const targetCenter = getAbsoluteCenterOrDefault(targetNode, defaultDimensions);
             const sourceConnectorPlacement = getPlacement(sourceCenter, targetCenter);
             const targetConnectorPlacement = getPlacement(targetCenter, sourceCenter);
-            const sourceConnector = getSvgElementByClassName(sourceNode, sourceConnectorPlacement);
-            const targetConnector = getSvgElementByClassName(targetNode, targetConnectorPlacement);
+            const sourceConnector = getSvgGraphicsElementByClassName(sourceNode, sourceConnectorPlacement);
+            const targetConnector = getSvgGraphicsElementByClassName(targetNode, targetConnectorPlacement);
 
             if (!sourceConnector || !targetConnector) return;
 
-            const sourceConnectorCenter = calculateCenterPosition(viewbox, zoom, sourceConnector);
-            const targetConnectorCenter = calculateCenterPosition(viewbox, zoom, targetConnector);
-            const sourcePoint = {
-                x: sourceConnectorCenter.x - absolutePosition.x,
-                y: sourceConnectorCenter.y - absolutePosition.y,
-            };
-            const targetPoint = {
-                x: targetConnectorCenter.x - absolutePosition.x,
-                y: targetConnectorCenter.y - absolutePosition.y,
-            };
+            const sourceConnectorCenter = getAbsoluteCenterOrDefault(sourceConnector, defaultDimensions);
+            const targetConnectorCenter = getAbsoluteCenterOrDefault(targetConnector, defaultDimensions);
 
             const labelCenter = {
-                x: (sourcePoint.x + targetPoint.x) / 2,
-                y: (sourcePoint.y + targetPoint.y) / 2,
+                x: (sourceConnectorCenter.x + targetConnectorCenter.x) / 2,
+                y: (sourceConnectorCenter.y + targetConnectorCenter.y) / 2,
             };
             const path = bendingPoints
-                .concat(targetPoint)
+                .concat(targetConnectorCenter)
                 .reduce(
                     (path, point) => `${path} ${point.x},${point.y}`,
-                    `${sourcePoint.x},${sourcePoint.y}`
+                    `${sourceConnectorCenter.x},${sourceConnectorCenter.y}`
                 );
 
             setPath(path);
             setLabelCenter(labelCenter);
-        }, [getAbsolutePosition, id, sourceNodeId, targetNodeId, points, viewbox, zoom]);
+        }, [id, sourceNodeId, targetNodeId, points]);
 
         return (
             <Box id={id} className={"structurizr__edge"}>

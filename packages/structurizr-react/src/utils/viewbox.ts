@@ -1,32 +1,51 @@
-import { Viewbox } from "../containers";
+export type Dimensions = {
+    x: number;
+    y: number;
+    height: number;
+    width: number;
+};
 
-const defaultDimensions = { x: 0, y: 0, height: 200, width: 200 };
+export function getTransformToElement(element: SVGGraphicsElement) {
+    // get the transformation matrix from the element to the SVG root
+    const elementCTM = element.getCTM();
+    // get the transformation matrix from the SVG root to the screen
+    const svgInverseCTM = element.ownerSVGElement?.getScreenCTM()?.inverse();
+    // cancel out the svg transformation from the element transformation
+    return svgInverseCTM?.multiply(elementCTM!);
+}
 
-export function calculateAbsolutePosition(
-    viewbox: Viewbox,
-    zoom: number,
-    element: SVGGraphicsElement
+export function getAbsoluteOrDefault(
+    element: SVGGraphicsElement,
+    defaultDimensions: Dimensions
 ) {
     if (!element) return defaultDimensions;
 
-    const ctm = element.getCTM();
-    const bbox = element.getBBox();
+    const elementCTM = element.getCTM();
+    const elementBBox = element.getBBox();
 
-    if (!ctm) return defaultDimensions;
+    if (!elementCTM) return defaultDimensions;
 
-    // const x = (ctm.e + bbox.x * ctm.a + bbox.y * ctm.c + viewbox.x) / zoom;
-    // const y = (ctm.f + bbox.x * ctm.b + bbox.y * ctm.d + viewbox.y) / zoom;
-    const x = ctm.e / ctm.a + bbox.x + viewbox.x / zoom;
-    const y = ctm.f / ctm.d + bbox.y + viewbox.y / zoom;
-    return { x, y, height: bbox.height, width: bbox.width };
+    const svgRelativeCTM = getTransformToElement(element);
+
+    const svgNewPoint = element.ownerSVGElement!.createSVGPoint();
+    svgNewPoint.x = elementBBox.x;
+    svgNewPoint.y = elementBBox.y;
+
+    const svgRelativePoint = svgNewPoint.matrixTransform(svgRelativeCTM);
+
+    return {
+        x: svgRelativePoint.x,
+        y: svgRelativePoint.y,
+        height: elementBBox.height,
+        width: elementBBox.width,
+    };
 }
 
-export function calculateCenterPosition(
-    viewbox: Viewbox,
-    zoom: number,
-    element: SVGGraphicsElement
+export function getAbsoluteCenterOrDefault(
+    element: SVGGraphicsElement,
+    defaultDimensions: Dimensions
 ) {
-    const absolutePosition = calculateAbsolutePosition(viewbox, zoom, element);
+    const absolutePosition = getAbsoluteOrDefault(element, defaultDimensions);
     const centeredPosition = {
         x: absolutePosition.x + absolutePosition.width / 2,
         y: absolutePosition.y + absolutePosition.height / 2,
@@ -34,8 +53,8 @@ export function calculateCenterPosition(
     return centeredPosition;
 }
 
-export function exportToSvg() {
-    const domNode = document
+export function exportToSvg(element: HTMLElement) {
+    const domNode = element
         .getElementsByClassName("structurizr__viewport")
         .item(0);
     const svgClone = domNode?.cloneNode(true) as SVGSVGElement;

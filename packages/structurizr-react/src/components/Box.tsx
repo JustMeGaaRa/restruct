@@ -1,5 +1,5 @@
 import { createContext, FC, PropsWithChildren, useCallback, useContext, useMemo, useRef } from "react";
-import { calculateAbsolutePosition } from "../utils";
+import { getAbsoluteOrDefault } from "../utils";
 import { useViewport } from "../containers";
 
 export const Box: FC<PropsWithChildren<{
@@ -52,7 +52,7 @@ export const useBox = () => {
 
     const getAbsolutePosition = useCallback(() => {
         if (!domNode?.current) return { x: 0, y: 0 };
-        return calculateAbsolutePosition(viewbox, zoom, domNode?.current);
+        return getAbsoluteOrDefault(domNode?.current);
     }, [domNode, viewbox, zoom]);
 
     return {
