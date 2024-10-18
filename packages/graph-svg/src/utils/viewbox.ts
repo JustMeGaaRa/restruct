@@ -54,9 +54,7 @@ export function getAbsoluteCenterOrDefault(
 }
 
 export function exportToSvg(element: HTMLElement) {
-    const domNode = element
-        .getElementsByClassName("structurizr__viewport")
-        .item(0);
+    const domNode = element.getElementsByClassName("graph__viewport").item(0);
     const svgClone = domNode?.cloneNode(true) as SVGSVGElement;
     if (!domNode) return "";
     svgClone.setAttribute("height", "1280");

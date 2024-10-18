@@ -19,7 +19,7 @@ export const ViewportForeignObject: FC<PropsWithChildren<{
 
         return (
             <div
-                className={"structurizr__viewport-object"}
+                className={"graph__viewport-object"}
                 style={{
                     pointerEvents: pointerEvents,
                     position: "absolute",

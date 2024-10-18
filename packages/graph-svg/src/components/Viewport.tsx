@@ -127,7 +127,7 @@ export const Viewport: FC<PropsWithChildren<{
         return (
             <svg
                 ref={svgRef}
-                className={"structurizr__viewport"}
+                className={"graph__viewport"}
                 cursor={"grab"}
                 height={"100%"}
                 width={"100%"}
@@ -150,7 +150,7 @@ export const Viewport: FC<PropsWithChildren<{
                     <MarkerArrowClosed />
                     <MarkerCircleOutline />
                 </defs>
-                <g ref={groupRef} className={"structurizr__viewport-content"}>
+                <g ref={groupRef} className={"graph__viewport-content"}>
                     {children}
                 </g>
             </svg>
