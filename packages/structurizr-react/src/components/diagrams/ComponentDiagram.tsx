@@ -4,6 +4,7 @@ import {
     createComponentDiagram,
     isComponent,
     isContainer,
+    isGroup,
     isPerson,
     isSoftwareSystem
 } from "@structurizr/dsl";
@@ -19,6 +20,7 @@ import { Component } from "./Component";
 import { SoftwareSystem } from "./SoftwareSystem";
 import { Person } from "./Person";
 import { Relationship } from "./Relationship";
+import { Group } from "./Group";
 
 export const ComponentDiagram: FC<PropsWithChildren<{
     value: IComponentView;
@@ -58,6 +60,19 @@ export const ComponentDiagram: FC<PropsWithChildren<{
                             technology: diagram.scope.technology.join(", ")
                         }}
                     >
+                        {diagram?.primaryElements.filter(isGroup).map((element) => (
+                            <Group key={element.identifier} value={element}>
+                                {diagram?.primaryElements.filter(isComponent).map((element) => (
+                                    <Component
+                                        key={element.identifier}
+                                        value={{
+                                            ...element,
+                                            technology: element.technology.join(", ")
+                                        }}
+                                    />
+                                ))}
+                            </Group>
+                        ))}
                         {diagram?.primaryElements.filter(isComponent).map((element) => (
                             <Component
                                 key={element.identifier}

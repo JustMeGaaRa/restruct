@@ -104,7 +104,7 @@ export const Viewport: FC<PropsWithChildren<{
             event.preventDefault();
 
             const SCALE_FACTOR = 1.1;
-            const scaleFactor = Math.pow(SCALE_FACTOR, event.deltaY / 100);
+            const scaleFactor = Math.pow(SCALE_FACTOR, (event.deltaY / 100) * (-1));
             const svgDimensions = svgRef.current.getBoundingClientRect();
             const contentOriginSize = groupRef.current.getBBox();
             const contentScaledSize = groupRef.current.getBoundingClientRect();
@@ -150,7 +150,7 @@ export const Viewport: FC<PropsWithChildren<{
                     <MarkerArrowClosed />
                     <MarkerCircleOutline />
                 </defs>
-                <g ref={groupRef} className={"structurizr__viewport-zoom"}>
+                <g ref={groupRef} className={"structurizr__viewport-content"}>
                     {children}
                 </g>
             </svg>

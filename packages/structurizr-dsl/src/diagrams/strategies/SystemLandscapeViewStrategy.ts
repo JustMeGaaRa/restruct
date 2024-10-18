@@ -2,7 +2,6 @@ import {
     IGroup,
     IModel,
     IPerson,
-    IRelationship,
     ISoftwareSystem,
     ISystemLandscapeView,
 } from "../../interfaces";
@@ -35,51 +34,41 @@ export class SystemLandscapeViewStrategy
         const visitedElements = new Set<string>();
         const relationships = getImpliedRelationships(this.model, this.view);
 
-        // include all software systems
-        const visitSoftwareSystemArray = (
-            softwareSystems: Array<ISoftwareSystem>
-        ) => {
-            softwareSystems.forEach((softwareSystem) => {
-                visitedElements.add(softwareSystem.identifier.toString());
-                visitor.visitPrimaryElement?.(softwareSystem);
-            });
-        };
-
-        // include all people
-        const visitPersonArray = (people: Array<IPerson>) => {
-            people.forEach((person) => {
-                visitedElements.add(person.identifier);
-                visitor.visitPrimaryElement?.(person);
-            });
-        };
-
-        const visitRelationshipArray = (
-            relationships: Array<IRelationship>
-        ) => {
-            relationships
-                .filter((relationship) =>
-                    isRelationshipBetweenElementsInView(
-                        visitedElements,
-                        relationship
-                    )
-                )
-                .forEach((relationship) =>
-                    visitor.visitRelationship?.(relationship)
-                );
-        };
-
         // iterate over all groups and find software system for the view
         this.model.groups.flatMap((group) => {
             visitedElements.add(group.identifier);
             visitor.visitPrimaryElement?.(group);
 
-            visitSoftwareSystemArray(group.softwareSystems);
-            visitPersonArray(group.people);
+            // visitSoftwareSystemArray(group.softwareSystems);
+            // visitPersonArray(group.people);
+            group.softwareSystems.forEach((softwareSystem) => {
+                visitedElements.add(softwareSystem.identifier.toString());
+            });
+            group.people.forEach((person) => {
+                visitedElements.add(person.identifier);
+            });
         });
 
         // iterate over all software systems and find software system for the view
-        visitSoftwareSystemArray(this.model.softwareSystems);
-        visitPersonArray(this.model.people);
-        visitRelationshipArray(relationships);
+        this.model.softwareSystems.forEach((softwareSystem) => {
+            visitedElements.add(softwareSystem.identifier.toString());
+            visitor.visitPrimaryElement?.(softwareSystem);
+        });
+
+        this.model.people.forEach((person) => {
+            visitedElements.add(person.identifier);
+            visitor.visitPrimaryElement?.(person);
+        });
+
+        relationships
+            .filter((relationship) =>
+                isRelationshipBetweenElementsInView(
+                    visitedElements,
+                    relationship
+                )
+            )
+            .forEach((relationship) =>
+                visitor.visitRelationship?.(relationship)
+            );
     }
 }

@@ -3,6 +3,7 @@ import {
     IContainerView,
     createContainerDiagram,
     isContainer,
+    isGroup,
     isPerson,
     isSoftwareSystem
 } from "@structurizr/dsl";
@@ -17,6 +18,7 @@ import { SoftwareSystem } from "./SoftwareSystem";
 import { Container } from "./Container";
 import { Relationship } from "./Relationship";
 import { Person } from "./Person";
+import { Group } from "./Group";
 
 export const ContainerDiagram: FC<PropsWithChildren<{
     value: IContainerView;
@@ -53,6 +55,19 @@ export const ContainerDiagram: FC<PropsWithChildren<{
                         key={diagram.scope.identifier}
                         value={diagram.scope}
                     >
+                        {diagram?.primaryElements.filter(isGroup).map((element) => (
+                            <Group key={element.identifier} value={element}>
+                                {element.containers.filter(isContainer).map((element) => (
+                                    <Container
+                                        key={element.identifier}
+                                        value={{
+                                            ...element,
+                                            technology: element.technology.join(", ")
+                                        }}
+                                    />
+                                ))}
+                            </Group>
+                        ))}
                         {diagram?.primaryElements.filter(isContainer).map((element) => (
                             <Container
                                 key={element.identifier}

@@ -2,6 +2,7 @@ import {
     ISystemLandscapeDiagram,
     ISystemLandscapeView,
     createSystemLandscapeDiagram,
+    isGroup,
     isPerson,
     isSoftwareSystem
 } from "@structurizr/dsl";
@@ -15,6 +16,7 @@ import {
 import { SoftwareSystem } from "./SoftwareSystem";
 import { Relationship } from "./Relationship";
 import { Person } from "./Person";
+import { Group } from "./Group";
 
 export const SystemLandscapeDiagram: FC<PropsWithChildren<{
     value?: ISystemLandscapeView;
@@ -46,6 +48,16 @@ export const SystemLandscapeDiagram: FC<PropsWithChildren<{
 
         return (
             <ViewMetadataProvider metadata={metadata} setMetadata={setMetadata}>
+                {diagram?.primaryElements.filter(isGroup).map((element) => (
+                    <Group key={element.identifier} value={element}>
+                        {element.people.filter(isPerson).map((element) => (
+                            <Person key={element.identifier} value={element} />
+                        ))}
+                        {element.softwareSystems.filter(isSoftwareSystem).map((element) => (
+                            <SoftwareSystem key={element.identifier} value={element} />
+                        ))}
+                    </Group>
+                ))}
                 {diagram?.primaryElements.filter(isPerson).map((element) => (
                     <Person key={element.identifier} value={element} />
                 ))}

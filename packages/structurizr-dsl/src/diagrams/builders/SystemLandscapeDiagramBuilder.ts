@@ -43,7 +43,9 @@ export class SystemLandscapeDiagramBuilder
         return this.diagram;
     }
 
-    addPrimaryElement(primaryElement: ISoftwareSystem | IPerson): void {
+    addPrimaryElement(
+        primaryElement: IGroup | ISoftwareSystem | IPerson
+    ): void {
         this.diagram.primaryElements.push(primaryElement);
     }
 
