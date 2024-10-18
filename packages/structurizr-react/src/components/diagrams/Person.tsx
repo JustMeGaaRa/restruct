@@ -1,5 +1,5 @@
 import { FC, PropsWithChildren } from "react";
-import { Connector } from "../";
+import { Connector } from "@graph/svg";
 import { useViewMetadata } from "../../containers";
 import { Element } from "./Element";
 

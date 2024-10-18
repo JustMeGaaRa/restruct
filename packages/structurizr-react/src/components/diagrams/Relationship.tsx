@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Edge, MarkerType, Text } from "../";
+import { Edge, MarkerType, Text } from "@graph/svg";
 import { useViewMetadata } from "../../containers";
 
 export interface IRelationship {

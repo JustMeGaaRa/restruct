@@ -1,6 +1,6 @@
 import { Children, FC, PropsWithChildren } from "react";
 import { Boundary } from "./Boundary";
-import { Connector } from "../";
+import { Connector } from "@graph/svg";
 import { useViewMetadata } from "../../containers";
 import { Element } from "./Element";
 

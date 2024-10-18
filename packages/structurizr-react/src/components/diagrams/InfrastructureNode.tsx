@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Connector } from "../../components";
+import { Connector } from "@graph/svg";
 import { useViewMetadata } from "../../containers";
 import { Element } from "./Element";
 

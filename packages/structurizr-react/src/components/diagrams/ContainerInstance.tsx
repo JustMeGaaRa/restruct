@@ -1,6 +1,6 @@
 import { FC, PropsWithChildren } from "react";
 import { useViewMetadata } from "../../containers";
-import { Box } from "../";
+import { Box } from "@graph/svg";
 
 export interface IContainerInstance {
     type: "Container Instance";

@@ -1,6 +1,6 @@
 import { createContext, FC, PropsWithChildren, useCallback, useContext, useMemo, useRef } from "react";
 import { getAbsoluteOrDefault } from "../utils";
-import { useViewport } from "../containers";
+import { useViewport } from "./ViewportProvider";
 
 export const Box: FC<PropsWithChildren<{
     id?: string;
@@ -52,7 +52,9 @@ export const useBox = () => {
 
     const getAbsolutePosition = useCallback(() => {
         if (!domNode?.current) return { x: 0, y: 0 };
-        return getAbsoluteOrDefault(domNode?.current);
+        const bbox = domNode?.current?.getBBox();
+        const dimensions = { x: bbox.x, y: bbox.y, width: bbox?.width || 0, height: bbox?.height || 0 };
+        return getAbsoluteOrDefault(domNode?.current, dimensions);
     }, [domNode, viewbox, zoom]);
 
     return {

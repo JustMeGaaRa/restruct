@@ -1,11 +1,14 @@
 import { IWorkspace } from "@structurizr/dsl";
 import {
+
+    Viewport,
+    ViewportProvider,
+} from "@graph/svg";
+import {
     ComponentDiagram,
     ContainerDiagram,
     SystemContextDiagram,
     SystemLandscapeDiagram,
-    Viewport,
-    ViewportProvider,
     Workspace,
     WorkspaceProvider
 } from "@structurizr/react";

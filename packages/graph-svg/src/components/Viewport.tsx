@@ -9,7 +9,7 @@ import {
 import { BackgroundDotPattern } from "./BackgroundDotPattern";
 import { MarkerArrowClosed } from "./MarkerArrowClosed";
 import { MarkerCircleOutline } from "./MarkerCircleOutline";
-import { useViewport } from "../containers";
+import { useViewport } from "./ViewportProvider";
 import { getContentScale, pan, zoom } from "../utils";
 
 function getPointFromEvent(event: any) {

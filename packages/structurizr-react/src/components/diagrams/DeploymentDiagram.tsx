@@ -1,8 +1,7 @@
-import { DeploymentViewStrategy, IDeploymentView } from "@structurizr/dsl";
+import { IDeploymentView } from "@structurizr/dsl";
 import { FC, PropsWithChildren, useEffect, useState } from "react";
 import { IViewMetadata, ViewMetadataProvider, useWorkspace } from "../../containers";
-import { ViewElementJsxVisitor, ZoomCallback } from "../../types";
-import { createDefaultDeploymentView } from "../../utils";
+import { ZoomCallback } from "../../types";
 
 export const DeploymentDiagram: FC<PropsWithChildren<{
     value: IDeploymentView;

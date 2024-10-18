@@ -1,5 +1,5 @@
 import { FC, PropsWithChildren } from "react";
-import { GroupNode, Text } from "../";
+import { GroupNode, Text } from "@graph/svg";
 import { useViewMetadata } from "../../containers";
 
 export interface IGroup {

@@ -1,20 +1,16 @@
 {
-    "name": "@structurizr/react",
+    "name": "@graph/svg",
     "version": "0.0.0",
     "private": true,
     "exports": {
         ".": "./src/index.ts"
     },
     "scripts": {
-        "test": "vitest",
-        "lint": "eslint ."
+        "test": "echo 'Add test script here'",
+        "lint": "echo 'Add lint script here'"
     },
     "dependencies": {
-        "@dagrejs/dagre": "^1.1.4",
-        "@graph/svg": "workspace:*",
-        "@structurizr/dsl": "workspace:*",
-        "react": "^18.2.0",
-        "uuid": "^10.0.0"
+        "react": "^18.2.0"
     },
     "devDependencies": {
         "@repo/eslint-config": "workspace:*",
@@ -23,7 +19,6 @@
         "@types/node": "^20.11.24",
         "@types/react": "^18.2.61",
         "@types/react-dom": "^18.2.19",
-        "@types/uuid": "^10.0.0",
         "eslint": "^8.57.0",
         "typescript": "^5.3.3",
         "vitest": "^2.1.1"

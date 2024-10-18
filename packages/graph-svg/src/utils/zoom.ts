@@ -1,4 +1,4 @@
-import { Viewbox } from "../containers";
+import { Viewbox } from "../components";
 
 /**
  * Calculates the scale factor between the original and current content sizes.

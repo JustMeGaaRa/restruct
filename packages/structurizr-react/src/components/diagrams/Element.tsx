@@ -1,5 +1,5 @@
 import { FC, PropsWithChildren } from "react";
-import { Node, Text } from "../";
+import { Node, Text } from "@graph/svg";
 
 export interface IElement {
     type: string;

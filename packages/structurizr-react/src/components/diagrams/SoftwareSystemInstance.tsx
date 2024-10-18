@@ -1,5 +1,5 @@
 import { FC, PropsWithChildren } from "react";
-import { Box } from "../";
+import { Box } from "@graph/svg";
 import { useViewMetadata } from "../../containers";
 
 export interface ISoftwareSystemInstance {
