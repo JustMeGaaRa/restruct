@@ -8,17 +8,16 @@ import {
 import { IDiagramVisitor } from "../../shared";
 
 export class SystemContextDiagramVisitor
-    implements
-        IDiagramVisitor<ISoftwareSystem, ISoftwareSystem | IPerson, unknown>
+    implements IDiagramVisitor<ISoftwareSystem, ISoftwareSystem | IPerson>
 {
-    constructor(public builder: ISystemContextDiagramBuilder) {}
+    constructor(private builder: ISystemContextDiagramBuilder) {}
 
-    visitorScopeElement(scope: ISoftwareSystem): void {
+    visitScopeElement(scope: ISoftwareSystem): void {
         this.builder.setScope(scope);
     }
 
-    visitPrimaryElement(primaryElement: ISoftwareSystem | IPerson): void {
-        this.builder.addPrimaryElement(primaryElement);
+    visitSupportingElement(supportingElement: ISoftwareSystem | IPerson): void {
+        this.builder.addSupportingElement(supportingElement);
     }
 
     visitRelationship(relationship: IRelationship): void {
@@ -34,7 +33,6 @@ export class SystemContextDiagramBuilder
     constructor() {
         this.diagram = {
             scope: {} as any,
-            primaryElements: [],
             supportingElements: [],
             relationships: [],
         };
@@ -48,8 +46,8 @@ export class SystemContextDiagramBuilder
         this.diagram.scope = scope;
     }
 
-    addPrimaryElement(primaryElement: ISoftwareSystem | IPerson): void {
-        this.diagram.primaryElements.push(primaryElement);
+    addSupportingElement(supportingElement: ISoftwareSystem | IPerson): void {
+        this.diagram.supportingElements.push(supportingElement);
     }
 
     addRelationship(relationship: IRelationship): void {

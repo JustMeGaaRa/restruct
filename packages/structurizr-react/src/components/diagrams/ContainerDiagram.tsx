@@ -1,9 +1,8 @@
 import {
     IContainerDiagram,
     IContainerView,
+    ViewType,
     createContainerDiagram,
-    isContainer,
-    isGroup,
     isPerson,
     isSoftwareSystem
 } from "@structurizr/dsl";
@@ -12,7 +11,7 @@ import { IViewMetadata, ViewMetadataProvider, useWorkspace } from "../../contain
 import { ZoomCallback } from "../../types";
 import {
     createDefaultContainerView,
-    getMetadataFromDiagram
+    autolayoutDiagram
 } from "../../utils";
 import { SoftwareSystem } from "./SoftwareSystem";
 import { Container } from "./Container";
@@ -43,7 +42,7 @@ export const ContainerDiagram: FC<PropsWithChildren<{
                 const diagram = createContainerDiagram(workspace, containerView);
                 setDiagram(diagram);
 
-                const metadataAuto = getMetadataFromDiagram(diagram);
+                const metadataAuto = autolayoutDiagram(diagram, ViewType.Container);
                 setMetadata(metadataAuto);
             }
         }, [workspace, value.key, value.softwareSystemIdentifier, onZoomInClick, onZoomOutClick]);
@@ -51,31 +50,16 @@ export const ContainerDiagram: FC<PropsWithChildren<{
         return (
             <ViewMetadataProvider metadata={metadata} setMetadata={setMetadata}>
                 {diagram?.scope && (
-                    <SoftwareSystem
-                        key={diagram.scope.identifier}
-                        value={diagram.scope}
-                    >
-                        {diagram?.primaryElements.filter(isGroup).map((element) => (
-                            <Group key={element.identifier} value={element}>
-                                {element.containers.filter(isContainer).map((element) => (
-                                    <Container
-                                        key={element.identifier}
-                                        value={{
-                                            ...element,
-                                            technology: element.technology.join(", ")
-                                        }}
-                                    />
+                    <SoftwareSystem key={diagram.scope.identifier} value={diagram.scope}>
+                        {diagram?.scope.groups.map((group) => (
+                            <Group key={group.identifier} value={group}>
+                                {group.containers.map((element) => (
+                                    <Container key={element.identifier} value={element} />
                                 ))}
                             </Group>
                         ))}
-                        {diagram?.primaryElements.filter(isContainer).map((element) => (
-                            <Container
-                                key={element.identifier}
-                                value={{
-                                    ...element,
-                                    technology: element.technology.join(", ")
-                                }}
-                            />
+                        {diagram?.scope.containers.map((element) => (
+                            <Container key={element.identifier} value={element} />
                         ))}
                     </SoftwareSystem>
                 )}

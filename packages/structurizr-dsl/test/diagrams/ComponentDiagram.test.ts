@@ -3,7 +3,6 @@ import {
     IComponentDiagram,
     IWorkspace,
     createComponentDiagram,
-    isComponent,
     isContainer,
     isSoftwareSystem,
 } from "../../src";
@@ -34,9 +33,8 @@ describe("Component Diagram (Big Bank Plc.)", () => {
     });
 
     test("should have primary elements with exactly 6 components", () => {
-        expect(diagram.primaryElements).toBeDefined();
-        expect(diagram.primaryElements).toHaveLength(6);
-        expect(diagram.primaryElements.filter(isComponent)).toHaveLength(6);
+        expect(diagram.scope.components).toBeDefined();
+        expect(diagram.scope.components).toHaveLength(6);
     });
 
     test("should have supporting elements with exactly 2 software systems", () => {
@@ -81,9 +79,8 @@ describe("Component Diagram (Implied Relationships)", () => {
     });
 
     test("should have primary elements with exactly 2 components", () => {
-        expect(diagram.primaryElements).toBeDefined();
-        expect(diagram.primaryElements).toHaveLength(2);
-        expect(diagram.primaryElements.filter(isComponent)).toHaveLength(2);
+        expect(diagram.scope.components).toBeDefined();
+        expect(diagram.scope.components).toHaveLength(2);
     });
 
     test("should have supporting elements with exactly 1 software system", () => {

@@ -1,23 +1,18 @@
 import {
-    IGroup,
-    IPerson,
+    IModel,
     IRelationship,
-    ISoftwareSystem,
     ISystemLandscapeDiagram,
     ISystemLandscapeDiagramBuilder,
 } from "../../interfaces";
 import { IDiagramVisitor } from "../../shared";
 
 export class SystemLandscapeDiagramVisitor
-    implements
-        IDiagramVisitor<unknown, IGroup | ISoftwareSystem | IPerson, unknown>
+    implements IDiagramVisitor<IModel, unknown>
 {
     constructor(private builder: ISystemLandscapeDiagramBuilder) {}
 
-    visitPrimaryElement(
-        primaryElement: IGroup | ISoftwareSystem | IPerson
-    ): void {
-        this.builder.addPrimaryElement(primaryElement);
+    visitScopeElement(scope: IModel): void {
+        this.builder.setScope(scope);
     }
 
     visitRelationship(relationship: IRelationship): void {
@@ -32,8 +27,7 @@ export class SystemLandscapeDiagramBuilder
 
     constructor() {
         this.diagram = {
-            scope: "workspace",
-            primaryElements: [],
+            scope: {} as any,
             supportingElements: [],
             relationships: [],
         };
@@ -43,10 +37,8 @@ export class SystemLandscapeDiagramBuilder
         return this.diagram;
     }
 
-    addPrimaryElement(
-        primaryElement: IGroup | ISoftwareSystem | IPerson
-    ): void {
-        this.diagram.primaryElements.push(primaryElement);
+    setScope(scope: IModel): void {
+        this.diagram.scope = scope;
     }
 
     addRelationship(relationship: IRelationship): void {

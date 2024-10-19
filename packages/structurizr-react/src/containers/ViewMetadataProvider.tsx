@@ -3,6 +3,7 @@ import {
     FC,
     PropsWithChildren,
     SetStateAction,
+    useCallback,
     useContext,
 } from "react";
 
@@ -48,5 +49,20 @@ export const ViewMetadataProvider: FC<PropsWithChildren<{
     };
 
 export const useViewMetadata = () => {
-    return useContext(ViewMetadataContext);
+    const { metadata, setMetadata } = useContext(ViewMetadataContext);
+
+    const getElementMetadataById = useCallback((elementIdentifier: string) => {
+        return metadata?.elements[elementIdentifier];
+    }, [metadata]);
+
+    const getRElationshipMetadataById = useCallback((relationshipIdentifier: string) => {
+        return metadata?.relationships[relationshipIdentifier];
+    }, [metadata]);
+
+    return {
+        metadata,
+        setMetadata,
+        getElementMetadataById,
+        getRElationshipMetadataById,
+    };
 };

@@ -1,13 +1,10 @@
-import { IBuilder } from "../shared";
-import { ISupportPrimaryElement } from "../shared/ISupportPrimaryElement";
+import { IBuilder, ISupportScope } from "../shared";
 import { ISupportRelationship } from "../shared/ISupportRelationship";
-import { IGroup } from "./IGroup";
-import { IPerson } from "./IPerson";
+import { IModel } from "./IModel";
 import { IRelationship } from "./IRelationship";
-import { ISoftwareSystem } from "./ISoftwareSystem";
 import { ISystemLandscapeDiagram } from "./ISystemLandscapeDiagram";
 
 export interface ISystemLandscapeDiagramBuilder
     extends IBuilder<ISystemLandscapeDiagram>,
-        ISupportPrimaryElement<IGroup | ISoftwareSystem | IPerson>,
+        ISupportScope<IModel>,
         ISupportRelationship<IRelationship> {}

@@ -3,7 +3,6 @@ import {
     IContainerDiagram,
     IWorkspace,
     createContainerDiagram,
-    isContainer,
     isPerson,
     isSoftwareSystem,
 } from "../../src";
@@ -34,9 +33,8 @@ describe("Container Diagram (Big Bank Plc.)", () => {
     });
 
     test("should have primary elements with exactly 5 containers", () => {
-        expect(diagram.primaryElements).toBeDefined();
-        expect(diagram.primaryElements).toHaveLength(5);
-        expect(diagram.primaryElements.filter(isContainer)).toHaveLength(5);
+        expect(diagram.scope.containers).toBeDefined();
+        expect(diagram.scope.containers).toHaveLength(5);
     });
 
     test("should have supporting elements with exactly 1 person", () => {
@@ -81,9 +79,8 @@ describe("Container Diagram (Implied Relationships)", () => {
     });
 
     test("should have primary elements with exactly 2 Containers", () => {
-        expect(diagram.primaryElements).toBeDefined();
-        expect(diagram.primaryElements).toHaveLength(2);
-        expect(diagram.primaryElements.filter(isContainer)).toHaveLength(2);
+        expect(diagram.scope.containers).toBeDefined();
+        expect(diagram.scope.containers).toHaveLength(2);
     });
 
     test("should have supporting elements with exactly 2 Software System", () => {

@@ -1,4 +1,4 @@
-import { FC, PropsWithChildren } from "react";
+import { FC, PropsWithChildren, useLayoutEffect, useRef, useState } from "react";
 import { GroupNode, Text } from "@graph/svg";
 
 export interface IBoundary {
@@ -20,38 +20,47 @@ export const Boundary: FC<PropsWithChildren<{
     value,
     className,
     position,
-    height = 0,
-    width = 0,
     borderWidth = 2,
     padding = 16,
 }) => {
+        const groupRef = useRef<SVGGElement>(null);
+        const [size, setSize] = useState({ height: 200, width: 200 });
+
+        useLayoutEffect(() => {
+            if (groupRef.current) {
+                const { height, width } = groupRef.current.getBBox();
+                setSize({ height, width });
+            }
+        }, [groupRef.current]);
+
         return (
             <GroupNode
+                ref={groupRef}
                 id={value.identifier}
                 className={className}
                 position={position}
-                height={height}
-                width={width}
+                height={size.height}
+                width={size.width}
             >
                 <Text
                     x={borderWidth + padding}
-                    y={height - borderWidth - padding - 16}
+                    y={size.height - borderWidth - padding - 16}
                     fontSize={14}
                     fontFamily={"Inter"}
                     fill={"#E8E8E8"}
                     style={{ whiteSpace: "pre" }}
-                    width={width - padding * 2 - borderWidth * 2}
+                    width={size.width - padding * 2 - borderWidth * 2}
                 >
                     {value.name}
                 </Text>
                 <Text
                     x={borderWidth + padding}
-                    y={height - borderWidth - padding}
+                    y={size.height - borderWidth - padding}
                     fontSize={11}
                     fontFamily={"Inter"}
                     fill={"#A1A2A3"}
                     style={{ whiteSpace: "pre" }}
-                    width={width - padding * 2 - borderWidth * 2}
+                    width={size.width - padding * 2 - borderWidth * 2}
                 >
                     {value.type}
                 </Text>

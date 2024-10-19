@@ -1,10 +1,10 @@
 import {
     IComponentDiagram,
     IComponentView,
+    ViewType,
     createComponentDiagram,
     isComponent,
     isContainer,
-    isGroup,
     isPerson,
     isSoftwareSystem
 } from "@structurizr/dsl";
@@ -13,7 +13,7 @@ import { IViewMetadata, ViewMetadataProvider, useWorkspace } from "../../contain
 import { ZoomCallback } from "../../types";
 import {
     createDefaultComponentView,
-    getMetadataFromDiagram
+    autolayoutDiagram
 } from "../../utils";
 import { Container } from "./Container";
 import { Component } from "./Component";
@@ -45,7 +45,7 @@ export const ComponentDiagram: FC<PropsWithChildren<{
                 const diagram = createComponentDiagram(workspace, componentView);
                 setDiagram(diagram);
 
-                const metadataAuto = getMetadataFromDiagram(diagram);
+                const metadataAuto = autolayoutDiagram(diagram, ViewType.Component);
                 setMetadata(metadataAuto);
             }
         }, [workspace, value.key, value.containerIdentifier, onZoomInClick, onZoomOutClick]);
@@ -53,34 +53,16 @@ export const ComponentDiagram: FC<PropsWithChildren<{
         return (
             <ViewMetadataProvider metadata={metadata} setMetadata={setMetadata}>
                 {diagram?.scope && (
-                    <Container
-                        key={diagram.scope.identifier}
-                        value={{
-                            ...diagram.scope,
-                            technology: diagram.scope.technology.join(", ")
-                        }}
-                    >
-                        {diagram?.primaryElements.filter(isGroup).map((element) => (
-                            <Group key={element.identifier} value={element}>
-                                {diagram?.primaryElements.filter(isComponent).map((element) => (
-                                    <Component
-                                        key={element.identifier}
-                                        value={{
-                                            ...element,
-                                            technology: element.technology.join(", ")
-                                        }}
-                                    />
+                    <Container key={diagram.scope.identifier} value={diagram.scope}>
+                        {diagram?.scope.groups.map((group) => (
+                            <Group key={group.identifier} value={group}>
+                                {group.components.map((element) => (
+                                    <Component key={element.identifier} value={element} />
                                 ))}
                             </Group>
                         ))}
-                        {diagram?.primaryElements.filter(isComponent).map((element) => (
-                            <Component
-                                key={element.identifier}
-                                value={{
-                                    ...element,
-                                    technology: element.technology.join(", ")
-                                }}
-                            />
+                        {diagram?.scope.components.filter(isComponent).map((element) => (
+                            <Component key={element.identifier} value={element} />
                         ))}
                     </Container>
                 )}
@@ -91,13 +73,7 @@ export const ComponentDiagram: FC<PropsWithChildren<{
                     <SoftwareSystem key={element.identifier} value={element} />
                 ))}
                 {diagram?.supportingElements.filter(isContainer).map((element) => (
-                    <Container
-                        key={element.identifier}
-                        value={{
-                            ...element,
-                            technology: element.technology.join(", ")
-                        }}
-                    />
+                    <Container key={element.identifier} value={element} />
                 ))}
                 {diagram?.relationships.map((relationship) => (
                     <Relationship key={relationship.identifier} value={relationship} />

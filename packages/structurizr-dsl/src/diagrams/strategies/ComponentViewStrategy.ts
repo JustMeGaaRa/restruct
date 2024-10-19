@@ -16,11 +16,7 @@ import {
 
 export class ComponentViewStrategy
     implements
-        ISupportVisitor<
-            IContainer,
-            IComponent,
-            ISoftwareSystem | IContainer | IPerson
-        >
+        ISupportVisitor<IContainer, ISoftwareSystem | IContainer | IPerson>
 {
     constructor(
         private model: IModel,
@@ -30,7 +26,6 @@ export class ComponentViewStrategy
     accept(
         visitor: IDiagramVisitor<
             IContainer,
-            IComponent,
             ISoftwareSystem | IContainer | IPerson
         >
     ): void {
@@ -128,7 +123,6 @@ export class ComponentViewStrategy
         const visitComponentArray = (components: Array<IComponent>) => {
             components.forEach((component) => {
                 visitedElements.set(component.identifier, component.name);
-                visitor.visitPrimaryElement?.(component);
             });
         };
 
@@ -159,7 +153,7 @@ export class ComponentViewStrategy
 
                 // 3.1.1. include the current container
                 visitedElements.set(container.identifier, container.name);
-                visitor.visitorScopeElement?.(container);
+                visitor.visitScopeElement?.(container);
             });
 
         relationships

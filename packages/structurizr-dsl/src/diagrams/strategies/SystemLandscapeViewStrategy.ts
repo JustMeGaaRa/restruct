@@ -1,10 +1,4 @@
-import {
-    IGroup,
-    IModel,
-    IPerson,
-    ISoftwareSystem,
-    ISystemLandscapeView,
-} from "../../interfaces";
+import { IModel, ISystemLandscapeView } from "../../interfaces";
 import { IDiagramVisitor, ISupportVisitor } from "../../shared";
 import {
     isRelationshipBetweenElementsInView,
@@ -12,32 +6,20 @@ import {
 } from "../../utils";
 
 export class SystemLandscapeViewStrategy
-    implements
-        ISupportVisitor<
-            "workspace",
-            IGroup | ISoftwareSystem | IPerson,
-            unknown
-        >
+    implements ISupportVisitor<IModel, unknown>
 {
     constructor(
         private readonly model: IModel,
         private readonly view: ISystemLandscapeView
     ) {}
 
-    accept(
-        visitor: IDiagramVisitor<
-            "workspace",
-            IGroup | ISoftwareSystem | IPerson,
-            unknown
-        >
-    ): void {
+    accept(visitor: IDiagramVisitor<IModel, unknown>): void {
         const visitedElements = new Set<string>();
         const relationships = getImpliedRelationships(this.model, this.view);
 
         // iterate over all groups and find software system for the view
         this.model.groups.flatMap((group) => {
             visitedElements.add(group.identifier);
-            visitor.visitPrimaryElement?.(group);
 
             // visitSoftwareSystemArray(group.softwareSystems);
             // visitPersonArray(group.people);
@@ -52,13 +34,13 @@ export class SystemLandscapeViewStrategy
         // iterate over all software systems and find software system for the view
         this.model.softwareSystems.forEach((softwareSystem) => {
             visitedElements.add(softwareSystem.identifier.toString());
-            visitor.visitPrimaryElement?.(softwareSystem);
         });
 
         this.model.people.forEach((person) => {
             visitedElements.add(person.identifier);
-            visitor.visitPrimaryElement?.(person);
         });
+
+        visitor.visitScopeElement?.(this.model);
 
         relationships
             .filter((relationship) =>

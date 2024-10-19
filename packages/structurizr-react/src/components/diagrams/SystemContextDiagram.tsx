@@ -1,6 +1,7 @@
 import {
     ISystemContextDiagram,
     ISystemContextView,
+    ViewType,
     createSystemContextDiagram,
     isPerson,
     isSoftwareSystem
@@ -10,7 +11,7 @@ import { IViewMetadata, ViewMetadataProvider, useWorkspace } from "../../contain
 import { ZoomCallback } from "../../types";
 import {
     createDefaultSystemContextView,
-    getMetadataFromDiagram,
+    autolayoutDiagram,
 } from "../../utils";
 import { SoftwareSystem } from "./SoftwareSystem";
 import { Relationship } from "./Relationship";
@@ -39,7 +40,7 @@ export const SystemContextDiagram: FC<PropsWithChildren<{
                 const diagram = createSystemContextDiagram(workspace, systemContextView);
                 setDiagram(diagram);
 
-                const metadataAuto = getMetadataFromDiagram(diagram);
+                const metadataAuto = autolayoutDiagram(diagram, ViewType.SystemContext);
                 setMetadata(metadataAuto);
             }
         }, [workspace, value.key, value.softwareSystemIdentifier, onZoomInClick, onZoomOutClick]);
@@ -49,10 +50,10 @@ export const SystemContextDiagram: FC<PropsWithChildren<{
                 {diagram?.scope && (
                     <SoftwareSystem key={diagram.scope.identifier} value={diagram.scope} />
                 )}
-                {diagram?.primaryElements.filter(isPerson).map((element) => (
+                {diagram?.supportingElements.filter(isPerson).map((element) => (
                     <Person key={element.identifier} value={element} />
                 ))}
-                {diagram?.primaryElements.filter(isSoftwareSystem).map((element) => (
+                {diagram?.supportingElements.filter(isSoftwareSystem).map((element) => (
                     <SoftwareSystem key={element.identifier} value={element} />
                 ))}
                 {diagram?.relationships.map((relationship) => (

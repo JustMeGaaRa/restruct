@@ -1,8 +1,8 @@
 import {
     ISystemLandscapeDiagram,
     ISystemLandscapeView,
+    ViewType,
     createSystemLandscapeDiagram,
-    isGroup,
     isPerson,
     isSoftwareSystem
 } from "@structurizr/dsl";
@@ -11,7 +11,7 @@ import { IViewMetadata, ViewMetadataProvider, useWorkspace } from "../../contain
 import { ZoomCallback } from "../../types";
 import {
     createDefaultSystemLandscapeView,
-    getMetadataFromDiagram,
+    autolayoutDiagram,
 } from "../../utils";
 import { SoftwareSystem } from "./SoftwareSystem";
 import { Relationship } from "./Relationship";
@@ -41,27 +41,27 @@ export const SystemLandscapeDiagram: FC<PropsWithChildren<{
                 const diagram = createSystemLandscapeDiagram(workspace, systemLandscapeView);
                 setDiagram(diagram);
 
-                const metadataAuto = getMetadataFromDiagram(diagram);
+                const metadataAuto = autolayoutDiagram(diagram, ViewType.SystemLandscape);
                 setMetadata(metadataAuto);
             }
         }, [workspace, onZoomInClick, onZoomOutClick]);
 
         return (
             <ViewMetadataProvider metadata={metadata} setMetadata={setMetadata}>
-                {diagram?.primaryElements.filter(isGroup).map((element) => (
-                    <Group key={element.identifier} value={element}>
-                        {element.people.filter(isPerson).map((element) => (
+                {diagram?.scope.groups.map((group) => (
+                    <Group key={group.identifier} value={group}>
+                        {group.people.filter(isPerson).map((element) => (
                             <Person key={element.identifier} value={element} />
                         ))}
-                        {element.softwareSystems.filter(isSoftwareSystem).map((element) => (
+                        {group.softwareSystems.filter(isSoftwareSystem).map((element) => (
                             <SoftwareSystem key={element.identifier} value={element} />
                         ))}
                     </Group>
                 ))}
-                {diagram?.primaryElements.filter(isPerson).map((element) => (
+                {diagram?.scope.people.map((element) => (
                     <Person key={element.identifier} value={element} />
                 ))}
-                {diagram?.primaryElements.filter(isSoftwareSystem).map((element) => (
+                {diagram?.scope.softwareSystems.map((element) => (
                     <SoftwareSystem key={element.identifier} value={element} />
                 ))}
                 {diagram?.relationships.map((relationship) => (

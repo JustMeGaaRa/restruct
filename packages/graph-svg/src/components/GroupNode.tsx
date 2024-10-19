@@ -1,8 +1,8 @@
-import { FC, PropsWithChildren } from "react";
+import { PropsWithChildren, forwardRef } from "react";
 import { cssCompose } from "../utils";
 import { Box } from "./Box";
 
-export const GroupNode: FC<PropsWithChildren<{
+export const GroupNode = forwardRef<SVGGElement, PropsWithChildren<{
     id?: string;
     className?: string;
     position?: { x: number; y: number };
@@ -13,37 +13,38 @@ export const GroupNode: FC<PropsWithChildren<{
     borderDash?: boolean;
     borderWidth?: number;
     borderRadius?: number;
-}>> = ({
+}>>(({
     children,
     id,
     className,
     position = { x: 0, y: 0 },
-    height = 400,
-    width = 400,
+    height,
+    width,
     backgroundColor = "#161819",
     borderColor = "#535354",
     borderDash = true,
     borderWidth = 2,
     borderRadius = 32,
-}) => {
-        return (
-            <Box
-                id={id}
-                className={cssCompose("structurizr__group-node", className)}
-                position={position}
-            >
-                <rect
-                    cursor={"pointer"}
-                    height={height}
-                    width={width}
-                    fill={backgroundColor}
-                    stroke={borderColor}
-                    strokeDasharray={borderDash ? "20 10" : undefined}
-                    strokeWidth={borderWidth}
-                    rx={borderRadius}
-                    ry={borderRadius}
-                />
-                {children}
-            </Box>
-        );
-    };
+}, ref) => {
+    return (
+        <Box
+            ref={ref}
+            id={id}
+            className={cssCompose("graph__group-node", className)}
+            position={position}
+        >
+            <rect
+                cursor={"pointer"}
+                height={height}
+                width={width}
+                fill={backgroundColor}
+                stroke={borderColor}
+                strokeDasharray={borderDash ? "20 10" : undefined}
+                strokeWidth={borderWidth}
+                rx={borderRadius}
+                ry={borderRadius}
+            />
+            {children}
+        </Box>
+    );
+});

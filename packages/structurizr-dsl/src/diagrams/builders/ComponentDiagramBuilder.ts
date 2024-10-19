@@ -1,8 +1,6 @@
 import { IComponentDiagram, IComponentDiagramBuilder } from "../../interfaces";
 import {
-    IComponent,
     IContainer,
-    IGroup,
     IPerson,
     IRelationship,
     ISoftwareSystem,
@@ -11,20 +9,12 @@ import { IDiagramVisitor } from "../../shared";
 
 export class ComponentDiagramVisitor
     implements
-        IDiagramVisitor<
-            IContainer,
-            IGroup | IComponent,
-            ISoftwareSystem | IContainer | IPerson
-        >
+        IDiagramVisitor<IContainer, ISoftwareSystem | IContainer | IPerson>
 {
     constructor(public builder: IComponentDiagramBuilder) {}
 
-    visitorScopeElement(scope: IContainer): void {
+    visitScopeElement(scope: IContainer): void {
         this.builder.setScope(scope);
-    }
-
-    visitPrimaryElement(primaryElement: IGroup | IComponent): void {
-        this.builder.addPrimaryElement(primaryElement);
     }
 
     visitSupportingElement(
@@ -44,7 +34,6 @@ export class ComponentDiagramBuilder implements IComponentDiagramBuilder {
     constructor() {
         this.diagram = {
             scope: {} as any,
-            primaryElements: [],
             supportingElements: [],
             relationships: [],
         };
@@ -56,10 +45,6 @@ export class ComponentDiagramBuilder implements IComponentDiagramBuilder {
 
     setScope(scope: IContainer): void {
         this.diagram.scope = scope;
-    }
-
-    addPrimaryElement(primaryElement: IGroup | IComponent): void {
-        this.diagram.primaryElements.push(primaryElement);
     }
 
     addSupportingElement(

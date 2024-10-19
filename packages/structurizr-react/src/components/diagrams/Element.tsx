@@ -6,7 +6,7 @@ export interface IElement {
     identifier: string;
     name: string;
     description?: string;
-    technology?: string;
+    technology?: string[];
 }
 
 // TODO: make position, height and width required
@@ -86,7 +86,7 @@ export const Element: FC<PropsWithChildren<{
                     textAnchor={"middle"}
                     width={width - padding * 2 - borderWidth * 2}
                 >
-                    {value.technology}
+                    {value.technology?.join(", ")}
                 </Text>
                 {children}
             </Node>

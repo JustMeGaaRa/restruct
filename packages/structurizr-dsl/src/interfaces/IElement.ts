@@ -1,9 +1,8 @@
 import { ElementType } from "./ElementType";
 import { ITag } from "./ITag";
-import { Identifier } from "./Identifier";
 
 export interface IElement {
-    identifier: Identifier;
+    identifier: string;
     type: ElementType;
     name: string;
     description?: string;

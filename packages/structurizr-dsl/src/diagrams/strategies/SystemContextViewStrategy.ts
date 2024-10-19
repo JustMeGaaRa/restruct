@@ -14,8 +14,7 @@ import {
 } from "../../utils";
 
 export class SystemContextViewStrategy
-    implements
-        ISupportVisitor<ISoftwareSystem, ISoftwareSystem | IPerson, unknown>
+    implements ISupportVisitor<ISoftwareSystem, ISoftwareSystem | IPerson>
 {
     constructor(
         private model: IModel,
@@ -23,11 +22,7 @@ export class SystemContextViewStrategy
     ) {}
 
     accept(
-        visitor: IDiagramVisitor<
-            ISoftwareSystem,
-            ISoftwareSystem | IPerson,
-            unknown
-        >
+        visitor: IDiagramVisitor<ISoftwareSystem, ISoftwareSystem | IPerson>
     ): void {
         const visitedElements = new Set<string>();
         const relationships = getImpliedRelationships(this.model, this.view);
@@ -61,7 +56,7 @@ export class SystemContextViewStrategy
                 )
                 .forEach((softwareSystem) => {
                     visitedElements.add(softwareSystem.identifier);
-                    visitor.visitPrimaryElement?.(softwareSystem);
+                    visitor.visitSupportingElement?.(softwareSystem);
                 });
         };
 
@@ -82,7 +77,7 @@ export class SystemContextViewStrategy
                 .filter((person) => !visitedElements.has(person.identifier))
                 .forEach((person) => {
                     visitedElements.add(person.identifier);
-                    visitor.visitPrimaryElement?.(person);
+                    visitor.visitSupportingElement?.(person);
                 });
         };
 
@@ -95,7 +90,7 @@ export class SystemContextViewStrategy
                 )
                 .forEach((softwareSystem) => {
                     visitedElements.add(softwareSystem.identifier);
-                    visitor.visitorScopeElement?.(softwareSystem);
+                    visitor.visitScopeElement?.(softwareSystem);
 
                     visitConnectedPeople(softwareSystem);
                     visitConnectedSoftwareSystems(softwareSystem);

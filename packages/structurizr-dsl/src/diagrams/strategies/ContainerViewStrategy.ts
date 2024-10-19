@@ -1,7 +1,6 @@
 import {
     IContainer,
     IContainerView,
-    IGroup,
     IModel,
     IPerson,
     IRelationship,
@@ -16,12 +15,7 @@ import {
 } from "../../utils";
 
 export class ContainerViewStrategy
-    implements
-        ISupportVisitor<
-            ISoftwareSystem,
-            IGroup | IContainer,
-            ISoftwareSystem | IPerson
-        >
+    implements ISupportVisitor<ISoftwareSystem, ISoftwareSystem | IPerson>
 {
     constructor(
         private model: IModel,
@@ -29,11 +23,7 @@ export class ContainerViewStrategy
     ) {}
 
     accept(
-        visitor: IDiagramVisitor<
-            ISoftwareSystem,
-            IGroup | IContainer,
-            ISoftwareSystem | IPerson
-        >
+        visitor: IDiagramVisitor<ISoftwareSystem, ISoftwareSystem | IPerson>
     ): void {
         const visitedElements = new Map<string, string>();
         const relationships = getImpliedRelationships(this.model, this.view);
@@ -102,7 +92,6 @@ export class ContainerViewStrategy
         const visitContainerArray = (containers: Array<IContainer>) => {
             containers.forEach((container) => {
                 visitedElements.set(container.identifier, container.name);
-                visitor.visitPrimaryElement?.(container);
 
                 visitConnectedPeople(container);
                 visitConnectedSoftwareSystems(container);
@@ -121,11 +110,10 @@ export class ContainerViewStrategy
                         softwareSystem.identifier,
                         softwareSystem.name
                     );
-                    visitor.visitorScopeElement?.(softwareSystem);
+                    visitor.visitScopeElement?.(softwareSystem);
 
                     softwareSystem.groups.forEach((group) => {
                         visitedElements.set(group.identifier, group.name);
-                        visitor.visitPrimaryElement?.(group);
 
                         visitContainerArray(group.containers);
                     });

@@ -22,6 +22,7 @@ import {
     ViewType,
     IModel,
     IViews,
+    IElement,
 } from "../interfaces";
 
 export function isWorkspace(workspace: any): workspace is IWorkspace {
@@ -47,6 +48,9 @@ export function isViews(views: any): views is IViews {
         views.components.every((view: any) => isComponentView(view)) &&
         views.deployments.every((view: any) => isDeploymentView(view))
     );
+}
+export function isElement(element: any): element is IElement {
+    return element.type !== undefined && element.identifier !== undefined;
 }
 export function isGroup(group: any): group is IGroup {
     return group.type === ElementType.Group;

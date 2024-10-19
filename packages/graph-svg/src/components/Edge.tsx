@@ -81,7 +81,7 @@ export const Edge: FC<PropsWithChildren<{
         }, [id, sourceNodeId, targetNodeId, points]);
 
         return (
-            <Box id={id} className={"structurizr__edge"}>
+            <Box id={id} className={"graph__edge"}>
                 <polyline
                     stroke={stroke}
                     strokeWidth={strokeWidth}
@@ -91,7 +91,7 @@ export const Edge: FC<PropsWithChildren<{
                     markerEnd={`url(#${markerEnd})`}
                 />
                 <Box
-                    className={"structurizr__edge-label"}
+                    className={"graph__edge-label"}
                     position={labelCenter}
                 >
                     {children}

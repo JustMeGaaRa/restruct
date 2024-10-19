@@ -9,27 +9,20 @@ export interface ISoftwareSystem {
     identifier: string;
     name: string;
     description?: string;
-    technology?: string;
 }
 
 export const SoftwareSystem: FC<PropsWithChildren<{ value: ISoftwareSystem }>> = ({ children, value }) => {
-    const { metadata } = useViewMetadata();
-    const dimensions = metadata?.elements[value.identifier] ?? {
-        x: 0,
-        y: 0,
-        height: 200,
-        width: 200,
-    };
-    // TODO: pass these default values to the Element component directly
-    const { height = 200, width = 200 } = dimensions;
+    const { getElementMetadataById } = useViewMetadata();
+    const dimensions = getElementMetadataById(value.identifier);
+    const { height = 200, width = 200 } = dimensions ?? { height: 200, width: 200 };
 
     return Children.count(children) > 0 ? (
         <Boundary
             className={"structurizr__boundary-system"}
             value={value}
             position={dimensions}
-            height={dimensions.height}
-            width={dimensions.width}
+            height={height}
+            width={width}
         >
             {children}
         </Boundary>
@@ -38,8 +31,8 @@ export const SoftwareSystem: FC<PropsWithChildren<{ value: ISoftwareSystem }>> =
             className={"structurizr__element-system"}
             value={value}
             position={dimensions}
-            height={dimensions.height}
-            width={dimensions.width}
+            height={height}
+            width={width}
         >
             <Connector height={height} width={width} placement={"top-left"} />
             <Connector height={height} width={width} placement={"top-center"} />

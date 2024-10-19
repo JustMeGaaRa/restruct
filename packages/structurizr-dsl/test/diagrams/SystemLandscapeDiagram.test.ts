@@ -7,9 +7,7 @@ import {
     ISystemLandscapeDiagram,
     IWorkspace,
     createSystemLandscapeDiagram,
-    isGroup,
-    isPerson,
-    isSoftwareSystem,
+    isModel,
 } from "../../src";
 
 describe("System Landscape Diagram (Big Bank Plc.)", () => {
@@ -28,25 +26,31 @@ describe("System Landscape Diagram (Big Bank Plc.)", () => {
         expect(diagram).toBeDefined();
     });
 
-    test("should have an undefined scope", () => {
-        expect(diagram.scope).toBe("workspace");
+    test("should have an software system as scope", () => {
+        expect([diagram.scope].filter(isModel)).toHaveLength(1);
     });
 
-    test("should have primary elements with 3 persons", () => {
-        expect(diagram.primaryElements).toBeDefined();
-        expect(diagram.primaryElements.filter(isPerson)).toHaveLength(3);
+    test("should have primary elements with 3 people", () => {
+        expect(diagram.scope.people).toBeDefined();
+        expect(
+            diagram.scope.groups
+                .flatMap((x) => x.people)
+                .concat(diagram.scope.people)
+        ).toHaveLength(3);
     });
 
     test("should have primary elements with 4 software systems", () => {
-        expect(diagram.primaryElements).toBeDefined();
-        expect(diagram.primaryElements.filter(isSoftwareSystem)).toHaveLength(
-            4
-        );
+        expect(diagram.scope.softwareSystems).toBeDefined();
+        expect(
+            diagram.scope.groups
+                .flatMap((x) => x.softwareSystems)
+                .concat(diagram.scope.softwareSystems)
+        ).toHaveLength(4);
     });
 
     test("should have primary elements with 1 group", () => {
-        expect(diagram.primaryElements).toBeDefined();
-        expect(diagram.primaryElements.filter(isGroup)).toHaveLength(1);
+        expect(diagram.scope.groups).toBeDefined();
+        expect(diagram.scope.groups).toHaveLength(1);
     });
 
     test("should have none supporting elements", () => {
@@ -81,10 +85,8 @@ describe("System Landscape Diagram (Implied Relationships)", () => {
     });
 
     test("should have primary elements with 3 Software Systems", () => {
-        expect(diagram.primaryElements).toBeDefined();
-        expect(diagram.primaryElements.filter(isSoftwareSystem)).toHaveLength(
-            3
-        );
+        expect(diagram.scope.softwareSystems).toBeDefined();
+        expect(diagram.scope.softwareSystems).toHaveLength(3);
     });
 
     test("should have none supporting elements", () => {

@@ -32,21 +32,16 @@ describe("System Context Diagram (Big Bank Plc.)", () => {
         expect(isSoftwareSystem(diagram.scope)).toBe(true);
     });
 
-    test("should have primary elements with 2 software systems", () => {
-        expect(diagram.primaryElements).toBeDefined();
-        expect(diagram.primaryElements.filter(isSoftwareSystem)).toHaveLength(
-            2
-        );
-    });
-
-    test("should have primary elements with 1 person", () => {
-        expect(diagram.primaryElements).toBeDefined();
-        expect(diagram.primaryElements.filter(isPerson)).toHaveLength(1);
-    });
-
-    test("should have none supporting elements", () => {
+    test("should have supporting elements with 2 software systems", () => {
         expect(diagram.supportingElements).toBeDefined();
-        expect(diagram.supportingElements).toHaveLength(0);
+        expect(
+            diagram.supportingElements.filter(isSoftwareSystem)
+        ).toHaveLength(2);
+    });
+
+    test("should have supporting elements with 1 person", () => {
+        expect(diagram.supportingElements).toBeDefined();
+        expect(diagram.supportingElements.filter(isPerson)).toHaveLength(1);
     });
 
     test("should have 4 relationships", () => {
@@ -76,16 +71,11 @@ describe("System Context Diagram (Implied Relationships)", () => {
         expect(isSoftwareSystem(diagram.scope)).toBe(true);
     });
 
-    test("should have primary elements with 2 Software Systems", () => {
-        expect(diagram.primaryElements).toBeDefined();
-        expect(diagram.primaryElements.filter(isSoftwareSystem)).toHaveLength(
-            2
-        );
-    });
-
-    test("should have none supporting elements", () => {
+    test("should have supporting elements with 2 Software Systems", () => {
         expect(diagram.supportingElements).toBeDefined();
-        expect(diagram.supportingElements).toHaveLength(0);
+        expect(
+            diagram.supportingElements.filter(isSoftwareSystem)
+        ).toHaveLength(2);
     });
 
     test("should have 2 relationship", () => {

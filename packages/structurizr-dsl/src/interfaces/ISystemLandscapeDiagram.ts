@@ -1,11 +1,4 @@
 import { IDiagram } from "./IDiagram";
-import { IGroup } from "./IGroup";
-import { IPerson } from "./IPerson";
-import { ISoftwareSystem } from "./ISoftwareSystem";
+import { IModel } from "./IModel";
 
-export interface ISystemLandscapeDiagram
-    extends IDiagram<
-        "workspace",
-        IGroup | ISoftwareSystem | IPerson,
-        unknown
-    > {}
+export interface ISystemLandscapeDiagram extends IDiagram<IModel, unknown> {}
