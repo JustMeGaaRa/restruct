@@ -37,7 +37,7 @@ export const RestructRelationshipStyle: IRelationshipStyle = {
     properties: {},
 };
 
-export const RestructTheme: ITheme = {
+export const RestructDarkTheme: ITheme = {
     name: "re:struct",
     description:
         "Default theme for elements and relationships in re:struct application",
@@ -45,6 +45,22 @@ export const RestructTheme: ITheme = {
         {
             tag: Tag.Element.name,
             ...RestructElementStyle,
+        },
+        {
+            tag: Tag.Person.name,
+            shape: ShapeType.Person,
+        },
+        {
+            tag: Tag.SoftwareSystem.name,
+            shape: ShapeType.RoundedBox,
+        },
+        {
+            tag: Tag.Container.name,
+            shape: ShapeType.RoundedBox,
+        },
+        {
+            tag: Tag.Component.name,
+            shape: ShapeType.RoundedBox,
         },
     ],
     relationships: [

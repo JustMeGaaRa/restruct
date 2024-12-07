@@ -1,12 +1,8 @@
-import {
-    FC,
-    useCallback,
-    useContext,
-    useEffect,
-} from "react";
-import { StyleProps, Theme, ThemesContext } from "../../containers";
+import { FC, useEffect } from "react";
+import { ITheme } from "@structurizr/dsl"
+import { useThemes } from "../../containers";
 
-export const Styles: FC<{ value: StyleProps }> = ({ value }) => {
+export const Styles: FC<{ value: Pick<ITheme, "elements" | "relationships"> }> = ({ value }) => {
     const { applyStyles } = useThemes();
 
     useEffect(() => {
@@ -23,7 +19,7 @@ export const Themes: FC<{ urls: Array<string> }> = ({ urls }) => {
         const fetchTheme = (url: string) => {
             return fetch(url)
                 .then(response => response.json())
-                .then(theme => theme as Theme)
+                .then(theme => theme as ITheme)
         };
 
         Promise.all(urls.map(fetchTheme))
@@ -32,24 +28,4 @@ export const Themes: FC<{ urls: Array<string> }> = ({ urls }) => {
     }, [applyThemes, urls]);
 
     return null;
-};
-
-export const useThemes = () => {
-    const { theme, styles, themes, setThemes, setStyles } = useContext(ThemesContext);
-
-    const applyStyles = useCallback((styles: StyleProps) => {
-        setStyles(styles);
-    }, [setStyles]);
-
-    const applyThemes = useCallback((themes: Array<Theme>) => {
-        setThemes(themes);
-    }, [setThemes]);
-
-    return {
-        theme,
-        styles,
-        themes,
-        applyStyles,
-        applyThemes
-    }
 };

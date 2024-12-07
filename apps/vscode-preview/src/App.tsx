@@ -7,9 +7,10 @@ import {
 import {
     ComponentDiagram,
     ContainerDiagram,
+    RestructDarkTheme,
     SystemContextDiagram,
     SystemLandscapeDiagram,
-    Workspace,
+    ThemeProvider,
     WorkspaceProvider
 } from "@structurizr/react";
 import { useState } from "react";
@@ -21,8 +22,8 @@ export const App = () => {
 
     return (
         <div className={"flex items-center justify-center h-screen w-screen bg-slate-950"}>
-            <WorkspaceProvider workspace={workspace} setWorkspace={setWorkspace}>
-                <Workspace>
+            <ThemeProvider theme={RestructDarkTheme}>
+                <WorkspaceProvider workspace={workspace} setWorkspace={setWorkspace}>
                     <ViewportProvider>
                         <Viewport>
                             {selectedView?.key === workspace.views.systemLandscape?.key && (
@@ -39,8 +40,8 @@ export const App = () => {
                             ))}
                         </Viewport>
                     </ViewportProvider>
-                </Workspace>
-            </WorkspaceProvider>
+                </WorkspaceProvider>
+            </ThemeProvider>
         </div>
     );
 }
