@@ -1,21 +1,23 @@
 import { FC } from "react";
 import { BackgroundType } from "./BackgroundType";
+import { useViewport } from "./ViewportProvider";
 
 export const BackgroundDotPattern: FC<{
     fill?: string;
-}> = ({
-    fill = "#91919a"
-}) => {
-        // TODO: implement and use background pattern
-        return (
-            <pattern
-                id={BackgroundType.Dot}
-                className={"structurizr__background"}
-                viewBox={"0 0 100 100"}
-                height={1}
-                width={1}
-            >
-                <circle cx="0.5" cy="0.5" r="0.5" fill={fill} />
-            </pattern>
-        )
-    }
+}> = ({ fill = "#91919a" }) => {
+    const { zoom } = useViewport();
+    const multiplier = Math.pow(2, Math.floor(Math.log2(1 / zoom)));
+    const size = 50 * multiplier;
+    const radius = 1 * multiplier;
+
+    return (
+        <pattern
+            id={BackgroundType.Dot}
+            patternUnits="userSpaceOnUse"
+            height={size}
+            width={size}
+        >
+            <circle cx={radius} cy={radius} r={radius} fill={fill} />
+        </pattern>
+    );
+};

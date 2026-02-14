@@ -7,6 +7,8 @@ import {
 import { Box } from "./Box";
 import { ConnectorId } from "./Connector";
 import { MarkerType } from "./MarkerType";
+import { MarkerCircleOutline } from "./MarkerCircleOutline";
+import { MarkerArrowClosed } from "./MarkerArrowClosed";
 
 function getPlacement(
     source: { x: number; y: number },
@@ -117,6 +119,10 @@ export const Edge: FC<
 
     return (
         <Box id={id} className={"graph__edge"}>
+            <defs>
+                <MarkerArrowClosed />
+                <MarkerCircleOutline />
+            </defs>
             <polyline
                 stroke={stroke}
                 strokeWidth={strokeWidth}

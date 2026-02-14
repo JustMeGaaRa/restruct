@@ -72,7 +72,7 @@ export function isComponent(component: any): component is IComponent {
 export function isDeploymentEnvironment(
     deploymentEnvironment: any
 ): deploymentEnvironment is IDeploymentEnvironment {
-    throw new Error("Not implemented");
+    return deploymentEnvironment !== null;
 }
 export function isDeploymentNode(
     deploymentNode: any

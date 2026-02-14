@@ -6,11 +6,10 @@ import {
     useRef,
     useState,
 } from "react";
-import { BackgroundDotPattern } from "./BackgroundDotPattern";
-import { MarkerArrowClosed } from "./MarkerArrowClosed";
-import { MarkerCircleOutline } from "./MarkerCircleOutline";
 import { useViewport } from "./ViewportProvider";
 import { getContentScale, pan, zoom } from "../utils";
+import { Background } from "./Background";
+import { BackgroundType } from "./BackgroundType";
 
 function getPointFromEvent(event: any) {
     let point = { x: 0, y: 0 };
@@ -167,11 +166,7 @@ export const Viewport: FC<
             onTouchMove={handleOnPointerMove}
             onWheel={handleOnWheel}
         >
-            <defs>
-                <BackgroundDotPattern />
-                <MarkerArrowClosed />
-                <MarkerCircleOutline />
-            </defs>
+            <Background variant={BackgroundType.Dot} />
             <g ref={groupRef} className={"graph__viewport-content"}>
                 {children}
             </g>
