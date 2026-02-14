@@ -1,6 +1,5 @@
 import { describe, expect, test } from "vitest";
 import { ModelBuilder } from "../../../src/models";
-import { IPerson } from "../../../src/interfaces";
 
 describe("Model Builder", () => {
     test("should build a model", () => {

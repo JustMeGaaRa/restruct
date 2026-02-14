@@ -34,7 +34,7 @@ export class DeploymentView implements ISupportSnapshot<IDeploymentView> {
     public include: Array<Identifier | All>;
     public exclude: Array<Identifier>;
     public autoLayout?: AutoLayout;
-    public animation?: any;
+    public animation?: unknown;
     public title?: string;
     // public properties?: Properties;
 
@@ -47,7 +47,7 @@ export class DeploymentView implements ISupportSnapshot<IDeploymentView> {
             description: this.description,
             include: this.include.map((i) => i.toString()),
             autoLayout: this.autoLayout?.toSnapshot(),
-            animation: this.animation,
+            animation: {},
             title: this.title,
             // properties: this.properties,
         };

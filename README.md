@@ -20,9 +20,9 @@ This is a monorepo project setup using Turbo.
 -   `web`: another [Next.js](https://nextjs.org/) app
 -   `@structurizr/dsl`: a library for building Structurizr workspaces and C4 diagrams with typescript.
 -   `@structurizr/react`: a React component library for buiding Structurizr workspaces and rendering C4 diagrams.
--   `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
--   `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
--   `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+-   `@restruct/ui`: a stub React component library shared by both `web` and `docs` applications
+-   `@restruct/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
+-   `@restruct/typescript-config`: `tsconfig.json`s used throughout the monorepo
 
 ### Utilities
 

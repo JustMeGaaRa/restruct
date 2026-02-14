@@ -4,13 +4,13 @@ import {
     FC,
     PropsWithChildren,
     SetStateAction,
-    useState
+    useState,
 } from "react";
 
 export type StyleProps = {
     elements: any[];
     relationships: any[];
-}
+};
 
 export type Theme = StyleProps & {
     name: string;
@@ -28,9 +28,15 @@ export const ThemesContext = createContext<{
     theme: null,
     styles: null,
     themes: [],
-    setTheme: () => { console.debug("Themes Context: dummy setTheme") },
-    setStyles: () => { console.debug("Themes Context: dummy setStyles") },
-    setThemes: () => { console.debug("Themes Context: dummy setThemes") },
+    setTheme: () => {
+        console.debug("Themes Context: dummy setTheme");
+    },
+    setStyles: () => {
+        console.debug("Themes Context: dummy setStyles");
+    },
+    setThemes: () => {
+        console.debug("Themes Context: dummy setThemes");
+    },
 });
 
 export const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
@@ -46,7 +52,7 @@ export const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
                 themes,
                 setTheme,
                 setStyles,
-                setThemes
+                setThemes,
             }}
         >
             {children}

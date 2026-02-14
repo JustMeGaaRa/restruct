@@ -10,7 +10,7 @@ import { ISoftwareSystem } from "../interfaces/ISoftwareSystem";
 import { ISoftwareSystemInstance } from "../interfaces/ISoftwareSystemInstance";
 import { IWorkspace } from "../interfaces/IWorkspace";
 
-export interface IElementVisitor<T = any> {
+export interface IElementVisitor<T = unknown> {
     visitWorkspace?: (
         workspace: IWorkspace,
         params?: { children?: Array<T> }

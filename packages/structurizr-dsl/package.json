@@ -1,22 +1,19 @@
 {
     "name": "@structurizr/dsl",
     "version": "0.0.0",
+    "type": "module",
     "private": true,
     "exports": {
         ".": "./src/index.ts"
     },
     "scripts": {
-        "dev": "tsc --watch",
-        "build": "tsc -b",
         "test": "vitest",
         "lint": "eslint ."
     },
     "devDependencies": {
-        "@repo/eslint-config": "workspace:*",
-        "@repo/typescript-config": "workspace:*",
-        "@types/eslint": "^8.56.5",
+        "@restruct/eslint-config": "workspace:*",
+        "@restruct/typescript-config": "workspace:*",
         "@types/node": "^20.11.24",
-        "eslint": "^8.57.0",
         "typescript": "^5.3.3",
         "vitest": "^2.1.1"
     }

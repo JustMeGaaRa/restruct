@@ -35,10 +35,13 @@ import {
     SystemContextView,
     SystemLandscapeView,
 } from "@structurizr/dsl";
-import { v4 } from "uuid";
+
+export const createUniqueId = (): string => {
+    return crypto.randomUUID().replace("-", "");
+};
 
 export const createDefaultGroup = (): IGroup => {
-    const uniqueId = new String(v4()).substring(0, 8);
+    const uniqueId = createUniqueId();
     return new Group({
         identifier: `group_${uniqueId}`,
         name: "Group",
@@ -46,7 +49,7 @@ export const createDefaultGroup = (): IGroup => {
 };
 
 export const createDefaultSoftwareSystem = (): ISoftwareSystem => {
-    const uniqueId = new String(v4()).substring(0, 8);
+    const uniqueId = createUniqueId();
     return new SoftwareSystem({
         identifier: `softwareSystem_${uniqueId}`,
         name: "Software System",
@@ -54,7 +57,7 @@ export const createDefaultSoftwareSystem = (): ISoftwareSystem => {
 };
 
 export const createDefaultContainer = (): IContainer => {
-    const uniqueId = new String(v4()).substring(0, 8);
+    const uniqueId = createUniqueId();
     return new Container({
         identifier: `container_${uniqueId}`,
         name: "Container",
@@ -62,7 +65,7 @@ export const createDefaultContainer = (): IContainer => {
 };
 
 export const createDefaultComponent = (): IComponent => {
-    const uniqueId = new String(v4()).substring(0, 8);
+    const uniqueId = createUniqueId();
     return new Component({
         identifier: `component_${uniqueId}`,
         name: "Component",
@@ -70,7 +73,7 @@ export const createDefaultComponent = (): IComponent => {
 };
 
 export const createDefaultPerson = (): IPerson => {
-    const uniqueId = new String(v4()).substring(0, 8);
+    const uniqueId = createUniqueId();
     return new Person({
         identifier: `person_${uniqueId}`,
         name: "Person",
@@ -78,7 +81,7 @@ export const createDefaultPerson = (): IPerson => {
 };
 
 export const createDefaultDeploymentNode = (): IDeploymentNode => {
-    const uniqueId = new String(v4()).substring(0, 8);
+    const uniqueId = createUniqueId();
     return new DeploymentNode({
         identifier: `deployment_node_${uniqueId}`,
         name: "Deployment Node",
@@ -86,7 +89,7 @@ export const createDefaultDeploymentNode = (): IDeploymentNode => {
 };
 
 export const createDefaultInfrastructureNode = (): IInfrastructureNode => {
-    const uniqueId = new String(v4()).substring(0, 8);
+    const uniqueId = createUniqueId();
     return new InfrastructureNode({
         identifier: `infrastructure_node_${uniqueId}`,
         name: "Infrastructure Node",
@@ -104,7 +107,7 @@ export const createRelationship = (
 };
 
 export const createDefaultSystemLandscapeView = (): ISystemLandscapeView => {
-    const uniqueId = new String(v4()).substring(0, 8);
+    const uniqueId = createUniqueId();
     return new SystemLandscapeView({
         key: `system_landscape_view_${uniqueId}`,
         title: "System Landscape",
@@ -120,7 +123,7 @@ export const createDefaultSystemLandscapeView = (): ISystemLandscapeView => {
 export const createDefaultSystemContextView = (
     softwareSystemIdentifier: string
 ): ISystemContextView => {
-    const uniqueId = new String(v4()).substring(0, 8);
+    const uniqueId = createUniqueId();
     return new SystemContextView({
         softwareSystemIdentifier,
         key: `system_context_view_${uniqueId}`,
@@ -136,7 +139,7 @@ export const createDefaultSystemContextView = (
 export const createDefaultContainerView = (
     softwareSystemIdentifier: string
 ): IContainerView => {
-    const uniqueId = new String(v4()).substring(0, 8);
+    const uniqueId = createUniqueId();
     return new ContainerView({
         softwareSystemIdentifier,
         key: `container_view_${uniqueId}`,
@@ -152,7 +155,7 @@ export const createDefaultContainerView = (
 export const createDefaultComponentView = (
     containerIdentifier: string
 ): IComponentView => {
-    const uniqueId = new String(v4()).substring(0, 8);
+    const uniqueId = createUniqueId();
     return new ComponentView({
         containerIdentifier,
         key: `component_view_${uniqueId}`,
@@ -166,7 +169,7 @@ export const createDefaultComponentView = (
 };
 
 export const createDefaultDeploymentView = (): IDeploymentView => {
-    const uniqueId = new String(v4()).substring(0, 8);
+    const uniqueId = createUniqueId();
     return new DeploymentView({
         // TODO: inintialize with proper identifier
         softwareSystemIdentifier: "...",
@@ -232,7 +235,7 @@ export const getDefaultElement = (
 export const getDefaultChildForElement = (
     parentType?: ElementType
 ): ISoftwareSystem | IContainer | IComponent => {
-    const uniqueId = new String(v4()).substring(0, 8);
+    const uniqueId = createUniqueId();
 
     switch (parentType) {
         case ElementType.SoftwareSystem:

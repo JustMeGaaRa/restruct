@@ -5,9 +5,10 @@ import { IInfrastructureNode } from "./IInfrastructureNode";
 import { ISoftwareSystem } from "./ISoftwareSystem";
 import { ISoftwareSystemInstance } from "./ISoftwareSystemInstance";
 
-export interface IDeploymentDiagram
-    extends IDiagram<
-        ISoftwareSystem,
-        IDeploymentNode | ISoftwareSystemInstance | IContainerInstance,
-        IInfrastructureNode
-    > {}
+export type IDeploymentDiagram = IDiagram<
+    ISoftwareSystem,
+    | IDeploymentNode
+    | ISoftwareSystemInstance
+    | IContainerInstance
+    | IInfrastructureNode
+>;

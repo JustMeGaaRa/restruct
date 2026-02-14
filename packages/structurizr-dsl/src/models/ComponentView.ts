@@ -29,7 +29,7 @@ export class ComponentView implements ISupportSnapshot<IComponentView> {
     public include: Array<Identifier | All>;
     public exclude: Array<Identifier>;
     public autoLayout?: AutoLayout;
-    public animation?: any;
+    public animation?: unknown;
     public title?: string;
     public description?: string;
     // public properties?: Properties;
@@ -41,7 +41,7 @@ export class ComponentView implements ISupportSnapshot<IComponentView> {
             key: this.key,
             include: this.include.map((x) => x.toString()),
             autoLayout: this.autoLayout?.toSnapshot(),
-            animation: this.animation,
+            animation: {},
             title: this.title,
             description: this.description,
             // properties: this.properties,

@@ -1,32 +1,33 @@
 {
-  "name": "restruct",
-  "private": true,
-  "scripts": {
-    "build": "turbo build",
-    "dev": "turbo dev",
-    "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "test": "turbo test",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
-  },
-  "devDependencies": {
-    "@chromatic-com/storybook": "3.2.2",
-    "@storybook/addon-essentials": "8.4.7",
-    "@storybook/addon-interactions": "8.4.7",
-    "@storybook/addon-onboarding": "8.4.7",
-    "@storybook/blocks": "8.4.7",
-    "@storybook/react": "8.4.7",
-    "@storybook/react-vite": "8.4.7",
-    "@storybook/test": "8.4.7",
-    "prettier": "^3.2.5",
-    "storybook": "8.4.7",
-    "turbo": "^2.1.2",
-    "typescript": "^5.4.5",
-    "vite": "^5.4.1"
-  },
-  "packageManager": "pnpm@8.15.6",
-  "engines": {
-    "node": ">=18"
-  }
+    "name": "restruct",
+    "private": true,
+    "scripts": {
+        "build": "turbo build",
+        "dev": "turbo dev",
+        "lint": "turbo lint",
+        "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+        "test": "turbo test",
+        "storybook": "storybook dev -p 6006",
+        "build-storybook": "storybook build"
+    },
+    "devDependencies": {
+        "@chromatic-com/storybook": "3.2.2",
+        "@storybook/addon-essentials": "8.4.7",
+        "@storybook/addon-interactions": "8.4.7",
+        "@storybook/addon-onboarding": "8.4.7",
+        "@storybook/blocks": "8.4.7",
+        "@storybook/react": "8.4.7",
+        "@storybook/react-vite": "8.4.7",
+        "@storybook/test": "8.4.7",
+        "prettier": "^3.2.5",
+        "storybook": "8.4.7",
+        "turbo": "^2.3.3",
+        "typescript": "~5.6.2",
+        "vite": "^6.0.1",
+        "vitest": "^2.1.8"
+    },
+    "packageManager": "pnpm@8.15.6",
+    "engines": {
+        "node": ">=18"
+    }
 }

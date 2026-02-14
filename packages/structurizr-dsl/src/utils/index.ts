@@ -13,7 +13,7 @@ import {
 import { Style } from "../models";
 
 export function foldStyles<
-    TStyleProperties extends { [key: string]: any },
+    TStyleProperties extends { [key: string]: unknown },
     TTagStyle extends Style<TStyleProperties>,
 >(
     style: TStyleProperties,
@@ -145,7 +145,7 @@ export const findElement = (
         .flatMap((group) => group.softwareSystems)
         .concat(model.softwareSystems);
 
-    for (let softwareSystem of softwareSystems) {
+    for (const softwareSystem of softwareSystems) {
         if (softwareSystem.identifier === identifier) {
             return softwareSystem;
         }
@@ -154,7 +154,7 @@ export const findElement = (
             .flatMap((group) => group.containers)
             .concat(softwareSystem.containers);
 
-        for (let container of containers) {
+        for (const container of containers) {
             if (container.identifier === identifier) {
                 return container;
             }
@@ -163,7 +163,7 @@ export const findElement = (
                 .flatMap((group) => group.components)
                 .concat(container.components);
 
-            for (let component of components) {
+            for (const component of components) {
                 if (component.identifier === identifier) {
                     return component;
                 }
@@ -182,17 +182,17 @@ export const findElementPath = (
         .flatMap((group) => group.softwareSystems)
         .concat(model.softwareSystems);
 
-    for (let softwareSystem of softwareSystems) {
+    for (const softwareSystem of softwareSystems) {
         const containers = softwareSystem.groups
             .flatMap((group) => group.containers)
             .concat(softwareSystem.containers);
 
-        for (let container of containers) {
+        for (const container of containers) {
             const components = container.groups
                 .flatMap((group) => group.components)
                 .concat(container.components);
 
-            for (let component of components) {
+            for (const component of components) {
                 if (component.identifier === identifier) {
                     return [softwareSystem, container, component];
                 }

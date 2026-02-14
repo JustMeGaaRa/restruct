@@ -4,5 +4,5 @@ export interface IBuilder<T> {
 
 export type BuilderCallback<
     TBuilder extends IBuilder<TResult>,
-    TResult = any,
+    TResult = unknown,
 > = (builder: TBuilder) => void;

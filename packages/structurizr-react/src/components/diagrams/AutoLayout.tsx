@@ -1,16 +1,13 @@
 import { FC, useEffect } from "react";
 import { useViewMetadata } from "../../containers";
 
-export interface IAutoLayout {
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface IAutoLayout {}
 
-}
-
-export const AutoLayout: FC<{ value: IAutoLayout }> = ({ value }) => {
+export const AutoLayout: FC<{ value: IAutoLayout }> = () => {
     const { metadata, setMetadata } = useViewMetadata();
 
-    useEffect(() => {
-
-    }, [metadata, setMetadata]);
+    useEffect(() => {}, [metadata, setMetadata]);
 
     return null;
 };

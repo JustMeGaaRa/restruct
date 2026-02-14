@@ -1,19 +1,16 @@
+/* eslint-disable react/display-name */
 import { forwardRef, PropsWithChildren } from "react";
 
-export const Box = forwardRef<SVGGraphicsElement, PropsWithChildren<{
-    id?: string;
-    className?: string;
-    position?: { x: number; y: number };
-    onMouseOver?: React.MouseEventHandler<SVGGraphicsElement>;
-    onMouseOut?: React.MouseEventHandler<SVGGraphicsElement>;
-}>>(({
-    children,
-    id,
-    className,
-    position,
-    onMouseOver,
-    onMouseOut
-}, ref) => {
+export const Box = forwardRef<
+    SVGGraphicsElement,
+    PropsWithChildren<{
+        id?: string;
+        className?: string;
+        position?: { x: number; y: number };
+        onMouseOver?: React.MouseEventHandler<SVGGraphicsElement>;
+        onMouseOut?: React.MouseEventHandler<SVGGraphicsElement>;
+    }>
+>(({ children, id, className, position, onMouseOver, onMouseOut }, ref) => {
     return (
         <g
             ref={ref}
@@ -25,5 +22,5 @@ export const Box = forwardRef<SVGGraphicsElement, PropsWithChildren<{
         >
             {children}
         </g>
-    )
+    );
 });

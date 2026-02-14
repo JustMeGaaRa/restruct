@@ -31,7 +31,7 @@ export class ContainerView implements ISupportSnapshot<IContainerView> {
     public include: Array<Identifier | All>;
     public exclude: Array<Identifier>;
     public autoLayout?: AutoLayout;
-    public animation?: any;
+    public animation?: unknown;
     public title?: string;
     public description?: string;
     // public properties?: Properties;
@@ -43,7 +43,7 @@ export class ContainerView implements ISupportSnapshot<IContainerView> {
             key: this.key,
             include: this.include.map((i) => i.toString()),
             autoLayout: this.autoLayout?.toSnapshot(),
-            animation: this.animation,
+            animation: {},
             title: this.title,
             description: this.description,
             // properties: this.properties,

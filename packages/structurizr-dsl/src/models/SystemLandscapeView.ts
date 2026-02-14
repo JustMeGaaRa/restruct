@@ -27,7 +27,7 @@ export class SystemLandscapeView
     public include: Array<Identifier | All>;
     public exclude: Array<Identifier>;
     public autoLayout?: AutoLayout;
-    public animation?: any;
+    public animation?: unknown;
     public title?: string;
     // public properties?: Properties;
 
@@ -38,7 +38,7 @@ export class SystemLandscapeView
             description: this.description,
             include: this.include.map((x) => x.toString()),
             autoLayout: this.autoLayout?.toSnapshot(),
-            animation: this.animation,
+            animation: {},
             title: this.title,
             // properties: this.properties,
         };
