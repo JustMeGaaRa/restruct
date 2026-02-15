@@ -1,5 +1,5 @@
 import { IDeploymentView } from "@structurizr/dsl";
-import { FC, PropsWithChildren, useEffect, useState } from "react";
+import { FC, PropsWithChildren, useEffect } from "react";
 import {
     IViewMetadata,
     ViewMetadataProvider,
@@ -16,7 +16,6 @@ export const DeploymentDiagram: FC<
     }>
 > = ({ children, value, metadata, onZoomInClick, onZoomOutClick }) => {
     const { workspace } = useWorkspace();
-    const [elements] = useState<JSX.Element[]>([]);
 
     useEffect(() => {
         if (workspace) {
@@ -38,7 +37,6 @@ export const DeploymentDiagram: FC<
 
     return (
         <ViewMetadataProvider metadata={metadata}>
-            {elements}
             {children}
         </ViewMetadataProvider>
     );
