@@ -4,6 +4,7 @@ import {
     IPerson,
     ISoftwareSystem,
     workspace,
+    workspaceRegistry,
 } from "@structurizr/dsl";
 
 let customer: IPerson;
@@ -26,7 +27,7 @@ let mainframeBankingSystemFacade: IComponent;
 let emailSystemFacade: IComponent;
 
 // Example usage of the fluent API with callbacks
-const BigBankPlc = workspace("Big Bank plc.", "", (_) => {
+workspace("Big Bank plc.", "", (_) => {
     _.description("A default architecture for Big Bank plc.");
 
     _.model((_) => {
@@ -218,4 +219,6 @@ const BigBankPlc = workspace("Big Bank plc.", "", (_) => {
     });
 });
 
-export { BigBankPlc };
+const bigBankPlc = workspaceRegistry.getWorkspace("Big Bank plc.")!;
+
+export { bigBankPlc };

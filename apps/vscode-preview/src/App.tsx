@@ -8,12 +8,12 @@ import {
     Workspace,
     WorkspaceProvider,
 } from "@structurizr/react";
+import { bigBankPlc } from "./workspace";
 import { useState } from "react";
-import { BigBankPlc } from "./workspace";
 
 export const App = () => {
-    const [workspace, setWorkspace] = useState<IWorkspace>(BigBankPlc);
-    const [selectedView] = useState(workspace.views.systemLandscape);
+    const [workspace, setWorkspace] = useState<IWorkspace>(bigBankPlc);
+    const [selectedView] = useState(workspace?.views.systemLandscape);
 
     return (
         <div

@@ -7,3 +7,4 @@ export * from "./ISupportScope";
 export * from "./ISupportSnapshot";
 export * from "./ISupportSupportingElement";
 export * from "./ISupportVisitor";
+export * from "./WorkspaceResgistry";
