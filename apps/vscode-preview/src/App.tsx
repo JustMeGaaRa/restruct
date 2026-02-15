@@ -8,7 +8,7 @@ import {
     Workspace,
     WorkspaceProvider,
 } from "@structurizr/react";
-import { ViewModeSwitcher, ViewMode } from "@restruct/ui";
+import { ViewModeSwitcher, ViewMode, ZoomControls } from "@restruct/ui";
 import { bigBankPlc } from "./workspace";
 import { useState } from "react";
 import { Center, Text } from "@chakra-ui/react";
@@ -65,6 +65,7 @@ export const App = () => {
                                         />
                                     ))}
                             </Viewport>
+                            <ZoomControls />
                         </ViewportProvider>
                     </Workspace>
                 </WorkspaceProvider>

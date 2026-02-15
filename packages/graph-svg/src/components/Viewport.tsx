@@ -12,9 +12,9 @@ import { Background } from "./Background";
 import { BackgroundType } from "./BackgroundType";
 
 function getPointFromEvent(event: any) {
-    let point = { x: 0, y: 0 };
+    const point = { x: 0, y: 0 };
 
-    if (event.targetTouches) {
+    if (event.targetTouches && event.targetTouches[0]) {
         point.x = event.targetTouches[0].clientX;
         point.y = event.targetTouches[0].clientY;
     } else {
@@ -25,17 +25,12 @@ function getPointFromEvent(event: any) {
     return point;
 }
 
-export const Viewport: FC<
-    PropsWithChildren<{
-        minZoom?: number;
-        maxZoom?: number;
-    }>
-> = ({ children, minZoom = 0.1, maxZoom = 4 }) => {
+export const Viewport: FC<PropsWithChildren> = ({ children }) => {
     const svgRef = useRef<SVGSVGElement>(null);
     const groupRef = useRef<SVGSVGElement>(null);
     const [isPointerDown, setIsPointerDown] = useState(false);
     const [pointerOrigin, setPointerOrigin] = useState({ x: 0, y: 0 });
-    const { viewbox, setZoom, setViewbox } = useViewport();
+    const { minZoom, maxZoom, viewbox, setZoom, setViewbox } = useViewport();
 
     const handleOnPointerDown = useCallback(
         (
@@ -85,8 +80,6 @@ export const Viewport: FC<
         (event: React.WheelEvent<SVGSVGElement>) => {
             if (!svgRef?.current) return viewbox;
             if (!groupRef?.current) return viewbox;
-
-            event.preventDefault();
 
             const SCALE_FACTOR = 1.1;
             const scaleFactor = Math.pow(
