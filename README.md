@@ -1,51 +1,111 @@
 # Restruct Architecture Suite
 
-This is an official monorepo for Restruct architecture tools.
+[![pnpm](https://img.shields.io/badge/maintained%20with-pnpm-cc00ff.svg)](https://pnpm.io/)
+[![Turborepo](https://img.shields.io/badge/built%20with-turborepo-0070f3.svg)](https://turbo.build/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## Project Structure
+**Restruct** is a modern, developer-centric suite of tools designed to visualize, document, and present software architecture. Built on the foundations of the **Structurizr DSL** and the **C4 Model**, Restruct allows you to treat architecture as code while providing world-class visual experiences.
 
-This is a monorepo project setup using Turbo.
+---
 
-### Project Setup Checklist
+## 🌟 What to Expect
 
--   [x] monorepo setup (turborepo)
--   [x] code formatter setup (prettier)
--   [x] initial vscode extension app setup (vite)
--   [x] testing library setup (vitest)
--   [x] ui library integration (nextui or shadcn/ui)
+Restruct aims to bridge the gap between static architecture documents and dynamic, living software systems. With Restruct, you can:
 
-### Apps and Packages
+-   **Design with DSL**: Use a clean, TypeScript-based DSL to define your software systems, containers, and components.
+-   **Visualize Instantly**: High-fidelity, interactive C4 diagrams that support deep navigation through architectural layers.
+-   **Collaborate in Real-time**: Built-in support for P2P collaborative sessions for team architecture reviews.
+-   **Present Your Vision**: A unique "Presentation Mode" that allows you to record "stories" through your architecture and play them back for stakeholders.
+-   **Developer-First**: Integrated deeply into the developer workflow, including a VS Code extension for live previews.
 
--   `docs`: a [Next.js](https://nextjs.org/) app
--   `web`: another [Next.js](https://nextjs.org/) app
--   `@structurizr/dsl`: a library for building Structurizr workspaces and C4 diagrams with typescript.
--   `@structurizr/react`: a React component library for buiding Structurizr workspaces and rendering C4 diagrams.
--   `@restruct/ui`: a stub React component library shared by both `web` and `docs` applications
--   `@restruct/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
--   `@restruct/typescript-config`: `tsconfig.json`s used throughout the monorepo
+---
 
-### Utilities
+## 🚀 Main Products
 
-This Turborepo has some additional tools already setup for you:
+### 🛠️ Restruct DSL (`@structurizr/dsl`)
 
--   [TypeScript](https://www.typescriptlang.org/) for static type checking
--   [ESLint](https://eslint.org/) for code linting
--   [Prettier](https://prettier.io) for code formatting
+The backbone of the suite. A type-safe TypeScript library for building Structurizr-compatible workspace models. It supports both imperative and fluent coding styles.
 
-### Build
+### 🎨 Restruct React Components (`@structurizr/react`)
 
-To build all apps and packages, run the following command:
+A comprehensive library of React components for rendering C4 diagrams. These components are interactive, accessible, and highly customizable.
 
+### 🔍 VS Code Extension & Preview (`apps/vscode-preview`)
+
+The primary interface for developers. It provides a real-time, interactive preview of your architecture DSL files directly within VS Code, featuring:
+
+-   **C4 Rendering**: Automatic layout and rendering of your models.
+-   **Interactive Viewport**: Infinite pan, zoom, and fit-to-screen.
+-   **Breadcrumb Navigation**: Path-based navigation (e.g., `System > Container > Component`).
+-   **Presentation Tools**: Record and present architecture walkthroughs.
+
+---
+
+## 🛠️ How to Start
+
+### Prerequisites
+
+-   **Node.js**: v18 or higher.
+-   **pnpm**: v8 or higher (Restruct uses pnpm workspaces).
+
+### 1. Clone & Install
+
+```bash
+git clone https://github.com/JustMeGaaRa/restruct.git
+cd restruct
+pnpm install
 ```
-cd my-turborepo
-pnpm build
-```
 
-### Develop
+### 2. Launch Development Environment
 
-To develop all apps and packages, run the following command:
+To start the development server for all apps (Preview, Web, Docs) and watch for package changes:
 
-```
-cd my-turborepo
+```bash
 pnpm dev
 ```
+
+### 3. Run Storybook
+
+To explore the UI components in isolation:
+
+```bash
+pnpm storybook
+```
+
+---
+
+## 📂 Repository Structure
+
+```text
+restruct/
+├── apps/
+│   ├── vscode-preview/ # Core rendering engine & VS Code webview
+│   ├── web/            # Main web application (Next.js)
+│   └── docs/           # Documentation portal (Next.js)
+├── packages/
+│   ├── structurizr-dsl/# TS library for C4 modeling
+│   ├── structurizr-react/# React components for diagrams
+│   ├── ui/             # Shared UI Design System
+│   ├── graph-svg/      # Low-level SVG generation utilities
+│   ├── eslint-config/  # Shared linting rules
+│   └── typescript-config/# Shared TS configurations
+└── pnpm-workspace.yaml # Monorepo configuration
+```
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Please feel free to open issues or submit pull requests.
+
+1.  Fork the repo.
+2.  Create your feature branch (`git checkout -b feature/amazing-feature`).
+3.  Commit your changes (`git commit -m 'Add amazing feature'`).
+4.  Push to the branch (`git push origin feature/amazing-feature`).
+5.  Open a Pull Request.
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

@@ -1,50 +1,65 @@
-# React + TypeScript + Vite
+# Restruct Preview App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The **Restruct Preview App** is a React-based application designed to visualize Structurizr DSL workspaces. It serves as the primary rendering engine for the Restruct VS Code extension but can also be run as a standalone web application.
 
-Currently, two official plugins are available:
+## 🌟 Features
 
--   [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
--   [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 1. C4 Diagram Rendering
 
-## Expanding the ESLint configuration
+visualize your architecture using the C4 model standards:
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+-   **System Landscape**
+-   **System Context**
+-   **Container Views**
+-   **Component Views**
+-   **Deployment Views**
 
--   Configure the top-level `parserOptions` property like this:
+### 2. Interactive Navigation
 
-```js
-export default tseslint.config({
-    languageOptions: {
-        // other options...
-        parserOptions: {
-            project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-            tsconfigRootDir: import.meta.dirname,
-        },
-    },
-});
+-   **Zoom & Pan**: Use the toolbar or mouse gestures (wheel/drag) to explore large diagrams on an infinite canvas.
+-   **Breadcrumbs**: Context-aware navigation bar showing your current position in the architectural hierarchy (e.g., `System > Container > Component`).
+-   **View Switcher**: Quickly toggle between different perspectives:
+    -   **Diagram**: The standard graphical representation.
+    -   **Model**: A structural view of the model elements.
+    -   **Deployment**: Infrastructure and deployment mapping.
+
+### 3. Presentation & Recording
+
+Transform your static diagrams into dynamic architectural stories:
+
+-   **Recording Mode**: Capture specific states (zoom level, visible elements) to create a step-by-step walkthrough.
+-   **Presentation Mode**: Play back your recorded steps with smooth fade and scale animations.
+-   **Export**: (Planned) Export walkthroughs as GIFs or videos.
+
+## 🛠️ Development
+
+### Prerequisites
+
+-   Node.js & pnpm
+
+### Start Local Server
+
+To run the app locally with Hot Module Replacement (HMR):
+
+```bash
+npm run dev
+# or
+pnpm dev
 ```
 
--   Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
--   Optionally add `...tseslint.configs.stylisticTypeChecked`
--   Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+### Build
 
-```js
-// eslint.config.js
-import react from "eslint-plugin-react";
+To build the application for production (e.g., for embedding in the extension):
 
-export default tseslint.config({
-    // Set the react version
-    settings: { react: { version: "18.3" } },
-    plugins: {
-        // Add the react plugin
-        react,
-    },
-    rules: {
-        // other rules...
-        // Enable its recommended rules
-        ...react.configs.recommended.rules,
-        ...react.configs["jsx-runtime"].rules,
-    },
-});
+```bash
+npm run build
+# or
+pnpm build
 ```
+
+## 📦 Dependencies
+
+-   **@structurizr/dsl**: For workspace parsing and manipulation.
+-   **@structurizr/react**: Core diagram rendering components.
+-   **@restruct/ui**: Shared UI components (Breadcrumbs, Toolbar, etc.).
+-   **Vite**: Fast tooling.
