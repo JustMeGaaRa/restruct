@@ -68,17 +68,20 @@ export const ZoomControls = () => {
     };
 
     return (
-        <Box position="fixed" bottom="4" right="4" zIndex={100}>
-            <VStack
-                gap={1}
-                bg="rgba(20, 20, 20, 0.8)"
-                backdropFilter="blur(12px)"
-                borderRadius="full"
-                p="1"
-                border="1px solid"
-                borderColor="whiteAlpha.200"
-                boxShadow="0 4px 20px rgba(0, 0, 0, 0.4)"
-            >
+        <Box
+            position="fixed"
+            bottom="4"
+            right="4"
+            bg="rgba(20, 20, 20, 0.8)"
+            backdropFilter="blur(12px)"
+            borderRadius="full"
+            p="1"
+            border="1px solid"
+            borderColor="whiteAlpha.200"
+            boxShadow="0 4px 20px rgba(0, 0, 0, 0.4)"
+            zIndex={1000}
+        >
+            <VStack gap={1}>
                 <ZoomButton
                     label={`Zoom In (${Math.round(zoom * 100)}%)`}
                     icon={<FiZoomIn />}

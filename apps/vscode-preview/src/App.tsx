@@ -7,16 +7,38 @@ import {
     SystemLandscapeDiagram,
     Workspace,
     WorkspaceProvider,
+    ViewNavigationProvider,
+    useViewNavigation,
 } from "@structurizr/react";
-import { ViewModeSwitcher, ViewMode, ZoomControls } from "@restruct/ui";
+import {
+    ViewModeSwitcher,
+    ViewMode,
+    ZoomControls,
+    Breadcrumbs,
+} from "@restruct/ui";
 import { bigBankPlc } from "./workspace";
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Center, Text } from "@chakra-ui/react";
 
-export const App = () => {
+const AppContent = () => {
     const [workspace, setWorkspace] = useState<IWorkspace>(bigBankPlc);
-    const [selectedView] = useState(workspace?.views.systemLandscape);
+    const { currentView, setCurrentView } = useViewNavigation();
     const [viewMode, setViewMode] = useState<ViewMode>("diagrams");
+
+    useEffect(() => {
+        if (!currentView && workspace?.views.systemLandscape) {
+            setCurrentView(workspace.views.systemLandscape);
+        }
+    }, [workspace, currentView, setCurrentView]);
+
+    const breadcrumbs = useMemo(() => {
+        return [
+            { label: "System Landscape", onClick: () => {} },
+            { label: "Big Bank plc", onClick: () => {} },
+            { label: "Internet Banking System", onClick: () => {} },
+            { label: "API Application", onClick: () => {} },
+        ];
+    }, []);
 
     return (
         <div
@@ -25,6 +47,7 @@ export const App = () => {
             }
         >
             <ViewModeSwitcher currentView={viewMode} onChange={setViewMode} />
+            {viewMode === "diagrams" && <Breadcrumbs items={breadcrumbs} />}
 
             {viewMode === "diagrams" && (
                 <WorkspaceProvider
@@ -34,14 +57,14 @@ export const App = () => {
                     <Workspace>
                         <ViewportProvider>
                             <Viewport>
-                                {selectedView?.key ===
+                                {currentView?.key ===
                                     workspace.views.systemLandscape?.key && (
                                     <SystemLandscapeDiagram
                                         value={workspace.views.systemLandscape}
                                     />
                                 )}
                                 {workspace.views.systemContexts
-                                    .filter((x) => x.key === selectedView?.key)
+                                    .filter((x) => x.key === currentView?.key)
                                     .map((systemContext) => (
                                         <SystemContextDiagram
                                             key={systemContext.key}
@@ -49,7 +72,7 @@ export const App = () => {
                                         />
                                     ))}
                                 {workspace.views.containers
-                                    .filter((x) => x.key === selectedView?.key)
+                                    .filter((x) => x.key === currentView?.key)
                                     .map((container) => (
                                         <ContainerDiagram
                                             key={container.key}
@@ -57,7 +80,7 @@ export const App = () => {
                                         />
                                     ))}
                                 {workspace.views.components
-                                    .filter((x) => x.key === selectedView?.key)
+                                    .filter((x) => x.key === currentView?.key)
                                     .map((component) => (
                                         <ComponentDiagram
                                             key={component.key}
@@ -83,5 +106,13 @@ export const App = () => {
                 </Center>
             )}
         </div>
+    );
+};
+
+export const App = () => {
+    return (
+        <ViewNavigationProvider>
+            <AppContent />
+        </ViewNavigationProvider>
     );
 };
