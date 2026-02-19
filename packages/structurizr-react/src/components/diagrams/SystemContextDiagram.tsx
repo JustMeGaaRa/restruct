@@ -6,6 +6,7 @@ import {
     isPerson,
     isSoftwareSystem,
 } from "@structurizr/dsl";
+import { useViewport } from "@graph/svg";
 import { FC, PropsWithChildren, useEffect, useState } from "react";
 import {
     IViewMetadata,
@@ -17,7 +18,6 @@ import { createDefaultSystemContextView, autolayoutDiagram } from "../../utils";
 import { SoftwareSystem } from "./SoftwareSystem";
 import { Relationship } from "./Relationship";
 import { Person } from "./Person";
-import { useViewport } from "@graph/svg";
 
 export const SystemContextDiagram: FC<
     PropsWithChildren<{
@@ -50,7 +50,7 @@ export const SystemContextDiagram: FC<
             setDiagram(diagram);
 
             autolayoutDiagram(diagram, ViewType.SystemContext).then(
-                (metadataAuto) => setMetadata(metadataAuto)
+                setMetadata
             );
         }
     }, [

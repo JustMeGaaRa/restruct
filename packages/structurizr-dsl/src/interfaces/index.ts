@@ -20,6 +20,8 @@ export * from "./IGroup";
 export * from "./IHealthCheck";
 export * from "./IInfrastructureNode";
 export * from "./IModel";
+export * from "./IModelDiagram";
+export * from "./IModelDiagramBuilder";
 export * from "./IModelView";
 export * from "./IPerson";
 export * from "./ISystemLandscapeDiagram";

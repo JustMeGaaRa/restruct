@@ -2,6 +2,7 @@ import {
     IComponentDiagram,
     IContainerDiagram,
     IElement,
+    IModelDiagram,
     IRelationship,
     ISystemContextDiagram,
     ISystemLandscapeDiagram,
@@ -217,6 +218,27 @@ function buildGraphFromComponentDiagram(
     });
 }
 
+export const buildGraphFromModelDiagram = (
+    diagram: IModelDiagram,
+    graphAdapter: GraphAdapter<IElement, IRelationship, IViewMetadata>
+) => {
+    diagram.supportingElements.map((scope) => {
+        graphAdapter.setNode(scope.identifier, {
+            id: scope.identifier,
+            ...defaultSize,
+            ...defaultPosition,
+        });
+    });
+
+    diagram.relationships.map((relationship) => {
+        graphAdapter.setEdge(relationship.identifier, {
+            id: relationship.identifier,
+            source: relationship.sourceIdentifier,
+            target: relationship.targetIdentifier,
+        });
+    });
+};
+
 function createDiagramGraph(
     viewType: ViewType,
     diagram: Diagram,
@@ -242,6 +264,8 @@ function createDiagramGraph(
             diagram as IComponentDiagram,
             graphAdapter
         );
+    } else if (viewType === ViewType.Model) {
+        buildGraphFromModelDiagram(diagram as IModelDiagram, graphAdapter);
     }
 
     return graphAdapter;

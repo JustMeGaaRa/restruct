@@ -6,6 +6,7 @@ import {
     isPerson,
     isSoftwareSystem,
 } from "@structurizr/dsl";
+import { useViewport } from "@graph/svg";
 import { FC, PropsWithChildren, useEffect, useState } from "react";
 import {
     IViewMetadata,
@@ -21,7 +22,6 @@ import { SoftwareSystem } from "./SoftwareSystem";
 import { Relationship } from "./Relationship";
 import { Person } from "./Person";
 import { Group } from "./Group";
-import { useViewport } from "@graph/svg";
 
 export const SystemLandscapeDiagram: FC<
     PropsWithChildren<{
@@ -55,7 +55,7 @@ export const SystemLandscapeDiagram: FC<
             setDiagram(diagram);
 
             autolayoutDiagram(diagram, ViewType.SystemLandscape).then(
-                (metadataAuto) => setMetadata(metadataAuto)
+                setMetadata
             );
         }
     }, [workspace, onZoomInClick, onZoomOutClick, value?.key]);

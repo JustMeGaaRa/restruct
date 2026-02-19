@@ -1,4 +1,4 @@
-import { IWorkspace } from "@structurizr/dsl";
+import { IWorkspace, ViewType } from "@structurizr/dsl";
 import { Viewport, ViewportProvider } from "@graph/svg";
 import {
     ComponentDiagram,
@@ -9,6 +9,8 @@ import {
     WorkspaceProvider,
     ViewNavigationProvider,
     useViewNavigation,
+    ModelDiagram,
+    DeploymentDiagram,
 } from "@structurizr/react";
 import {
     ViewModeSwitcher,
@@ -18,7 +20,6 @@ import {
 } from "@restruct/ui";
 import { bigBankPlc } from "./workspace";
 import { useState, useEffect, useMemo } from "react";
-import { Center, Text } from "@chakra-ui/react";
 
 const AppContent = () => {
     const [workspace, setWorkspace] = useState<IWorkspace>(bigBankPlc);
@@ -40,71 +41,88 @@ const AppContent = () => {
         ];
     }, []);
 
+    function handleViewModeChange(view: ViewMode): void {
+        setViewMode(view);
+        if (view === "diagrams") {
+            setCurrentView(
+                workspace.views.systemLandscape ??
+                    workspace.views.systemContexts[0] ??
+                    workspace.views.containers[0] ??
+                    workspace.views.components[0]
+            );
+        } else if (view === "model") {
+            setCurrentView({ type: ViewType.Model, key: "model" });
+        } else if (view === "deployment") {
+            setCurrentView(workspace.views.deployments[0]);
+        }
+    }
+
     return (
         <div
             className={
                 "flex items-center justify-center h-screen w-screen bg-neutral-950"
             }
         >
-            <ViewModeSwitcher currentView={viewMode} onChange={setViewMode} />
+            <ViewModeSwitcher
+                currentView={viewMode}
+                onChange={handleViewModeChange}
+            />
             {viewMode === "diagrams" && <Breadcrumbs items={breadcrumbs} />}
 
-            {viewMode === "diagrams" && (
-                <WorkspaceProvider
-                    workspace={workspace}
-                    setWorkspace={setWorkspace}
-                >
-                    <Workspace>
-                        <ViewportProvider>
-                            <Viewport>
-                                {currentView?.key ===
-                                    workspace.views.systemLandscape?.key && (
-                                    <SystemLandscapeDiagram
-                                        value={workspace.views.systemLandscape}
+            <WorkspaceProvider
+                workspace={workspace}
+                setWorkspace={setWorkspace}
+            >
+                <Workspace>
+                    <ViewportProvider>
+                        <Viewport>
+                            {currentView?.key ===
+                                workspace.views.systemLandscape?.key && (
+                                <SystemLandscapeDiagram
+                                    value={workspace.views.systemLandscape}
+                                />
+                            )}
+                            {workspace.views.systemContexts
+                                .filter((x) => x.key === currentView?.key)
+                                .map((systemContext) => (
+                                    <SystemContextDiagram
+                                        key={systemContext.key}
+                                        value={systemContext}
                                     />
-                                )}
-                                {workspace.views.systemContexts
-                                    .filter((x) => x.key === currentView?.key)
-                                    .map((systemContext) => (
-                                        <SystemContextDiagram
-                                            key={systemContext.key}
-                                            value={systemContext}
-                                        />
-                                    ))}
-                                {workspace.views.containers
-                                    .filter((x) => x.key === currentView?.key)
-                                    .map((container) => (
-                                        <ContainerDiagram
-                                            key={container.key}
-                                            value={container}
-                                        />
-                                    ))}
-                                {workspace.views.components
-                                    .filter((x) => x.key === currentView?.key)
-                                    .map((component) => (
-                                        <ComponentDiagram
-                                            key={component.key}
-                                            value={component}
-                                        />
-                                    ))}
-                            </Viewport>
-                            <ZoomControls />
-                        </ViewportProvider>
-                    </Workspace>
-                </WorkspaceProvider>
-            )}
+                                ))}
+                            {workspace.views.containers
+                                .filter((x) => x.key === currentView?.key)
+                                .map((container) => (
+                                    <ContainerDiagram
+                                        key={container.key}
+                                        value={container}
+                                    />
+                                ))}
+                            {workspace.views.components
+                                .filter((x) => x.key === currentView?.key)
+                                .map((component) => (
+                                    <ComponentDiagram
+                                        key={component.key}
+                                        value={component}
+                                    />
+                                ))}
+                            {workspace.views.deployments
+                                .filter((x) => x.key === currentView?.key)
+                                .map((deployment) => (
+                                    <DeploymentDiagram
+                                        key={deployment.key}
+                                        value={deployment}
+                                    />
+                                ))}
+                            {currentView?.type === ViewType.Model && (
+                                <ModelDiagram value={currentView} />
+                            )}
+                        </Viewport>
 
-            {viewMode === "model" && (
-                <Center h="100%" color="white">
-                    <Text>Model View (Implementation Pending)</Text>
-                </Center>
-            )}
-
-            {viewMode === "deployment" && (
-                <Center h="100%" color="white">
-                    <Text>Deployment View (Implementation Pending)</Text>
-                </Center>
-            )}
+                        <ZoomControls />
+                    </ViewportProvider>
+                </Workspace>
+            </WorkspaceProvider>
         </div>
     );
 };

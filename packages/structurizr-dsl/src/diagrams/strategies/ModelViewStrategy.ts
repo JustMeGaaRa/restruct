@@ -1,7 +1,6 @@
 import { IWorkspace, RelationshipType } from "../../interfaces";
 import { IElementVisitor } from "../../shared";
 
-// TODO: implement the ISupportVisitor interface
 export class ModelViewStrategy {
     constructor(private workspace: IWorkspace) {}
 

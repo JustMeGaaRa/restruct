@@ -1,11 +1,18 @@
-import { IDeploymentView } from "@structurizr/dsl";
-import { FC, PropsWithChildren, useEffect } from "react";
+import {
+    createDeploymentDiagram,
+    IDeploymentDiagram,
+    IDeploymentView,
+    ViewType,
+} from "@structurizr/dsl";
+import { useViewport } from "@graph/svg";
+import { FC, PropsWithChildren, useEffect, useState } from "react";
 import {
     IViewMetadata,
     ViewMetadataProvider,
     useWorkspace,
 } from "../../containers";
 import { ZoomCallback } from "../../types";
+import { autolayoutDiagram, createDefaultDeploymentView } from "../../utils";
 
 export const DeploymentDiagram: FC<
     PropsWithChildren<{
@@ -14,17 +21,25 @@ export const DeploymentDiagram: FC<
         onZoomInClick?: ZoomCallback;
         onZoomOutClick?: ZoomCallback;
     }>
-> = ({ children, value, metadata, onZoomInClick, onZoomOutClick }) => {
+> = ({ children, value, onZoomInClick, onZoomOutClick }) => {
     const { workspace } = useWorkspace();
+    const { autofit, fitBounds, getBounds } = useViewport();
+    const [diagram, setDiagram] = useState<IDeploymentDiagram | null>(null);
+    const [metadata, setMetadata] = useState<IViewMetadata>({
+        elements: {},
+        relationships: {},
+    });
 
     useEffect(() => {
         if (workspace) {
-            // const visitor = new ViewElementJsxVisitor(onZoomInClick, onZoomOutClick);
-            // const deploymentView = workspace.views.deployments.find(x => x.key === value.key)
-            //     ?? createDefaultDeploymentView();
-            // const strategy = new DeploymentViewStrategy(workspace.model, deploymentView);
-            // const elements = strategy.accept(visitor);
-            // setElements(elements);
+            const deploymentView =
+                workspace.views.deployments.find((x) => x.key === value.key) ??
+                createDefaultDeploymentView();
+
+            const diagram = createDeploymentDiagram(workspace, deploymentView);
+            setDiagram(diagram);
+
+            autolayoutDiagram(diagram, ViewType.Deployment).then(setMetadata);
         }
     }, [
         workspace,
@@ -35,8 +50,14 @@ export const DeploymentDiagram: FC<
         onZoomOutClick,
     ]);
 
+    useEffect(() => {
+        if (autofit) {
+            fitBounds(getBounds());
+        }
+    }, [autofit, metadata, fitBounds, getBounds]);
+
     return (
-        <ViewMetadataProvider metadata={metadata}>
+        <ViewMetadataProvider metadata={metadata} setMetadata={setMetadata}>
             {children}
         </ViewMetadataProvider>
     );

@@ -6,6 +6,7 @@ import {
     isPerson,
     isSoftwareSystem,
 } from "@structurizr/dsl";
+import { useViewport } from "@graph/svg";
 import { FC, PropsWithChildren, useEffect, useState } from "react";
 import {
     IViewMetadata,
@@ -19,7 +20,6 @@ import { Container } from "./Container";
 import { Relationship } from "./Relationship";
 import { Person } from "./Person";
 import { Group } from "./Group";
-import { useViewport } from "@graph/svg";
 
 export const ContainerDiagram: FC<
     PropsWithChildren<{
@@ -46,9 +46,7 @@ export const ContainerDiagram: FC<
             const diagram = createContainerDiagram(workspace, containerView);
             setDiagram(diagram);
 
-            autolayoutDiagram(diagram, ViewType.Container).then(
-                (metadataAuto) => setMetadata(metadataAuto)
-            );
+            autolayoutDiagram(diagram, ViewType.Container).then(setMetadata);
         }
     }, [
         workspace,

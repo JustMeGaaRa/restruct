@@ -8,6 +8,7 @@ import {
     isPerson,
     isSoftwareSystem,
 } from "@structurizr/dsl";
+import { useViewport } from "@graph/svg";
 import { FC, PropsWithChildren, useEffect, useState } from "react";
 import {
     IViewMetadata,
@@ -22,7 +23,6 @@ import { SoftwareSystem } from "./SoftwareSystem";
 import { Person } from "./Person";
 import { Relationship } from "./Relationship";
 import { Group } from "./Group";
-import { useViewport } from "@graph/svg";
 
 export const ComponentDiagram: FC<
     PropsWithChildren<{
@@ -49,9 +49,7 @@ export const ComponentDiagram: FC<
             const diagram = createComponentDiagram(workspace, componentView);
             setDiagram(diagram);
 
-            autolayoutDiagram(diagram, ViewType.Component).then(
-                (metadataAuto) => setMetadata(metadataAuto)
-            );
+            autolayoutDiagram(diagram, ViewType.Component).then(setMetadata);
         }
     }, [
         workspace,
