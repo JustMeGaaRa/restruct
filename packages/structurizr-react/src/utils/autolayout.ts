@@ -1,70 +1,36 @@
-import Dagre, { graphlib } from "@dagrejs/dagre";
 import {
     IComponentDiagram,
     IContainerDiagram,
+    IElement,
+    IRelationship,
     ISystemContextDiagram,
     ISystemLandscapeDiagram,
     ViewType,
 } from "@structurizr/dsl";
+import { Diagram } from "../types";
+import { dagreeGraph } from "./dagree";
+import { cytoscapeGraph } from "./cytoscape";
 import { IViewMetadata } from "../containers";
-
-type Diagram =
-    | ISystemLandscapeDiagram
-    | ISystemContextDiagram
-    | IContainerDiagram
-    | IComponentDiagram;
-
-export const autolayout = (
-    diagram: Diagram,
-    viewType: ViewType
-): IViewMetadata => {
-    const dagreGraph = new graphlib.Graph({ compound: true })
-        .setDefaultEdgeLabel(() => ({}))
-        .setGraph({
-            rankdir: "TB",
-            acyclicer: "greedy",
-            ranker: "network-simplex",
-        });
-
-    if (viewType === ViewType.SystemLandscape) {
-        buildGraphFromSystemLandscapeDiagram(
-            diagram as ISystemLandscapeDiagram,
-            dagreGraph
-        );
-    } else if (viewType === ViewType.SystemContext) {
-        buildGraphFromSystemContextDiagram(
-            diagram as ISystemContextDiagram,
-            dagreGraph
-        );
-    } else if (viewType === ViewType.Container) {
-        buildGraphFromContainerDiagram(
-            diagram as IContainerDiagram,
-            dagreGraph
-        );
-    } else if (viewType === ViewType.Component) {
-        buildGraphFromComponentDiagram(
-            diagram as IComponentDiagram,
-            dagreGraph
-        );
-    }
-
-    Dagre.layout(dagreGraph);
-
-    return buildMetadataFromGraph(dagreGraph);
-};
+import { GraphAdapter } from "./graph";
 
 const defaultPosition = { x: 0, y: 0 };
 const defaultSize = { height: 200, width: 200 };
 
-export const buildGraphFromSystemLandscapeDiagram = (
+function buildGraphFromSystemLandscapeDiagram(
     diagram: ISystemLandscapeDiagram,
-    graph: graphlib.Graph
-) => {
+    graph: GraphAdapter<IElement, IRelationship, IViewMetadata>
+) {
     [diagram.scope].map((scope) => {
         scope.groups.flatMap((group) => {
+            graph.setNode(group.identifier, {
+                id: group.identifier,
+                ...defaultSize,
+                ...defaultPosition,
+            });
             group.people.map((element) => {
                 graph.setNode(element.identifier, {
-                    label: "",
+                    id: element.identifier,
+                    parent: group.identifier,
                     ...defaultSize,
                     ...defaultPosition,
                 });
@@ -72,7 +38,8 @@ export const buildGraphFromSystemLandscapeDiagram = (
             });
             group.softwareSystems.map((element) => {
                 graph.setNode(element.identifier, {
-                    label: "",
+                    id: element.identifier,
+                    parent: group.identifier,
                     ...defaultSize,
                     ...defaultPosition,
                 });
@@ -82,7 +49,7 @@ export const buildGraphFromSystemLandscapeDiagram = (
 
         scope.softwareSystems.map((element) => {
             graph.setNode(element.identifier, {
-                label: "",
+                id: element.identifier,
                 ...defaultSize,
                 ...defaultPosition,
             });
@@ -90,7 +57,7 @@ export const buildGraphFromSystemLandscapeDiagram = (
 
         scope.people.map((element) => {
             graph.setNode(element.identifier, {
-                label: "",
+                id: element.identifier,
                 ...defaultSize,
                 ...defaultPosition,
             });
@@ -98,20 +65,21 @@ export const buildGraphFromSystemLandscapeDiagram = (
     });
 
     diagram.relationships.map((relationship) => {
-        graph.setEdge(
-            relationship.sourceIdentifier,
-            relationship.targetIdentifier
-        );
+        graph.setEdge(relationship.identifier, {
+            id: relationship.identifier,
+            source: relationship.sourceIdentifier,
+            target: relationship.targetIdentifier,
+        });
     });
-};
+}
 
-export const buildGraphFromSystemContextDiagram = (
+function buildGraphFromSystemContextDiagram(
     diagram: ISystemContextDiagram,
-    graph: graphlib.Graph
-) => {
+    graph: GraphAdapter<IElement, IRelationship, IViewMetadata>
+) {
     [diagram.scope].map((scope) => {
         graph.setNode(scope.identifier, {
-            label: "",
+            id: scope.identifier,
             ...defaultSize,
             ...defaultPosition,
         });
@@ -119,35 +87,43 @@ export const buildGraphFromSystemContextDiagram = (
 
     diagram.supportingElements.map((element) => {
         graph.setNode(element.identifier, {
-            label: "",
+            id: element.identifier,
             ...defaultSize,
             ...defaultPosition,
         });
     });
 
     diagram.relationships.map((relationship) => {
-        graph.setEdge(
-            relationship.sourceIdentifier,
-            relationship.targetIdentifier
-        );
+        graph.setEdge(relationship.identifier, {
+            id: relationship.identifier,
+            source: relationship.sourceIdentifier,
+            target: relationship.targetIdentifier,
+        });
     });
-};
+}
 
-export const buildGraphFromContainerDiagram = (
+function buildGraphFromContainerDiagram(
     diagram: IContainerDiagram,
-    graph: graphlib.Graph
-) => {
+    graph: GraphAdapter<IElement, IRelationship, IViewMetadata>
+) {
     [diagram.scope].map((scope) => {
         graph.setNode(scope.identifier, {
-            label: "",
+            id: scope.identifier,
             ...defaultSize,
             ...defaultPosition,
         });
 
         scope.groups.flatMap((group) => {
+            graph.setNode(group.identifier, {
+                id: group.identifier,
+                parent: scope.identifier,
+                ...defaultSize,
+                ...defaultPosition,
+            });
             group.containers.map((element) => {
                 graph.setNode(element.identifier, {
-                    label: "",
+                    id: element.identifier,
+                    parent: group.identifier,
                     ...defaultSize,
                     ...defaultPosition,
                 });
@@ -157,7 +133,8 @@ export const buildGraphFromContainerDiagram = (
 
         scope.containers.map((element) => {
             graph.setNode(element.identifier, {
-                label: "",
+                id: element.identifier,
+                parent: scope.identifier,
                 ...defaultSize,
                 ...defaultPosition,
             });
@@ -167,35 +144,44 @@ export const buildGraphFromContainerDiagram = (
 
     diagram.supportingElements.map((element) => {
         graph.setNode(element.identifier, {
-            label: "",
+            id: element.identifier,
             ...defaultSize,
             ...defaultPosition,
         });
     });
 
     diagram.relationships.map((relationship) => {
-        graph.setEdge(
-            relationship.sourceIdentifier,
-            relationship.targetIdentifier
-        );
+        graph.setEdge(relationship.identifier, {
+            id: relationship.identifier,
+            source: relationship.sourceIdentifier,
+            target: relationship.targetIdentifier,
+        });
     });
-};
+}
 
-export const buildGraphFromComponentDiagram = (
+function buildGraphFromComponentDiagram(
     diagram: IComponentDiagram,
-    graph: graphlib.Graph
-) => {
+    graph: GraphAdapter<IElement, IRelationship, IViewMetadata>
+) {
     [diagram.scope].map((scope) => {
         graph.setNode(scope.identifier, {
-            label: "",
+            id: scope.identifier,
+            parent: scope.identifier,
             ...defaultSize,
             ...defaultPosition,
         });
 
         scope.groups.flatMap((group) => {
+            graph.setNode(group.identifier, {
+                id: group.identifier,
+                parent: scope.identifier,
+                ...defaultSize,
+                ...defaultPosition,
+            });
             group.components.map((element) => {
                 graph.setNode(element.identifier, {
-                    label: "",
+                    id: element.identifier,
+                    parent: group.identifier,
                     ...defaultSize,
                     ...defaultPosition,
                 });
@@ -205,7 +191,8 @@ export const buildGraphFromComponentDiagram = (
 
         scope.components.map((element) => {
             graph.setNode(element.identifier, {
-                label: "",
+                id: element.identifier,
+                parent: scope.identifier,
                 ...defaultSize,
                 ...defaultPosition,
             });
@@ -215,42 +202,70 @@ export const buildGraphFromComponentDiagram = (
 
     diagram.supportingElements.map((element) => {
         graph.setNode(element.identifier, {
-            label: "",
+            id: element.identifier,
             ...defaultSize,
             ...defaultPosition,
         });
     });
 
     diagram.relationships.map((relationship) => {
-        graph.setEdge(
-            relationship.sourceIdentifier,
-            relationship.targetIdentifier
-        );
+        graph.setEdge(relationship.identifier, {
+            id: relationship.identifier,
+            source: relationship.sourceIdentifier,
+            target: relationship.targetIdentifier,
+        });
     });
-};
+}
 
-export const buildMetadataFromGraph = (
-    graph: graphlib.Graph
-): IViewMetadata => {
-    return {
-        elements: Object.fromEntries(
-            graph.nodes().map((nodeId) => {
-                const node = graph.node(nodeId) ?? graph.children(nodeId);
-                return [
-                    nodeId,
-                    {
-                        x: node.x,
-                        y: node.y,
-                        height: node.height,
-                        width: node.width,
-                    },
-                ];
-            })
-        ),
-        relationships: {},
-    };
-};
+function createDiagramGraph(
+    viewType: ViewType,
+    diagram: Diagram,
+    graphAdapter: GraphAdapter<IElement, IRelationship, IViewMetadata>
+) {
+    if (viewType === ViewType.SystemLandscape) {
+        buildGraphFromSystemLandscapeDiagram(
+            diagram as ISystemLandscapeDiagram,
+            graphAdapter
+        );
+    } else if (viewType === ViewType.SystemContext) {
+        buildGraphFromSystemContextDiagram(
+            diagram as ISystemContextDiagram,
+            graphAdapter
+        );
+    } else if (viewType === ViewType.Container) {
+        buildGraphFromContainerDiagram(
+            diagram as IContainerDiagram,
+            graphAdapter
+        );
+    } else if (viewType === ViewType.Component) {
+        buildGraphFromComponentDiagram(
+            diagram as IComponentDiagram,
+            graphAdapter
+        );
+    }
 
-export const autolayoutDiagram = (diagram: Diagram, viewType: ViewType) => {
-    return autolayout(diagram, viewType);
+    return graphAdapter;
+}
+
+function createLayoutAlgorithm(
+    algorithm: "cose" | "layered"
+): GraphAdapter<IElement, IRelationship> {
+    switch (algorithm) {
+        case "cose":
+            return cytoscapeGraph();
+        case "layered":
+            return dagreeGraph();
+    }
+}
+
+export const autolayoutDiagram = (
+    diagram: Diagram,
+    viewType: ViewType,
+    algorithm: "cose" | "layered" = "layered"
+): Promise<IViewMetadata> => {
+    return createDiagramGraph(
+        viewType,
+        diagram,
+        createLayoutAlgorithm(algorithm)
+    ).layout();
 };

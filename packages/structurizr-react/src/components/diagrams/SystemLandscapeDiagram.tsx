@@ -21,6 +21,7 @@ import { SoftwareSystem } from "./SoftwareSystem";
 import { Relationship } from "./Relationship";
 import { Person } from "./Person";
 import { Group } from "./Group";
+import { useViewport } from "@graph/svg";
 
 export const SystemLandscapeDiagram: FC<
     PropsWithChildren<{
@@ -31,6 +32,7 @@ export const SystemLandscapeDiagram: FC<
     }>
 > = ({ children, value, onZoomInClick, onZoomOutClick }) => {
     const { workspace } = useWorkspace();
+    const { autofit, fitBounds, getBounds } = useViewport();
     const [diagram, setDiagram] = useState<ISystemLandscapeDiagram | null>(
         null
     );
@@ -52,13 +54,17 @@ export const SystemLandscapeDiagram: FC<
             );
             setDiagram(diagram);
 
-            const metadataAuto = autolayoutDiagram(
-                diagram,
-                ViewType.SystemLandscape
+            autolayoutDiagram(diagram, ViewType.SystemLandscape).then(
+                (metadataAuto) => setMetadata(metadataAuto)
             );
-            setMetadata(metadataAuto);
         }
     }, [workspace, onZoomInClick, onZoomOutClick, value?.key]);
+
+    useEffect(() => {
+        if (autofit) {
+            fitBounds(getBounds());
+        }
+    }, [autofit, metadata, fitBounds, getBounds]);
 
     return (
         <ViewMetadataProvider metadata={metadata} setMetadata={setMetadata}>

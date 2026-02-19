@@ -16,6 +16,7 @@ export const ViewportContext = createContext<{
     viewbox: Viewbox;
     minZoom: number;
     maxZoom: number;
+    autofit?: boolean;
     setZoom: React.Dispatch<SetStateAction<number>>;
     setViewbox: React.Dispatch<SetStateAction<Viewbox>>;
 }>({
@@ -33,8 +34,8 @@ export const ViewportContext = createContext<{
 });
 
 export const ViewportProvider: FC<
-    PropsWithChildren<{ minZoom?: number; maxZoom?: number }>
-> = ({ children, minZoom = 0.1, maxZoom = 5 }) => {
+    PropsWithChildren<{ minZoom?: number; maxZoom?: number; autofit?: boolean }>
+> = ({ children, minZoom = 0.1, maxZoom = 5, autofit = true }) => {
     const [zoom, setZoom] = useState<number>(1);
     const [viewbox, setViewbox] = useState<Viewbox>({
         x: 0,
@@ -45,7 +46,15 @@ export const ViewportProvider: FC<
 
     return (
         <ViewportContext.Provider
-            value={{ zoom, viewbox, minZoom, maxZoom, setZoom, setViewbox }}
+            value={{
+                zoom,
+                viewbox,
+                minZoom,
+                maxZoom,
+                autofit,
+                setZoom,
+                setViewbox,
+            }}
         >
             {children}
         </ViewportContext.Provider>
@@ -53,7 +62,7 @@ export const ViewportProvider: FC<
 };
 
 export const useViewport = () => {
-    const { viewbox, zoom, minZoom, maxZoom, setViewbox, setZoom } =
+    const { autofit, viewbox, zoom, minZoom, maxZoom, setViewbox, setZoom } =
         useContext(ViewportContext);
 
     const getBounds = useCallback(() => {
@@ -163,6 +172,7 @@ export const useViewport = () => {
     }, [zoom, setZoom, setViewbox, minZoom]);
 
     return {
+        autofit,
         viewbox,
         zoom,
         minZoom,

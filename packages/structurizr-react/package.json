@@ -13,7 +13,8 @@
     "dependencies": {
         "@dagrejs/dagre": "^1.1.4",
         "@graph/svg": "workspace:*",
-        "@structurizr/dsl": "workspace:*"
+        "@structurizr/dsl": "workspace:*",
+        "cytoscape": "^3.33.1"
     },
     "devDependencies": {
         "@restruct/eslint-config": "workspace:*",

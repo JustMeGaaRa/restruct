@@ -1,5 +1,6 @@
 import { Breadcrumb, Box } from "@chakra-ui/react";
 import { LuChevronRight } from "react-icons/lu";
+import { Fragment } from "react/jsx-runtime";
 
 export interface BreadcrumbItem {
     label: string;
@@ -33,37 +34,41 @@ export const Breadcrumbs = ({ items }: BreadcrumbsProps) => {
                     {items.map((item, index) => {
                         const isLast = index === items.length - 1;
                         return (
-                            <Breadcrumb.Item key={index}>
-                                {isLast ? (
-                                    <Breadcrumb.CurrentLink
-                                        color="white"
-                                        fontSize="sm"
-                                        _hover={{
-                                            textDecoration: "none",
-                                        }}
-                                    >
-                                        {item.label}
-                                    </Breadcrumb.CurrentLink>
-                                ) : (
-                                    <Breadcrumb.Link
-                                        onClick={item.onClick}
-                                        color="gray.400"
-                                        fontSize="sm"
-                                        height="32px"
-                                        _hover={{
-                                            color: "white",
-                                            textDecoration: "none",
-                                        }}
-                                        cursor={
-                                            item.onClick ? "pointer" : "default"
-                                        }
-                                        pointerEvents={
-                                            item.onClick ? "auto" : "none"
-                                        }
-                                    >
-                                        {item.label}
-                                    </Breadcrumb.Link>
-                                )}
+                            <Fragment key={index}>
+                                <Breadcrumb.Item>
+                                    {isLast ? (
+                                        <Breadcrumb.CurrentLink
+                                            color="white"
+                                            fontSize="sm"
+                                            _hover={{
+                                                textDecoration: "none",
+                                            }}
+                                        >
+                                            {item.label}
+                                        </Breadcrumb.CurrentLink>
+                                    ) : (
+                                        <Breadcrumb.Link
+                                            onClick={item.onClick}
+                                            color="gray.400"
+                                            fontSize="sm"
+                                            height="32px"
+                                            _hover={{
+                                                color: "white",
+                                                textDecoration: "none",
+                                            }}
+                                            cursor={
+                                                item.onClick
+                                                    ? "pointer"
+                                                    : "default"
+                                            }
+                                            pointerEvents={
+                                                item.onClick ? "auto" : "none"
+                                            }
+                                        >
+                                            {item.label}
+                                        </Breadcrumb.Link>
+                                    )}
+                                </Breadcrumb.Item>
                                 {!isLast && (
                                     <Breadcrumb.Separator
                                         color="gray.500"
@@ -72,7 +77,7 @@ export const Breadcrumbs = ({ items }: BreadcrumbsProps) => {
                                         <LuChevronRight />
                                     </Breadcrumb.Separator>
                                 )}
-                            </Breadcrumb.Item>
+                            </Fragment>
                         );
                     })}
                 </Breadcrumb.List>
