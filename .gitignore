@@ -26,6 +26,8 @@ coverage
 out/
 build
 dist
+apps/vscode-extension/media
+
 
 
 # Debug
@@ -38,3 +40,10 @@ yarn-error.log*
 *.pem
 
 *storybook.log
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts

@@ -1,4 +1,5 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { Edge, MarkerType, Text } from "@graph/svg";
 import { useViewMetadata } from "../../containers";
 import { useThemeResolvedRelationshipStyle } from "../../hooks";
@@ -13,6 +14,13 @@ export interface IRelationship {
 
 export const Relationship: FC<{ value: IRelationship }> = ({ value }) => {
     const { metadata } = useViewMetadata();
+    const [portalNode, setPortalNode] = useState<Element | null>(null);
+
+    useEffect(() => {
+        setPortalNode(
+            document.getElementsByClassName("graph__viewport-content").item(0)
+        );
+    }, []);
 
     const tags =
         value.tags && value.tags.length > 0
@@ -23,26 +31,29 @@ export const Relationship: FC<{ value: IRelationship }> = ({ value }) => {
     const color = resolvedStyle.color ?? "#E8E8E8";
     const thickness = resolvedStyle.thickness ?? 2;
 
-    // TODO: create a portal to the viewport so that edges are not scoped
     return (
-        <Edge
-            id={value.identifier}
-            sourceNodeId={value.sourceIdentifier}
-            targetNodeId={value.targetIdentifier}
-            points={metadata?.relationships?.[value.identifier]}
-            markerStart={MarkerType.CircleOutline}
-            markerEnd={MarkerType.ArrowClosed}
-            strokeWidth={thickness}
-        >
-            <Text
-                fill={color}
-                fontSize={12}
-                fontFamily={"Inter"}
-                textAnchor={"middle"}
-                width={200}
+        portalNode &&
+        createPortal(
+            <Edge
+                id={value.identifier}
+                sourceNodeId={value.sourceIdentifier}
+                targetNodeId={value.targetIdentifier}
+                points={metadata?.relationships?.[value.identifier]}
+                markerStart={MarkerType.CircleOutline}
+                markerEnd={MarkerType.ArrowClosed}
+                strokeWidth={thickness}
             >
-                {value.description}
-            </Text>
-        </Edge>
+                <Text
+                    fill={color}
+                    fontSize={12}
+                    fontFamily={"Inter"}
+                    textAnchor={"middle"}
+                    width={200}
+                >
+                    {value.description}
+                </Text>
+            </Edge>,
+            portalNode
+        )
     );
 };
