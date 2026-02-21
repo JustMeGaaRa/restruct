@@ -1,0 +1,12 @@
+{
+    "extends": "@restruct/typescript-config/react-library.json",
+    "compilerOptions": {
+        "jsx": "react-jsx",
+        "moduleResolution": "bundler",
+        "skipLibCheck": true,
+        "paths": {
+            "@/*": ["./src/*"]
+        }
+    },
+    "include": ["src"]
+}

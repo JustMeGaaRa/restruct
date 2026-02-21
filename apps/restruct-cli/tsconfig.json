@@ -1,0 +1,10 @@
+{
+    "extends": "@restruct/typescript-config/base.json",
+    "compilerOptions": {
+        "outDir": "dist",
+        "rootDir": "src",
+        "moduleResolution": "NodeNext",
+        "skipLibCheck": true
+    },
+    "include": ["src"]
+}
