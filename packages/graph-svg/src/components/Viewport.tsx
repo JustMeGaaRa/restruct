@@ -116,7 +116,7 @@ export const Viewport: FC<PropsWithChildren> = ({ children }) => {
 
         const element = svgRef.current;
         const resizeObserver = new ResizeObserver((entries) => {
-            const target = entries.at(0);
+            const target = entries[0];
             if (!target) return;
 
             setViewbox((prev) => ({

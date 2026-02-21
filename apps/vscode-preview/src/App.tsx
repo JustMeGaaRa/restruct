@@ -21,12 +21,23 @@ import {
     ZoomControls,
     Breadcrumbs,
 } from "@restruct/ui";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { bigBankPlc } from "./workspace";
-import { useState, useEffect, useMemo } from "react";
 import { ThemeProvider } from "../../../packages/structurizr-react/src/containers/ThemeProvider";
 
-const AppContent = () => {
-    const [workspace, setWorkspace] = useState<IWorkspace>(bigBankPlc);
+declare global {
+    interface Window {
+        __WS_PORT__?: number;
+    }
+}
+
+const AppContent = ({
+    workspace,
+    setWorkspace,
+}: {
+    workspace: IWorkspace;
+    setWorkspace: (ws: IWorkspace) => void;
+}) => {
     const { currentView, setCurrentView } = useViewNavigation();
     const [viewMode, setViewMode] = useState<ViewMode>("diagrams");
 
@@ -75,7 +86,7 @@ const AppContent = () => {
 
             <WorkspaceProvider
                 workspace={workspace}
-                setWorkspace={setWorkspace}
+                setWorkspace={setWorkspace as any}
             >
                 <Workspace>
                     {workspace.views.configuration?.themes && (
@@ -141,10 +152,81 @@ const AppContent = () => {
 };
 
 export const App = () => {
+    const [workspace, setWorkspace] = useState<IWorkspace | null>(null);
+    const wsRef = useRef<WebSocket | null>(null);
+
+    useEffect(() => {
+        if (!window.__WS_PORT__) {
+            console.error("[App] Missing __WS_PORT__");
+            return;
+        }
+
+        const timeoutId = setTimeout(() => {
+            if (wsRef.current) return;
+
+            const wsUrl = `ws://localhost:${window.__WS_PORT__}`;
+            console.log("[App] Connecting to WebSocket:", wsUrl);
+
+            const ws = new WebSocket(wsUrl);
+            wsRef.current = ws;
+
+            ws.onopen = () => {
+                console.log("[App] WebSocket connected");
+            };
+
+            ws.onerror = (error) => {
+                console.error("[App] WebSocket error:", error);
+            };
+
+            ws.onclose = (event) => {
+                console.log(
+                    "[App] WebSocket closed:",
+                    event.code,
+                    event.reason
+                );
+                if (wsRef.current === ws) {
+                    wsRef.current = null;
+                }
+            };
+
+            ws.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    if (data.type === "workspace") {
+                        console.log("[App] Received workspace update");
+                        setWorkspace(data.workspace);
+                    } else if (data.command === "error") {
+                        console.error("[App] Received error:", data.error);
+                    }
+                } catch (e) {
+                    console.error("[App] Failed to parse message:", e);
+                }
+            };
+        }, 100);
+
+        return () => {
+            clearTimeout(timeoutId);
+            if (wsRef.current) {
+                console.log("[App] Cleaning up WebSocket");
+                wsRef.current.close();
+                wsRef.current = null;
+            }
+        };
+    }, []);
+
+    if (!workspace) {
+        return (
+            <div className="flex items-center justify-center h-screen w-screen bg-neutral-900 text-white">
+                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white mr-4"></div>
+                <div>Loading workspace...</div>
+            </div>
+        );
+    }
+
     return (
         <ViewNavigationProvider>
             <ThemeProvider theme={RestructDarkTheme}>
-                <AppContent />
+                <AppContent workspace={workspace} setWorkspace={setWorkspace} />
             </ThemeProvider>
         </ViewNavigationProvider>
     );
