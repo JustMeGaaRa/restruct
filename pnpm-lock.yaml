@@ -91,6 +91,100 @@ importers:
         specifier: ^5
         version: 5.3.3
 
+  apps/restruct-cli:
+    dependencies:
+      '@chakra-ui/react':
+        specifier: ^3.33.0
+        version: 3.33.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      '@emotion/react':
+        specifier: ^11.14.0
+        version: 11.14.0(@types/react@19.2.14)(react@19.0.0)
+      '@graph/svg':
+        specifier: workspace:*
+        version: link:../../packages/graph-svg
+      '@restruct/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+      '@structurizr/dsl':
+        specifier: workspace:*
+        version: link:../../packages/structurizr-dsl
+      '@structurizr/react':
+        specifier: workspace:*
+        version: link:../../packages/structurizr-react
+      chalk:
+        specifier: ^5.3.0
+        version: 5.6.2
+      chokidar:
+        specifier: ^3.6.0
+        version: 3.6.0
+      commander:
+        specifier: ^12.0.0
+        version: 12.1.0
+      esbuild:
+        specifier: ^0.20.0
+        version: 0.20.2
+      fs-extra:
+        specifier: ^11.2.0
+        version: 11.3.3
+      inquirer:
+        specifier: ^9.2.14
+        version: 9.3.8(@types/node@20.11.24)
+      ora:
+        specifier: ^8.0.1
+        version: 8.2.0
+      react:
+        specifier: ^19.0.0
+        version: 19.0.0
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.0.0(react@19.0.0)
+      vite:
+        specifier: ^5.1.4
+        version: 5.4.8(@types/node@20.11.24)
+      ws:
+        specifier: ^8.16.0
+        version: 8.18.0
+    devDependencies:
+      '@restruct/eslint-config':
+        specifier: workspace:*
+        version: link:../../packages/eslint-config
+      '@restruct/typescript-config':
+        specifier: workspace:*
+        version: link:../../packages/typescript-config
+      '@types/fs-extra':
+        specifier: ^11.0.4
+        version: 11.0.4
+      '@types/inquirer':
+        specifier: ^9.0.7
+        version: 9.0.9
+      '@types/node':
+        specifier: ^20.11.24
+        version: 20.11.24
+      '@types/react':
+        specifier: ^19.0.0
+        version: 19.2.14
+      '@types/react-dom':
+        specifier: ^19.0.0
+        version: 19.2.3(@types/react@19.2.14)
+      '@types/ws':
+        specifier: ^8.5.10
+        version: 8.18.1
+      '@vitejs/plugin-react':
+        specifier: ^4.2.1
+        version: 4.3.4(vite@5.4.8(@types/node@20.11.24))
+      tsup:
+        specifier: ^8.0.2
+        version: 8.5.1(jiti@1.21.6)(postcss@8.5.1)(typescript@5.6.2)(yaml@2.5.1)
+      typescript:
+        specifier: ^5.3.3
+        version: 5.6.2
+      vite-tsconfig-paths:
+        specifier: ^6.1.1
+        version: 6.1.1(typescript@5.6.2)(vite@5.4.8(@types/node@20.11.24))
+      vitest:
+        specifier: ^1.3.1
+        version: 1.6.1(@types/node@20.11.24)
+
   apps/vscode-preview:
     dependencies:
       '@chakra-ui/react':
@@ -281,100 +375,6 @@ importers:
       vitest:
         specifier: ^2.1.1
         version: 2.1.1(@types/node@20.11.24)
-
-  packages/restruct-cli:
-    dependencies:
-      '@chakra-ui/react':
-        specifier: ^3.33.0
-        version: 3.33.0(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@emotion/react':
-        specifier: ^11.14.0
-        version: 11.14.0(@types/react@19.2.14)(react@19.0.0)
-      '@graph/svg':
-        specifier: workspace:*
-        version: link:../graph-svg
-      '@restruct/ui':
-        specifier: workspace:*
-        version: link:../ui
-      '@structurizr/dsl':
-        specifier: workspace:*
-        version: link:../structurizr-dsl
-      '@structurizr/react':
-        specifier: workspace:*
-        version: link:../structurizr-react
-      chalk:
-        specifier: ^5.3.0
-        version: 5.6.2
-      chokidar:
-        specifier: ^3.6.0
-        version: 3.6.0
-      commander:
-        specifier: ^12.0.0
-        version: 12.1.0
-      esbuild:
-        specifier: ^0.20.0
-        version: 0.20.2
-      fs-extra:
-        specifier: ^11.2.0
-        version: 11.3.3
-      inquirer:
-        specifier: ^9.2.14
-        version: 9.3.8(@types/node@20.11.24)
-      ora:
-        specifier: ^8.0.1
-        version: 8.2.0
-      react:
-        specifier: ^19.0.0
-        version: 19.0.0
-      react-dom:
-        specifier: ^19.0.0
-        version: 19.0.0(react@19.0.0)
-      vite:
-        specifier: ^5.1.4
-        version: 5.4.8(@types/node@20.11.24)
-      ws:
-        specifier: ^8.16.0
-        version: 8.18.0
-    devDependencies:
-      '@restruct/eslint-config':
-        specifier: workspace:*
-        version: link:../eslint-config
-      '@restruct/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
-      '@types/fs-extra':
-        specifier: ^11.0.4
-        version: 11.0.4
-      '@types/inquirer':
-        specifier: ^9.0.7
-        version: 9.0.9
-      '@types/node':
-        specifier: ^20.11.24
-        version: 20.11.24
-      '@types/react':
-        specifier: ^19.0.0
-        version: 19.2.14
-      '@types/react-dom':
-        specifier: ^19.0.0
-        version: 19.2.3(@types/react@19.2.14)
-      '@types/ws':
-        specifier: ^8.5.10
-        version: 8.18.1
-      '@vitejs/plugin-react':
-        specifier: ^4.2.1
-        version: 4.3.4(vite@5.4.8(@types/node@20.11.24))
-      tsup:
-        specifier: ^8.0.2
-        version: 8.5.1(jiti@1.21.6)(postcss@8.5.1)(typescript@5.6.2)(yaml@2.5.1)
-      typescript:
-        specifier: ^5.3.3
-        version: 5.6.2
-      vite-tsconfig-paths:
-        specifier: ^6.1.1
-        version: 6.1.1(typescript@5.6.2)(vite@5.4.8(@types/node@20.11.24))
-      vitest:
-        specifier: ^1.3.1
-        version: 1.6.1(@types/node@20.11.24)
 
   packages/structurizr-dsl:
     devDependencies:
@@ -2472,10 +2472,6 @@ packages:
     peerDependencies:
       acorn: ^6.0.0 || ^7.0.0 || ^8.0.0
 
-  acorn-walk@8.2.0:
-    resolution: {integrity: sha512-k+iyHEuPgSw6SbuDpGQM+06HQUa04DZ3o+F6CSzXMvvI5KMvnaEqXe+YVe555R9nn6GPt404fos4wcgpw12SDA==}
-    engines: {node: '>=0.4.0'}
-
   acorn-walk@8.3.4:
     resolution: {integrity: sha512-ueEepnujpqee2o5aIYnvHU6C0A42MNdsIDeqy5BydrkuC5R1ZuUFnm27EeFJGoEHJQgn3uleRvmTXaJgfXbt4g==}
     engines: {node: '>=0.4.0'}
@@ -2825,10 +2821,6 @@ packages:
   cli-cursor@5.0.0:
     resolution: {integrity: sha512-aCj4O5wKyszjMmDT4tZj93kxyydN/K5zPWSCe6/0AV/AA1pqe5ZBIw0a2ZfPQV7lL5/yb5HsUreJ6UFAF1tEQw==}
     engines: {node: '>=18'}
-
-  cli-spinners@2.9.0:
-    resolution: {integrity: sha512-4/aL9X3Wh0yiMQlE+eeRhWP6vclO3QRtw1JHKIT0FFUs5FjpFmESqtMvYZ0+lbzBw900b95mS0hohy+qn2VK/g==}
-    engines: {node: '>=6'}
 
   cli-spinners@2.9.2:
     resolution: {integrity: sha512-ywqV+5MmyL4E7ybXgKys4DugZbX0FC6LnwrhjuykIjnK9k8OQacQ7axGKnjDXWNhns0xot3bZI5h55H8yo9cJg==}
@@ -5788,7 +5780,7 @@ snapshots:
       '@babel/traverse': 7.25.6
       '@babel/types': 7.25.6
       convert-source-map: 2.0.0
-      debug: 4.3.7
+      debug: 4.4.3
       gensync: 1.0.0-beta.2
       json5: 2.2.3
       semver: 6.3.1
@@ -5964,7 +5956,7 @@ snapshots:
       '@babel/parser': 7.25.6
       '@babel/template': 7.25.0
       '@babel/types': 7.25.6
-      debug: 4.3.7
+      debug: 4.4.3
       globals: 11.12.0
     transitivePeerDependencies:
       - supports-color
@@ -5976,7 +5968,7 @@ snapshots:
       '@babel/parser': 7.26.8
       '@babel/template': 7.26.8
       '@babel/types': 7.26.8
-      debug: 4.3.7
+      debug: 4.4.3
       globals: 11.12.0
     transitivePeerDependencies:
       - supports-color
@@ -7270,7 +7262,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/types': 7.1.0
       '@typescript-eslint/visitor-keys': 7.1.0
-      debug: 4.3.7
+      debug: 4.4.3
       globby: 11.1.0
       is-glob: 4.0.3
       minimatch: 9.0.3
@@ -7382,7 +7374,7 @@ snapshots:
     dependencies:
       '@vitest/spy': 2.1.1
       '@vitest/utils': 2.1.1
-      chai: 5.1.1
+      chai: 5.1.2
       tinyrainbow: 1.2.0
 
   '@vitest/expect@2.1.9':
@@ -7396,7 +7388,7 @@ snapshots:
     dependencies:
       '@vitest/spy': 2.1.1
       estree-walker: 3.0.3
-      magic-string: 0.30.11
+      magic-string: 0.30.17
     optionalDependencies:
       vite: 5.4.8(@types/node@20.11.24)
 
@@ -7445,7 +7437,7 @@ snapshots:
   '@vitest/snapshot@2.1.1':
     dependencies:
       '@vitest/pretty-format': 2.1.1
-      magic-string: 0.30.11
+      magic-string: 0.30.17
       pathe: 1.1.2
 
   '@vitest/snapshot@2.1.9':
@@ -8044,11 +8036,9 @@ snapshots:
     dependencies:
       acorn: 8.14.0
 
-  acorn-walk@8.2.0: {}
-
   acorn-walk@8.3.4:
     dependencies:
-      acorn: 8.14.0
+      acorn: 8.15.0
 
   acorn@8.10.0: {}
 
@@ -8060,7 +8050,7 @@ snapshots:
 
   agent-base@7.1.0:
     dependencies:
-      debug: 4.3.7
+      debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
@@ -8461,8 +8451,6 @@ snapshots:
     dependencies:
       restore-cursor: 5.1.0
 
-  cli-spinners@2.9.0: {}
-
   cli-spinners@2.9.2: {}
 
   cli-width@3.0.0: {}
@@ -8853,7 +8841,7 @@ snapshots:
 
   esbuild-register@3.6.0(esbuild@0.20.2):
     dependencies:
-      debug: 4.3.7
+      debug: 4.4.3
       esbuild: 0.20.2
     transitivePeerDependencies:
       - supports-color
@@ -8989,7 +8977,7 @@ snapshots:
       eslint: 8.57.0
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@7.1.0(eslint@8.57.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.0(eslint@8.57.0))(eslint@8.57.0)
-      eslint-plugin-import: 2.29.0(@typescript-eslint/parser@7.1.0(eslint@8.57.0)(typescript@5.3.3))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.1.0(eslint@8.57.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.0(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
+      eslint-plugin-import: 2.29.0(@typescript-eslint/parser@7.1.0(eslint@8.57.0)(typescript@5.3.3))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0)
       eslint-plugin-jsx-a11y: 6.8.0(eslint@8.57.0)
       eslint-plugin-react: 7.33.2(eslint@8.57.0)
       eslint-plugin-react-hooks: 4.6.0(eslint@8.57.0)
@@ -9017,7 +9005,7 @@ snapshots:
       enhanced-resolve: 5.15.0
       eslint: 8.57.0
       eslint-module-utils: 2.8.0(@typescript-eslint/parser@7.1.0(eslint@8.57.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.1.0(eslint@8.57.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.0(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
-      eslint-plugin-import: 2.29.0(@typescript-eslint/parser@7.1.0(eslint@8.57.0)(typescript@5.3.3))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.1.0(eslint@8.57.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.0(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
+      eslint-plugin-import: 2.29.0(@typescript-eslint/parser@7.1.0(eslint@8.57.0)(typescript@5.3.3))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0)
       fast-glob: 3.3.2
       get-tsconfig: 4.7.2
       is-core-module: 2.13.1
@@ -9039,7 +9027,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.29.0(@typescript-eslint/parser@7.1.0(eslint@8.57.0)(typescript@5.3.3))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.1.0(eslint@8.57.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.0(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0):
+  eslint-plugin-import@2.29.0(@typescript-eslint/parser@7.1.0(eslint@8.57.0)(typescript@5.3.3))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0):
     dependencies:
       array-includes: 3.1.7
       array.prototype.findlastindex: 1.2.3
@@ -9491,7 +9479,7 @@ snapshots:
     dependencies:
       basic-ftp: 5.0.3
       data-uri-to-buffer: 5.0.1
-      debug: 4.3.7
+      debug: 4.4.3
       fs-extra: 8.1.0
     transitivePeerDependencies:
       - supports-color
@@ -9638,14 +9626,14 @@ snapshots:
   http-proxy-agent@7.0.0:
     dependencies:
       agent-base: 7.1.0
-      debug: 4.3.7
+      debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
   https-proxy-agent@7.0.1:
     dependencies:
       agent-base: 7.1.0
-      debug: 4.3.7
+      debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
@@ -10385,7 +10373,7 @@ snapshots:
     dependencies:
       chalk: 3.0.0
       cli-cursor: 3.1.0
-      cli-spinners: 2.9.0
+      cli-spinners: 2.9.2
       is-interactive: 1.0.0
       log-symbols: 3.0.0
       mute-stream: 0.0.8
@@ -10397,7 +10385,7 @@ snapshots:
       bl: 4.1.0
       chalk: 4.1.2
       cli-cursor: 3.1.0
-      cli-spinners: 2.9.0
+      cli-spinners: 2.9.2
       is-interactive: 1.0.0
       is-unicode-supported: 0.1.0
       log-symbols: 4.1.0
@@ -10444,7 +10432,7 @@ snapshots:
     dependencies:
       '@tootallnate/quickjs-emscripten': 0.23.0
       agent-base: 7.1.0
-      debug: 4.3.7
+      debug: 4.4.3
       get-uri: 6.0.1
       http-proxy-agent: 7.0.0
       https-proxy-agent: 7.0.1
@@ -10621,7 +10609,7 @@ snapshots:
   proxy-agent@6.3.0:
     dependencies:
       agent-base: 7.1.0
-      debug: 4.3.7
+      debug: 4.4.3
       http-proxy-agent: 7.0.0
       https-proxy-agent: 7.0.1
       lru-cache: 7.18.3
@@ -11031,7 +11019,7 @@ snapshots:
   socks-proxy-agent@8.0.1:
     dependencies:
       agent-base: 7.1.0
-      debug: 4.3.7
+      debug: 4.4.3
       socks: 2.7.1
     transitivePeerDependencies:
       - supports-color
@@ -11342,7 +11330,7 @@ snapshots:
       '@tsconfig/node16': 1.0.4
       '@types/node': 20.11.24
       acorn: 8.10.0
-      acorn-walk: 8.2.0
+      acorn-walk: 8.3.4
       arg: 4.1.3
       create-require: 1.1.1
       diff: 4.0.2
@@ -11552,7 +11540,7 @@ snapshots:
 
   unplugin@1.16.0:
     dependencies:
-      acorn: 8.14.0
+      acorn: 8.15.0
       webpack-virtual-modules: 0.6.2
 
   update-browserslist-db@1.1.0(browserslist@4.24.0):
@@ -11599,7 +11587,7 @@ snapshots:
   vite-node@1.6.1(@types/node@20.11.24):
     dependencies:
       cac: 6.7.14
-      debug: 4.3.7
+      debug: 4.4.3
       pathe: 1.1.2
       picocolors: 1.1.1
       vite: 5.4.8(@types/node@20.11.24)
@@ -11617,7 +11605,7 @@ snapshots:
   vite-node@2.1.1(@types/node@20.11.24):
     dependencies:
       cac: 6.7.14
-      debug: 4.3.7
+      debug: 4.4.3
       pathe: 1.1.2
       vite: 5.4.8(@types/node@20.11.24)
     transitivePeerDependencies:
@@ -11673,7 +11661,7 @@ snapshots:
     dependencies:
       esbuild: 0.21.5
       postcss: 8.5.1
-      rollup: 4.34.6
+      rollup: 4.57.1
     optionalDependencies:
       '@types/node': 20.11.24
       fsevents: 2.3.3
@@ -11698,7 +11686,7 @@ snapshots:
       '@vitest/utils': 1.6.1
       acorn-walk: 8.3.4
       chai: 4.5.0
-      debug: 4.3.7
+      debug: 4.4.3
       execa: 8.0.1
       local-pkg: 0.5.1
       magic-string: 0.30.17

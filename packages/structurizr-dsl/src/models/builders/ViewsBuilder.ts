@@ -89,6 +89,10 @@ export class ViewsBuilder implements IBuilder<IViews> {
         return deploymentView;
     }
 
+    theme(url: string): void {
+        this.views.configuration.themes.push(url);
+    }
+
     styles(callback: BuilderCallback<StylesBuilder>): IStyles {
         const stylesBuilder = new StylesBuilder();
         callback(stylesBuilder);

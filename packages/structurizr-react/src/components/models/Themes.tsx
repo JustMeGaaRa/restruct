@@ -1,12 +1,10 @@
-import {
-    FC,
-    useCallback,
-    useContext,
-    useEffect,
-} from "react";
-import { StyleProps, Theme, ThemesContext } from "../../containers";
+import { FC, useEffect } from "react";
+import { ITheme } from "@structurizr/dsl";
+import { useThemes } from "../../containers";
 
-export const Styles: FC<{ value: StyleProps }> = ({ value }) => {
+export const Styles: FC<{
+    value: Pick<ITheme, "elements" | "relationships">;
+}> = ({ value }) => {
     const { applyStyles } = useThemes();
 
     useEffect(() => {
@@ -16,40 +14,28 @@ export const Styles: FC<{ value: StyleProps }> = ({ value }) => {
     return null;
 };
 
-export const Themes: FC<{ urls: Array<string> }> = ({ urls }) => {
+export const Themes: FC<{ url?: string | string[] }> = ({ url }) => {
     const { applyThemes } = useThemes();
 
+    const urlArray = Array.isArray(url) ? url : url ? [url] : [];
+    const urlsString = urlArray.join(",");
+
     useEffect(() => {
-        const fetchTheme = (url: string) => {
-            return fetch(url)
-                .then(response => response.json())
-                .then(theme => theme as Theme)
+        if (!urlsString) {
+            applyThemes([]);
+            return;
+        }
+
+        const fetchTheme = (themeUrl: string) => {
+            return fetch(themeUrl)
+                .then((response) => response.json())
+                .then((theme) => theme as ITheme);
         };
 
-        Promise.all(urls.map(fetchTheme))
-            .then(themes => applyThemes(themes))
-            .catch(error => console.error("Failed to fetch theme", error));
-    }, [applyThemes, urls]);
+        Promise.all(urlsString.split(",").map(fetchTheme))
+            .then((themes) => applyThemes(themes))
+            .catch((error) => console.error("Failed to fetch theme", error));
+    }, [applyThemes, urlsString]);
 
     return null;
-};
-
-export const useThemes = () => {
-    const { theme, styles, themes, setThemes, setStyles } = useContext(ThemesContext);
-
-    const applyStyles = useCallback((styles: StyleProps) => {
-        setStyles(styles);
-    }, [setStyles]);
-
-    const applyThemes = useCallback((themes: Array<Theme>) => {
-        setThemes(themes);
-    }, [setThemes]);
-
-    return {
-        theme,
-        styles,
-        themes,
-        applyStyles,
-        applyThemes
-    }
 };

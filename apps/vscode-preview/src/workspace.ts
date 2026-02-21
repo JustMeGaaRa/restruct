@@ -216,6 +216,10 @@ workspace("Big Bank plc.", "", (_) => {
         _.systemContextView(internetBankingSystem.identifier, "SystemContext");
         _.containerView(internetBankingSystem.identifier, "Containers");
         _.componentView(apiApplication.identifier, "Components");
+
+        _.theme(
+            "https://static.structurizr.com/themes/amazon-web-services-2023.01.31/theme.json"
+        );
     });
 });
 

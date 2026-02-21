@@ -11,6 +11,9 @@ import {
     useViewNavigation,
     ModelDiagram,
     DeploymentDiagram,
+    RestructDarkTheme,
+    Themes,
+    Styles,
 } from "@structurizr/react";
 import {
     ViewModeSwitcher,
@@ -20,6 +23,7 @@ import {
 } from "@restruct/ui";
 import { bigBankPlc } from "./workspace";
 import { useState, useEffect, useMemo } from "react";
+import { ThemeProvider } from "../../../packages/structurizr-react/src/containers/ThemeProvider";
 
 const AppContent = () => {
     const [workspace, setWorkspace] = useState<IWorkspace>(bigBankPlc);
@@ -74,6 +78,15 @@ const AppContent = () => {
                 setWorkspace={setWorkspace}
             >
                 <Workspace>
+                    {workspace.views.configuration?.themes && (
+                        <Themes url={workspace.views.configuration.themes} />
+                    )}
+                    {workspace.views.configuration?.theme && (
+                        <Themes url={workspace.views.configuration.theme} />
+                    )}
+                    {workspace.views.configuration?.styles && (
+                        <Styles value={workspace.views.configuration.styles} />
+                    )}
                     <ViewportProvider>
                         <Viewport>
                             {currentView?.key ===
@@ -130,7 +143,9 @@ const AppContent = () => {
 export const App = () => {
     return (
         <ViewNavigationProvider>
-            <AppContent />
+            <ThemeProvider theme={RestructDarkTheme}>
+                <AppContent />
+            </ThemeProvider>
         </ViewNavigationProvider>
     );
 };

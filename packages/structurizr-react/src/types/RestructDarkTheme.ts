@@ -13,8 +13,8 @@ export const RestructElementStyle: IElementStyle = {
     icon: "",
     width: 200,
     height: 200,
-    background: "#ffffff",
-    stroke: "#ffffff",
+    background: "#222425",
+    stroke: "#535354",
     strokeWidth: 2,
     color: "#E8E8E8",
     fontSize: 24,
@@ -26,7 +26,7 @@ export const RestructElementStyle: IElementStyle = {
 };
 
 export const RestructRelationshipStyle: IRelationshipStyle = {
-    color: "#8A8B8C",
+    color: "#E8E8E8",
     fontSize: 24,
     opacity: 100,
     position: 50,
@@ -37,7 +37,7 @@ export const RestructRelationshipStyle: IRelationshipStyle = {
     properties: {},
 };
 
-export const RestructTheme: ITheme = {
+export const RestructDarkTheme: ITheme = {
     name: "re:struct",
     description:
         "Default theme for elements and relationships in re:struct application",
@@ -45,6 +45,22 @@ export const RestructTheme: ITheme = {
         {
             tag: Tag.Element.name,
             ...RestructElementStyle,
+        },
+        {
+            tag: Tag.Person.name,
+            shape: ShapeType.Person,
+        },
+        {
+            tag: Tag.SoftwareSystem.name,
+            shape: ShapeType.RoundedBox,
+        },
+        {
+            tag: Tag.Container.name,
+            shape: ShapeType.RoundedBox,
+        },
+        {
+            tag: Tag.Component.name,
+            shape: ShapeType.RoundedBox,
         },
     ],
     relationships: [

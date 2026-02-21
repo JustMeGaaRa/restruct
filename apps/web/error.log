@@ -1,0 +1,1 @@
+app/page.tsx(2,24): error TS2307: Cannot find module '@restruct/ui/button' or its corresponding type declarations.
