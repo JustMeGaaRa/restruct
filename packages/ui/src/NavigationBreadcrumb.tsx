@@ -1,6 +1,6 @@
-import { Breadcrumbs } from "@restruct/ui";
 import { ViewType } from "@structurizr/dsl";
 import { useViewNavigation } from "@structurizr/react";
+import { Breadcrumbs } from "./Breadcrumbs";
 
 export const NavigationBreadcrumb = () => {
     const { currentView } = useViewNavigation();

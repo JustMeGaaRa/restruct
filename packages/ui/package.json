@@ -26,6 +26,8 @@
     },
     "dependencies": {
         "@graph/svg": "workspace:^",
+        "@structurizr/dsl": "workspace:*",
+        "@structurizr/react": "workspace:*",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
         "react-icons": "^5.5.0"
