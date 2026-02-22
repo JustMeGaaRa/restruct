@@ -46,10 +46,7 @@ import "${importPath}";
 import { workspaceRegistry } from "@structurizr/dsl";
 
 const workspaces = workspaceRegistry.getWorkspaces();
-if (workspaces.length > 0) {
-    const ws = workspaces[0];
-    window.__WORKSPACE__ = ws.toSnapshot ? ws.toSnapshot() : ws;
-}
+window.__WORKSPACES__ = workspaces.map(ws => ws.toSnapshot ? ws.toSnapshot() : ws);
 `;
         fs.writeFileSync(tempEntry, entryContent);
 

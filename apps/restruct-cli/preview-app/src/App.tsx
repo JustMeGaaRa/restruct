@@ -1,9 +1,5 @@
 import { IWorkspace } from "@structurizr/dsl";
-import {
-    NavigationBreadcrumb,
-    WorkspaceChannel,
-    WorkspacePreview,
-} from "@restruct/ui";
+import { WorkspaceChannel, WorkspacePreview } from "@restruct/ui";
 import { useState, useEffect } from "react";
 import { Flex, Spinner, Text } from "@chakra-ui/react";
 import { RestructDarkTheme, ThemeProvider } from "@structurizr/react";
@@ -11,14 +7,15 @@ import { RestructDarkTheme, ThemeProvider } from "@structurizr/react";
 // Injected by the build process or loaded via WebSocket
 declare global {
     interface Window {
-        __WORKSPACE__: IWorkspace;
+        __WORKSPACES__?: IWorkspace[];
     }
 }
 
 export const App = () => {
-    const [workspace, setWorkspace] = useState<IWorkspace | null>(
-        window.__WORKSPACE__ || null
+    const [workspaces, setWorkspaces] = useState<IWorkspace[]>(
+        window.__WORKSPACES__ || []
     );
+    const [activeWorkspaceIndex, setActiveWorkspaceIndex] = useState(0);
 
     useEffect(() => {
         const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
@@ -26,9 +23,11 @@ export const App = () => {
         const channel = new WorkspaceChannel(wsUrl);
 
         channel.connect();
-        const unsubscribe = channel.subscribe((ws) => {
+        const unsubscribe = channel.subscribe((wss) => {
             console.log("[App] Received workspace update");
-            setWorkspace(ws);
+            setWorkspaces(wss);
+            // reset active index if the new workspaces array is smaller
+            setActiveWorkspaceIndex((curr) => (curr >= wss.length ? 0 : curr));
         });
 
         return () => {
@@ -37,7 +36,7 @@ export const App = () => {
         };
     }, []);
 
-    if (!workspace) {
+    if (workspaces.length === 0) {
         return (
             <Flex
                 h="100vh"
@@ -53,12 +52,22 @@ export const App = () => {
         );
     }
 
+    const activeWorkspace = workspaces[activeWorkspaceIndex] as IWorkspace;
+
     return (
         <ThemeProvider theme={RestructDarkTheme}>
             <WorkspacePreview
-                workspace={workspace}
-                setWorkspace={setWorkspace}
-                diagramBreadcrumb={<NavigationBreadcrumb />}
+                workspace={activeWorkspace}
+                setWorkspace={(newWs) => {
+                    const newWorkspaces = [...workspaces];
+                    newWorkspaces[activeWorkspaceIndex] = newWs;
+                    setWorkspaces(newWorkspaces);
+                }}
+                availableWorkspaces={workspaces.map((ws, i) => ({
+                    id: String(i),
+                    name: ws.name || `Workspace ${i + 1}`,
+                }))}
+                onWorkspaceSelect={(id) => setActiveWorkspaceIndex(Number(id))}
             />
         </ThemeProvider>
     );

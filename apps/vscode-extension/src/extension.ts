@@ -10,7 +10,7 @@ let activeListener: vscode.Disposable | undefined = undefined;
 let wss: WebSocketServer | undefined = undefined;
 let wsClients: Set<WebSocket> = new Set();
 let wsPort: number | undefined = undefined;
-let currentWorkspace: any = null;
+let currentWorkspaces: any[] | null = null;
 
 export function activate(context: vscode.ExtensionContext) {
     outputChannel = vscode.window.createOutputChannel("Restruct Preview");
@@ -36,11 +36,11 @@ export function activate(context: vscode.ExtensionContext) {
         outputChannel?.appendLine("Webview connected to WebSocket Server");
         wsClients.add(ws);
 
-        if (currentWorkspace) {
+        if (currentWorkspaces) {
             ws.send(
                 JSON.stringify({
-                    type: "workspace",
-                    workspace: currentWorkspace,
+                    type: "workspaces",
+                    workspaces: currentWorkspaces,
                 })
             );
         }
@@ -114,7 +114,7 @@ function startPreview(context: vscode.ExtensionContext, filePath: string) {
                     activeListener.dispose();
                     activeListener = undefined;
                 }
-                currentWorkspace = null;
+                currentWorkspaces = null;
                 // Optionally clear wsClients here by closing them
                 wsClients.forEach((ws) => ws.terminate());
                 wsClients.clear();
@@ -210,11 +210,9 @@ async function runScript(filePath: string) {
             require('${tempFilePath.replace(/\\/g, "\\\\")}');
             const { workspaceRegistry } = require('@structurizr/dsl');
             const workspaces = workspaceRegistry.getWorkspaces();
-            const workspaceSnapshot = workspaces.length > 0 
-                ? (workspaces[0].toSnapshot ? workspaces[0].toSnapshot() : workspaces[0]) 
-                : null;
+            const workspaceSnapshots = workspaces.map((ws: any) => ws.toSnapshot ? ws.toSnapshot() : ws);
             console.log('<START_OUTPUT>');
-            console.log(JSON.stringify(workspaceSnapshot));
+            console.log(JSON.stringify(workspaceSnapshots));
             console.log('<END_OUTPUT>');
         } catch (e) {
             console.error(e);
@@ -268,9 +266,9 @@ async function runScript(filePath: string) {
                 .trim();
             try {
                 const data = JSON.parse(jsonString);
-                if (data) {
-                    currentWorkspace = data;
-                    broadcastWorkspace(currentWorkspace);
+                if (data && Array.isArray(data)) {
+                    currentWorkspaces = data;
+                    broadcastWorkspaces(currentWorkspaces);
                 } else {
                     updateWebviewError(
                         "Workspace snapshot not found. Make sure you use @structurizr/dsl."
@@ -290,8 +288,8 @@ async function runScript(filePath: string) {
     });
 }
 
-function broadcastWorkspace(workspace: any) {
-    const message = JSON.stringify({ type: "workspace", workspace });
+function broadcastWorkspaces(workspaces: any[]) {
+    const message = JSON.stringify({ type: "workspaces", workspaces });
     wsClients.forEach((client) => {
         if (client.readyState === WebSocket.OPEN) {
             client.send(message);
@@ -334,7 +332,7 @@ function getWebviewContent(
     const nonce = getNonce();
 
     return `<!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark" style="color-scheme: dark">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Security-Policy" content="default-src 'none'; font-src ${webview.cspSource}; style-src ${webview.cspSource} 'unsafe-inline'; img-src ${webview.cspSource} data:; script-src 'nonce-${nonce}'; connect-src ws://localhost:${port};">

@@ -1,4 +1,4 @@
-import { IWorkspace, ViewType } from "@structurizr/dsl";
+import { IWorkspace, ViewType, Element } from "@structurizr/dsl";
 import { Viewport, ViewportProvider } from "@graph/svg";
 import {
     ComponentDiagram,
@@ -15,22 +15,28 @@ import {
     Styles,
 } from "@structurizr/react";
 import { ZoomControls } from "./ZoomControls";
-import { ViewModeSwitcher, ViewMode } from "./ViewModeSwitcher";
+import { Breadcrumbs, BreadcrumbItem } from "./Breadcrumbs";
 import { Flex } from "@chakra-ui/react";
-import { useState, useEffect, ReactNode } from "react";
+import { useState, useEffect, useMemo, ReactNode } from "react";
 
 export interface WorkspacePreviewProps {
     workspace: IWorkspace;
     setWorkspace: (ws: IWorkspace) => void;
     diagramBreadcrumb?: ReactNode; // specific component from app like NavigationBreadcrumb
+    // New optional props for workspace dropdown switcher in breadcrumbs
+    availableWorkspaces?: { id?: string; name: string }[];
+    onWorkspaceSelect?: (idOrName: string) => void;
 }
 
 const WorkspacePreviewContent = ({
     workspace,
     setWorkspace,
     diagramBreadcrumb,
+    availableWorkspaces = [],
+    onWorkspaceSelect,
 }: WorkspacePreviewProps) => {
     const { currentView, setCurrentView } = useViewNavigation();
+    type ViewMode = "diagrams" | "model" | "deployment";
     const [viewMode, setViewMode] = useState<ViewMode>("diagrams");
 
     useEffect(() => {
@@ -55,6 +61,109 @@ const WorkspacePreviewContent = ({
         }
     }
 
+    const breadcrumbItems = useMemo<BreadcrumbItem[]>(() => {
+        const items: BreadcrumbItem[] = [];
+
+        // 1. Workspace Dropdown
+        const workspaceLabel = workspace?.name || "Workspace";
+        const workspaceOptions =
+            availableWorkspaces.length > 0
+                ? availableWorkspaces.map((w) => ({
+                      label: w.name,
+                      value: w.id || w.name,
+                  }))
+                : [{ label: workspaceLabel, value: workspaceLabel }];
+
+        items.push({
+            label: workspaceLabel,
+            options: workspaceOptions,
+            onSelect: (val) => onWorkspaceSelect?.(val),
+        });
+
+        // 2. View Mode Dropdown
+        const viewModeLabels: Record<ViewMode, string> = {
+            diagrams: "Diagrams",
+            model: "Model",
+            deployment: "Deployment",
+        };
+
+        items.push({
+            label: viewModeLabels[viewMode],
+            options: [
+                { label: "Diagrams", value: "diagrams" },
+                { label: "Model", value: "model" },
+                { label: "Deployment", value: "deployment" },
+            ],
+            onSelect: (val) => handleViewModeChange(val as ViewMode),
+        });
+
+        // 3. Drill-down based on view mode
+        if (viewMode === "diagrams" && currentView) {
+            // Include root System Landscape if we are in diagram mode
+            items.push({
+                label: "System Landscape",
+                onClick: () => {
+                    if (workspace?.views.systemLandscape) {
+                        setCurrentView(workspace.views.systemLandscape as any);
+                    }
+                },
+            });
+
+            // Find elements to resolve hierarchy based on current view metadata
+            // Structurizr views have keys or specific properties matching the element they describe
+            const viewAny = currentView as any;
+
+            if (currentView.type === ViewType.SystemContext) {
+                const systemName = viewAny.softwareSystem || currentView.key;
+                items.push({ label: systemName, onClick: () => {} });
+            } else if (currentView.type === ViewType.Container) {
+                const systemName = viewAny.softwareSystem || "System";
+                const containerName = viewAny.container || currentView.key;
+                items.push({
+                    label: systemName,
+                    onClick: () => {
+                        // Navigate back to system context view of `systemName` if possible
+                        const ctxView = workspace.views.systemContexts.find(
+                            (v: any) => v.softwareSystem === systemName
+                        );
+                        if (ctxView) setCurrentView(ctxView as any);
+                    },
+                });
+                items.push({ label: containerName, onClick: () => {} });
+            } else if (currentView.type === ViewType.Component) {
+                const containerName = viewAny.container || "Container";
+                const componentName = viewAny.component || currentView.key;
+
+                // Without extensive id matching traversing up model elements, we
+                // display what we have via view metadata
+                items.push({
+                    label: containerName,
+                    onClick: () => {
+                        const cntView = workspace.views.containers.find(
+                            (v: any) => v.container === containerName
+                        );
+                        if (cntView) setCurrentView(cntView as any);
+                    },
+                });
+                items.push({ label: componentName, onClick: () => {} });
+            }
+        } else if (viewMode === "deployment" && currentView) {
+            const envName = (currentView as any).environment || currentView.key;
+            items.push({ label: envName, onClick: () => {} });
+        } else if (viewMode === "model") {
+            // Already adequately covered by the View Mode Dropdown saying "Model"
+        }
+
+        return items;
+    }, [
+        workspace,
+        availableWorkspaces,
+        currentView,
+        viewMode,
+        onWorkspaceSelect,
+        setCurrentView,
+    ]);
+
     return (
         <Flex
             alignItems="center"
@@ -65,12 +174,11 @@ const WorkspacePreviewContent = ({
             overflow="hidden"
             flexDirection="column"
         >
-            <ViewModeSwitcher
-                currentView={viewMode}
-                onChange={handleViewModeChange}
-            />
-
-            {viewMode === "diagrams" && diagramBreadcrumb}
+            {diagramBreadcrumb ? (
+                viewMode === "diagrams" && diagramBreadcrumb
+            ) : (
+                <Breadcrumbs items={breadcrumbItems} />
+            )}
 
             <WorkspaceProvider
                 workspace={workspace}

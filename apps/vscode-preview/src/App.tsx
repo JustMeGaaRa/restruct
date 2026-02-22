@@ -1,10 +1,6 @@
 import { IWorkspace } from "@structurizr/dsl";
 import { RestructDarkTheme, ThemeProvider } from "@structurizr/react";
-import {
-    NavigationBreadcrumb,
-    WorkspaceChannel,
-    WorkspacePreview,
-} from "@restruct/ui";
+import { WorkspaceChannel, WorkspacePreview } from "@restruct/ui";
 import { Flex, Spinner, Text } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 
@@ -15,7 +11,8 @@ declare global {
 }
 
 export const App = () => {
-    const [workspace, setWorkspace] = useState<IWorkspace | null>(null);
+    const [workspaces, setWorkspaces] = useState<IWorkspace[]>([]);
+    const [activeWorkspaceIndex, setActiveWorkspaceIndex] = useState(0);
 
     useEffect(() => {
         if (!window.__WS_PORT__) {
@@ -27,9 +24,11 @@ export const App = () => {
         const channel = new WorkspaceChannel(wsUrl);
 
         channel.connect();
-        const unsubscribe = channel.subscribe((ws) => {
+        const unsubscribe = channel.subscribe((wss) => {
             console.log("[App] Received workspace update");
-            setWorkspace(ws);
+            setWorkspaces(wss);
+            // reset active index if the new workspaces array is smaller
+            setActiveWorkspaceIndex((curr) => (curr >= wss.length ? 0 : curr));
         });
 
         return () => {
@@ -38,7 +37,7 @@ export const App = () => {
         };
     }, []);
 
-    if (!workspace) {
+    if (workspaces.length === 0) {
         return (
             <Flex
                 alignItems="center"
@@ -54,12 +53,22 @@ export const App = () => {
         );
     }
 
+    const activeWorkspace = workspaces[activeWorkspaceIndex] as IWorkspace;
+
     return (
         <ThemeProvider theme={RestructDarkTheme}>
             <WorkspacePreview
-                workspace={workspace}
-                setWorkspace={setWorkspace}
-                diagramBreadcrumb={<NavigationBreadcrumb />}
+                workspace={activeWorkspace}
+                setWorkspace={(newWs) => {
+                    const newWorkspaces = [...workspaces];
+                    newWorkspaces[activeWorkspaceIndex] = newWs;
+                    setWorkspaces(newWorkspaces);
+                }}
+                availableWorkspaces={workspaces.map((ws, i) => ({
+                    id: String(i),
+                    name: ws.name || `Workspace ${i + 1}`,
+                }))}
+                onWorkspaceSelect={(id) => setActiveWorkspaceIndex(Number(id))}
             />
         </ThemeProvider>
     );

@@ -28,7 +28,7 @@ export const serveCommand = async () => {
 
     // State
     const clients = new Set<any>();
-    let currentWorkspace: any = null;
+    let currentWorkspaces: any[] | null = null;
 
     // Build workspace function
     const rebuildWorkspace = async () => {
@@ -38,14 +38,11 @@ export const serveCommand = async () => {
             : `./${entryPoint}`;
         importPath = importPath.replace(/\\/g, "/");
 
-        const entryContent = `
-import "${importPath}";
+        const entryContent = `import "${importPath}";
 import { workspaceRegistry } from "@structurizr/dsl";
 
 const workspaces = workspaceRegistry.getWorkspaces();
-export const workspaceSnapshot = workspaces.length > 0 
-    ? (workspaces[0].toSnapshot ? workspaces[0].toSnapshot() : workspaces[0]) 
-    : null;
+export const workspaceSnapshots = workspaces.map(ws => ws.toSnapshot ? ws.toSnapshot() : ws);
 `;
         fs.writeFileSync(tempEntry, entryContent);
 
@@ -70,13 +67,13 @@ export const workspaceSnapshot = workspaces.length > 0
             );
             const exports = func({});
 
-            if (exports && exports.workspaceSnapshot) {
-                currentWorkspace = exports.workspaceSnapshot;
+            if (exports && exports.workspaceSnapshots) {
+                currentWorkspaces = exports.workspaceSnapshots;
 
                 // Send to clients
                 const message = JSON.stringify({
-                    type: "workspace",
-                    workspace: currentWorkspace,
+                    type: "workspaces",
+                    workspaces: currentWorkspaces,
                 });
                 clients.forEach((client) => {
                     if (client.readyState === 1) {
@@ -149,12 +146,12 @@ export const workspaceSnapshot = workspaces.length > 0
 
                     wss.on("connection", (ws) => {
                         clients.add(ws);
-                        // Send current workspace immediately
-                        if (currentWorkspace) {
+                        // Send current workspaces immediately
+                        if (currentWorkspaces) {
                             ws.send(
                                 JSON.stringify({
-                                    type: "workspace",
-                                    workspace: currentWorkspace,
+                                    type: "workspaces",
+                                    workspaces: currentWorkspaces,
                                 })
                             );
                         }

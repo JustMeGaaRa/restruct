@@ -1,6 +1,6 @@
 import { IWorkspace } from "@structurizr/dsl";
 
-type SubscriptionCallback = (workspace: IWorkspace) => void;
+type SubscriptionCallback = (workspaces: IWorkspace[]) => void;
 
 export class WorkspaceChannel {
     private ws: WebSocket | null = null;
@@ -59,8 +59,11 @@ export class WorkspaceChannel {
             this.ws.onmessage = (event) => {
                 try {
                     const data = JSON.parse(event.data);
-                    if (data.type === "workspace" && data.workspace) {
-                        this.notifySubscribers(data.workspace);
+                    if (data.type === "workspaces" && data.workspaces) {
+                        this.notifySubscribers(data.workspaces);
+                    } else if (data.type === "workspace" && data.workspace) {
+                        // Fallback for older extension payloads if needed
+                        this.notifySubscribers([data.workspace]);
                     } else if (data.command === "error") {
                         console.error(
                             "[WorkspaceChannel] Received error:",
@@ -105,7 +108,7 @@ export class WorkspaceChannel {
         this.subscribers.delete(callback);
     }
 
-    private notifySubscribers(workspace: IWorkspace) {
-        this.subscribers.forEach((callback) => callback(workspace));
+    private notifySubscribers(workspaces: IWorkspace[]) {
+        this.subscribers.forEach((callback) => callback(workspaces));
     }
 }
