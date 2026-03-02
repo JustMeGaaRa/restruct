@@ -4,7 +4,7 @@ import { Element } from "./Element";
 import { useViewMetadata } from "../../containers";
 import { Connector } from "@graph/svg";
 
-// TODO: pass height and width from metadata but make height 70 for this view
+// TODO(parameters): pass height and width from metadata but make height 70 for this view
 export const ElementWrapper: FC<
     PropsWithChildren<{
         value: IElement;

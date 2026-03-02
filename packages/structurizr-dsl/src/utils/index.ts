@@ -1,7 +1,6 @@
 import {
     IContainer,
     IModel,
-    IRelationship,
     ISoftwareSystem,
     IWorkspace,
     ITheme,
@@ -211,6 +210,7 @@ export const findElementPath = (
     return [];
 };
 
+// TODO(workspace): wrap below functions into memoized function
 export const findSoftwareSystem = (model: IModel, identifier: string) => {
     return model.softwareSystems
         .concat(model.groups.flatMap((x) => x.softwareSystems))
@@ -250,16 +250,6 @@ export const findComponentParent = (
     return softwareSystemContainers
         .concat(groupContainers)
         .find((x) => x.components.some((c) => c.identifier === componentId));
-};
-
-export const isRelationshipBetweenElementsInView = (
-    elementsInView: Set<string> | Map<string, string>,
-    relationship: IRelationship
-) => {
-    return (
-        elementsInView.has(relationship.sourceIdentifier) &&
-        elementsInView.has(relationship.targetIdentifier)
-    );
 };
 
 export const isElementExplicitlyIncludedInView = (

@@ -1,4 +1,9 @@
-import { IWorkspace, ViewType, Element } from "@structurizr/dsl";
+import {
+    findAnyExisting,
+    findViewByType,
+    IWorkspace,
+    ViewType,
+} from "@structurizr/dsl";
 import { Viewport, ViewportProvider } from "@graph/svg";
 import {
     ComponentDiagram,
@@ -17,13 +22,11 @@ import {
 import { ZoomControls } from "./ZoomControls";
 import { Breadcrumbs, BreadcrumbItem } from "./Breadcrumbs";
 import { Flex } from "@chakra-ui/react";
-import { useState, useEffect, useMemo, ReactNode } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 export interface WorkspacePreviewProps {
     workspace: IWorkspace;
     setWorkspace: (ws: IWorkspace) => void;
-    diagramBreadcrumb?: ReactNode; // specific component from app like NavigationBreadcrumb
-    // New optional props for workspace dropdown switcher in breadcrumbs
     availableWorkspaces?: { id?: string; name: string }[];
     onWorkspaceSelect?: (idOrName: string) => void;
 }
@@ -31,7 +34,6 @@ export interface WorkspacePreviewProps {
 const WorkspacePreviewContent = ({
     workspace,
     setWorkspace,
-    diagramBreadcrumb,
     availableWorkspaces = [],
     onWorkspaceSelect,
 }: WorkspacePreviewProps) => {
@@ -48,20 +50,16 @@ const WorkspacePreviewContent = ({
     function handleViewModeChange(view: ViewMode): void {
         setViewMode(view);
         if (view === "diagrams") {
-            setCurrentView(
-                (workspace.views.systemLandscape ??
-                    workspace.views.systemContexts[0] ??
-                    workspace.views.containers[0] ??
-                    workspace.views.components[0]) as any
-            );
+            setCurrentView(findAnyExisting(workspace)!);
         } else if (view === "model") {
             setCurrentView({ type: ViewType.Model, key: "model" } as any);
         } else if (view === "deployment") {
-            setCurrentView(workspace.views.deployments[0] as any);
+            setCurrentView(findViewByType(workspace, ViewType.Deployment)!);
         }
     }
 
     const breadcrumbItems = useMemo<BreadcrumbItem[]>(() => {
+        // TODO(navigation): move this to utility class
         const items: BreadcrumbItem[] = [];
 
         // 1. Workspace Dropdown
@@ -174,11 +172,7 @@ const WorkspacePreviewContent = ({
             overflow="hidden"
             flexDirection="column"
         >
-            {diagramBreadcrumb ? (
-                viewMode === "diagrams" && diagramBreadcrumb
-            ) : (
-                <Breadcrumbs items={breadcrumbItems} />
-            )}
+            <Breadcrumbs items={breadcrumbItems} />
 
             <WorkspaceProvider
                 workspace={workspace}

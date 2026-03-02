@@ -1,5 +1,6 @@
 import { IElementStyle, IRelationshipStyle, ITheme } from "@structurizr/dsl";
 
+// TODO(theme): replace with theme utilities from @structurizr/dsl
 export const resolveElementStyle = (
     tags: string[] = [],
     defaultTheme?: ITheme | null,

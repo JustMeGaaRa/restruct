@@ -84,7 +84,7 @@ export class ModelViewStrategy {
                 return [visitedPerson].concat(visitedRelationships);
             });
 
-        // TODO: add environments with deployment nodes to model view
+        // TODO(deployment): consider adding environments with deployment nodes to model view
         return [visitedWorkspace]
             .concat(visitedGroups)
             .concat(visitedPeople)

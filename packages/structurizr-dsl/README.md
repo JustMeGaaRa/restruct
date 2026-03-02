@@ -91,7 +91,7 @@ The `@structurizr/dsl` package provides:
         -   [x] System Context
         -   [x] Container
         -   [x] Component
-        -   [ ] Deployment ([see this example](./docs/examples/pet-clinic/README.md))
+        -   [x] Deployment ([see this example](./docs/examples/pet-clinic/README.md))
 
 ---
 

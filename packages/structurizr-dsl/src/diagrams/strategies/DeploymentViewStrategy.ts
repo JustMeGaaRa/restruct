@@ -1,127 +1,134 @@
-import { IDeploymentNode, IDeploymentView, IModel } from "../../interfaces";
-import { IElementVisitor } from "../../shared";
 import {
-    visitWorkspaceRelationships,
+    IContainer,
+    IContainerInstance,
+    IDeploymentEnvironment,
+    IDeploymentNode,
+    IDeploymentView,
+    IInfrastructureNode,
+    IModel,
+    IRelationship,
+    ISoftwareSystem,
+    ISoftwareSystemInstance,
+} from "../../interfaces";
+import { IDiagramVisitor, ISupportVisitor } from "../../shared";
+import {
     isRelationshipBetweenElementsInView,
+    getImpliedRelationships,
 } from "../../utils";
 
-// TODO: implement the ISupportVisitor interface
-export class DeploymentViewStrategy {
+export class DeploymentViewStrategy
+    implements
+        ISupportVisitor<
+            IDeploymentEnvironment,
+            | IDeploymentNode
+            | IInfrastructureNode
+            | ISoftwareSystemInstance
+            | IContainerInstance
+            | ISoftwareSystem
+            | IContainer
+        >
+{
     constructor(
         private readonly model: IModel,
         private readonly view: IDeploymentView
     ) {}
 
-    accept<T>(visitor: IElementVisitor<T | undefined>): Array<T | undefined> {
+    accept(
+        visitor: IDiagramVisitor<
+            IDeploymentEnvironment,
+            | IDeploymentNode
+            | IInfrastructureNode
+            | ISoftwareSystemInstance
+            | IContainerInstance
+            | ISoftwareSystem
+            | IContainer
+        >
+    ): void {
         const visitedElements = new Set<string>();
-        const relationships = visitWorkspaceRelationships(this.model);
-        const softwareSystems = this.model.softwareSystems.concat(
-            this.model.groups.flatMap((x) => x.softwareSystems)
-        );
+        const relationships = getImpliedRelationships(this.model, this.view);
+        const softwareSystems = this.model.groups
+            .flatMap((group) => group.softwareSystems)
+            .concat(this.model.softwareSystems);
         const containers = softwareSystems
-            .flatMap((x) => x.groups.flatMap((y) => y.containers))
-            .concat(softwareSystems.flatMap((x) => x.containers));
+            .flatMap((x) => x.groups.flatMap((group) => group.containers))
+            .concat(softwareSystems.flatMap((system) => system.containers));
 
-        const visitDeploymentNode = (
-            deploymentNode: IDeploymentNode,
-            parentId?: string
-        ): T | undefined => {
-            const visitedInfrastructureNodes =
-                deploymentNode.infrastructureNodes?.map(
-                    (infrastructureNode) => {
-                        visitedElements.add(infrastructureNode.identifier);
-                        return visitor.visitInfrastructureNode?.(
-                            infrastructureNode,
-                            { parentId: deploymentNode.identifier }
-                        );
-                    }
-                );
+        const visitDeploymentNode = (deploymentNode: IDeploymentNode) => {
+            deploymentNode.infrastructureNodes?.forEach((node) => {
+                visitedElements.add(node.identifier);
+                visitor.visitSupportingElement?.(node);
+            });
 
-            const visitedSoftwareSystemInstances =
-                deploymentNode.softwareSystemInstances?.map(
-                    (softwareSystemInstance) => {
-                        const softwareSystem = softwareSystems.find(
-                            (softwareSystem) =>
-                                softwareSystem.identifier ===
-                                softwareSystemInstance.softwareSystemIdentifier
-                        )!;
-                        const visitedSoftwareSystem =
-                            visitor.visitSoftwareSystem?.(softwareSystem);
+            deploymentNode.softwareSystemInstances?.forEach((instance) => {
+                // TODO(workspace): use cached/memoized lookup
+                const softwareSystem = softwareSystems.find(
+                    (softwareSystem) =>
+                        softwareSystem.identifier ===
+                        instance.softwareSystemIdentifier
+                )!;
 
-                        visitedElements.add(softwareSystemInstance.identifier!);
-                        visitedElements.add(softwareSystem.identifier);
-                        return visitor.visitSoftwareSystemInstance?.(
-                            softwareSystemInstance,
-                            {
-                                parentId: deploymentNode.identifier,
-                                children: [visitedSoftwareSystem],
-                            }
-                        );
-                    }
-                );
+                visitedElements.add(instance.identifier!);
+                visitedElements.add(instance.softwareSystemIdentifier);
 
-            const visitedContainerInstances =
-                deploymentNode.containerInstances?.map((containerInstance) => {
-                    const container = containers.find(
-                        (container) =>
-                            container.identifier ===
-                            containerInstance.containerIdentifier
-                    )!;
-                    const visitedContainer =
-                        visitor.visitContainer?.(container);
+                visitor.visitSupportingElement?.(softwareSystem);
+                visitor.visitSupportingElement?.(instance);
+            });
 
-                    visitedElements.add(containerInstance.identifier!);
-                    visitedElements.add(container.identifier);
-                    return visitor.visitContainerInstance?.(containerInstance, {
-                        parentId: deploymentNode.identifier,
-                        children: [visitedContainer],
-                    });
-                });
+            deploymentNode.containerInstances?.forEach((instance) => {
+                // TODO(workspace): use cached/memoized lookup
+                const container = containers.find(
+                    (container) =>
+                        container.identifier === instance.containerIdentifier
+                )!;
 
-            const visistedDeploymentNodes = deploymentNode.deploymentNodes?.map(
-                (subNode) => {
-                    visitedElements.add(subNode.identifier);
-                    return visitDeploymentNode(
-                        subNode,
-                        deploymentNode.identifier
-                    );
-                }
-            );
+                visitedElements.add(instance.identifier!);
+                visitedElements.add(instance.containerIdentifier);
+
+                visitor.visitSupportingElement?.(container);
+                visitor.visitSupportingElement?.(instance);
+            });
+
+            deploymentNode.deploymentNodes?.forEach(visitDeploymentNode);
 
             visitedElements.add(deploymentNode.identifier);
-            const children = visitedInfrastructureNodes
-                .concat(visitedSoftwareSystemInstances)
-                .concat(visitedContainerInstances)
-                .concat(visistedDeploymentNodes);
-
-            return visitor.visitDeploymentNode?.(deploymentNode, {
-                parentId,
-                children,
-            });
+            return visitor.visitSupportingElement?.(deploymentNode);
         };
 
-        // TODO: handle the deployment view scoped to a specific software system instance
-        const visitedDeploymentEnvironment = this.model.deploymentEnvironments
-            .filter(
-                (deploymentEnvironment) =>
-                    deploymentEnvironment.name === this.view.environment
-            )
-            .flatMap((deploymentEnvironment) => {
-                return deploymentEnvironment.deploymentNodes.map(
-                    (deploymentNode) => {
-                        return visitDeploymentNode(deploymentNode);
-                    }
-                );
-            });
-
-        const visitedRelationships = relationships
-            .filter((relationship) =>
-                isRelationshipBetweenElementsInView(
-                    visitedElements,
-                    relationship
+        // TODO(deployment): handle the deployment view scoped to a specific software system instance
+        const visitDeploymentEnvironmentInScope = () => {
+            this.model.deploymentEnvironments
+                .filter(
+                    (deploymentEnvironment) =>
+                        deploymentEnvironment.name === this.view.environment
                 )
-            )
-            .map((relationship) => visitor.visitRelationship?.(relationship));
-        return visitedDeploymentEnvironment.concat(visitedRelationships);
+                .forEach((deploymentEnvironment) => {
+                    visitedElements.add(deploymentEnvironment.identifier);
+                    visitor.visitScopeElement?.(deploymentEnvironment);
+
+                    deploymentEnvironment.deploymentNodes.map(
+                        (deploymentNode) => {
+                            visitDeploymentNode(deploymentNode);
+                        }
+                    );
+                });
+        };
+
+        const visitRelationshipArray = (
+            relationships: Array<IRelationship>
+        ) => {
+            relationships
+                .filter((relationship) =>
+                    isRelationshipBetweenElementsInView(
+                        visitedElements,
+                        relationship
+                    )
+                )
+                .forEach((relationship) =>
+                    visitor.visitRelationship?.(relationship)
+                );
+        };
+
+        visitDeploymentEnvironmentInScope();
+        visitRelationshipArray(relationships);
     }
 }

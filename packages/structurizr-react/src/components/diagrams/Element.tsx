@@ -11,7 +11,7 @@ export interface IElement {
     tags?: { name: string }[];
 }
 
-// TODO: make position, height and width required
+// TODO(parameters): make position, height and width required
 export const Element: FC<
     PropsWithChildren<{
         value: IElement;

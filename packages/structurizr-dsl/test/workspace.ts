@@ -1,6 +1,7 @@
 import {
     IComponent,
     IContainer,
+    IDeploymentNode,
     IPerson,
     ISoftwareSystem,
     workspace,
@@ -25,6 +26,8 @@ export const createBigBankPlcWorkspace = () => {
     let securityComponent: IComponent;
     let mainframeBankingSystemFacade: IComponent;
     let emailSystemFacade: IComponent;
+    let primaryDatabaseServer: IDeploymentNode;
+    let secondaryDatabaseServer: IDeploymentNode;
 
     return workspace("Big Bank plc.", "", (_) => {
         _.description("A default architecture for Big Bank plc.");
@@ -94,6 +97,110 @@ export const createBigBankPlcWorkspace = () => {
                         );
                         database = _.container("Database", "");
                     }
+                );
+            });
+
+            _.deploymentEnvironment("Development", (_) => {
+                _.deploymentNode("Developer Laptop", (_) => {
+                    // _.tags("Microsoft Windows 10 or Apple macOS");
+                    _.deploymentNode("Web Browser", (_) => {
+                        // _.tags("Chrome, Firefox, Safari, or Edge");
+                        const developerSinglePageApplicationInstance =
+                            _.containerInstance(
+                                singlePageApplication.identifier
+                            );
+                    });
+
+                    _.deploymentNode("Docker Container - Web Server", (_) => {
+                        _.deploymentNode("Apache Tomcat", (_) => {
+                            const developerWebApplicationInstance =
+                                _.containerInstance(webApplication.identifier);
+                            const developerApiApplicationInstance =
+                                _.containerInstance(apiApplication.identifier);
+                        });
+                    });
+
+                    _.deploymentNode(
+                        "Docker Container - Database Server",
+                        (_) => {
+                            // _.tags("Docker");
+                            _.deploymentNode("Database Server", (_) => {
+                                const developerDatabaseInstance =
+                                    _.containerInstance(database.identifier);
+                            });
+                        }
+                    );
+                });
+
+                _.deploymentNode("Big Bank plc", (_) => {
+                    _.deploymentNode("bigbank-dev001", (_) => {
+                        _.softwareSystemInstance(mainframe.identifier);
+                    });
+                });
+            });
+
+            _.deploymentEnvironment("Live", (_) => {
+                _.deploymentNode("Customer's mobile device", (_) => {
+                    const liveMobileAppInstance = _.containerInstance(
+                        mobileApp.identifier
+                    );
+                });
+
+                _.deploymentNode("Customer's computer", (_) => {
+                    _.deploymentNode("Web Browser", (_) => {
+                        const liveSinglePageApplicationInstance =
+                            _.containerInstance(
+                                singlePageApplication.identifier
+                            );
+                    });
+                });
+
+                _.deploymentNode("Big Bank plc", (_) => {
+                    _.deploymentNode("bigbank-web***", (_) => {
+                        _.deploymentNode("Apache Tomcat", (_) => {
+                            const liveWebApplicationInstance =
+                                _.containerInstance(webApplication.identifier);
+                        });
+                    });
+
+                    _.deploymentNode("bigbank-api***", (_) => {
+                        _.deploymentNode("Apache Tomcat", (_) => {
+                            const liveApiApplicationInstance =
+                                _.containerInstance(apiApplication.identifier);
+                        });
+                    });
+
+                    _.deploymentNode("bigbank-db01", (_) => {
+                        primaryDatabaseServer = _.deploymentNode(
+                            "Oracle - Primary",
+                            (_) => {
+                                const livePrimaryDatabaseInstance =
+                                    _.containerInstance(database.identifier);
+                            }
+                        );
+                    });
+
+                    _.deploymentNode("bigbank-db02", (_) => {
+                        secondaryDatabaseServer = _.deploymentNode(
+                            "Oracle - Secondary",
+                            (_) => {
+                                const liveSecondaryDatabaseInstance =
+                                    _.containerInstance(database.identifier);
+                            }
+                        );
+                    });
+
+                    _.deploymentNode("bigbank-prod001", (_) => {
+                        const mainframeInstance = _.softwareSystemInstance(
+                            mainframe.identifier
+                        );
+                    });
+                });
+
+                _.uses(
+                    primaryDatabaseServer.identifier,
+                    secondaryDatabaseServer.identifier,
+                    "Replicates data to"
                 );
             });
 
@@ -222,6 +329,16 @@ export const createBigBankPlcWorkspace = () => {
             );
             _.containerView(internetBankingSystem.identifier, "Containers");
             _.componentView(apiApplication.identifier, "Components");
+            _.deploymentView(
+                internetBankingSystem.identifier,
+                "Development",
+                "Development Deployment"
+            );
+            _.deploymentView(
+                internetBankingSystem.identifier,
+                "Live",
+                "Live Deployment"
+            );
         });
     });
 };
@@ -292,6 +409,45 @@ export const createImpliedRelationshipDummy2 = () => {
             _.systemContextView(systemA.identifier, "System Context");
             _.containerView(systemA.identifier, "Containers");
             _.componentView(containerA.identifier, "Components");
+        });
+    });
+};
+
+export const createImpliedRelationshipDeploymentDummy = () => {
+    let systemA: ISoftwareSystem;
+    let containerA: IContainer;
+    let systemB: ISoftwareSystem;
+    let containerB: IContainer;
+
+    return workspace("Implied Relationships Deployment", "", (_) => {
+        _.model((_) => {
+            systemA = _.softwareSystem("Software System A", "", (_) => {
+                containerA = _.container("Container A", "");
+            });
+
+            systemB = _.softwareSystem("Software System B", "", (_) => {
+                containerB = _.container("Container B", "");
+            });
+
+            // The explicit relationship is between the containers
+            _.uses(
+                containerA.identifier,
+                containerB.identifier,
+                "Container A uses Container B"
+            );
+
+            _.deploymentEnvironment("Production", (_) => {
+                _.deploymentNode("Node A", (_) => {
+                    _.containerInstance(containerA.identifier);
+                });
+                _.deploymentNode("Node B", (_) => {
+                    _.containerInstance(containerB.identifier);
+                });
+            });
+        });
+
+        _.views((_) => {
+            _.deploymentView(systemA.identifier, "Production", "Deployment");
         });
     });
 };

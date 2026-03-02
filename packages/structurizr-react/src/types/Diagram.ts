@@ -1,6 +1,7 @@
 import {
     IComponentDiagram,
     IContainerDiagram,
+    IDeploymentDiagram,
     IModelDiagram,
     ISystemContextDiagram,
     ISystemLandscapeDiagram,
@@ -11,4 +12,5 @@ export type Diagram =
     | ISystemContextDiagram
     | IContainerDiagram
     | IComponentDiagram
+    | IDeploymentDiagram
     | IModelDiagram;

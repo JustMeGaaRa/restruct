@@ -32,6 +32,7 @@ export const Boundary: FC<
     padding = 16,
 }) => {
     const groupRef = useRef<SVGGElement>(null);
+    // TODO(parameters): use dimensions from constants or from parameters
     const [size, setSize] = useState({ height: 200, width: 200 });
 
     useLayoutEffect(() => {
@@ -39,7 +40,7 @@ export const Boundary: FC<
             const { height, width } = groupRef.current.getBBox();
             setSize({ height, width });
         }
-    }, []);
+    }, [position, children]);
 
     return (
         <GroupNode

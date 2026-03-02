@@ -17,7 +17,7 @@ function getPlacement(
     const horizontalDiff = Math.abs(source.x - target.x);
     const verticalDiff = Math.abs(source.y - target.y);
 
-    // TODO: edge shortest path should choose between vertical or horizontal
+    // TODO(edge): edge shortest path should choose between vertical or horizontal
     const placement: ConnectorId =
         horizontalDiff > verticalDiff
             ? source.x > target.x
@@ -30,7 +30,7 @@ function getPlacement(
     return source.y > target.y ? "top-center" : "bottom-center";
 }
 
-// TODO: don't use the default dimensions here as they are passed as parameters in other scope
+// TODO(parameters): don't use the default dimensions here as they are passed as parameters in other scope
 const defaultDimensions = { x: 0, y: 0, height: 200, width: 200 };
 
 export const Edge: FC<
@@ -58,6 +58,7 @@ export const Edge: FC<
     const [path, setPath] = useState<string>("");
     const [labelCenter, setLabelCenter] = useState({ x: 0, y: 0 });
 
+    // TODO(edge): fix edge rerender when source and target element dimensions change
     useLayoutEffect(() => {
         const bendingPoints = points ?? [];
 

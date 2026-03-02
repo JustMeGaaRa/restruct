@@ -17,6 +17,7 @@ export const Relationship: FC<{ value: IRelationship }> = ({ value }) => {
     const [portalNode, setPortalNode] = useState<Element | null>(null);
 
     useEffect(() => {
+        // TODO(viewport): use dom node from context provider
         setPortalNode(
             document.getElementsByClassName("graph__viewport-content").item(0)
         );

@@ -30,7 +30,14 @@ export const Viewport: FC<PropsWithChildren> = ({ children }) => {
     const groupRef = useRef<SVGSVGElement>(null);
     const [isPointerDown, setIsPointerDown] = useState(false);
     const [pointerOrigin, setPointerOrigin] = useState({ x: 0, y: 0 });
-    const { minZoom, maxZoom, viewbox, setZoom, setViewbox } = useViewport();
+    const {
+        minZoom,
+        maxZoom,
+        viewbox,
+        zoom: currentZoom,
+        setZoom,
+        setViewbox,
+    } = useViewport();
 
     const handleOnPointerDown = useCallback(
         (
@@ -93,10 +100,10 @@ export const Viewport: FC<PropsWithChildren> = ({ children }) => {
                 x: event.clientX - svgDimensions.left,
                 y: event.clientY - svgDimensions.top,
             };
-            const currentScale = getContentScale(
-                contentScaledSize,
-                contentOriginSize
-            );
+            const currentScale =
+                contentOriginSize.width === 0 || contentOriginSize.height === 0
+                    ? currentZoom
+                    : getContentScale(contentScaledSize, contentOriginSize);
 
             const allowZoomIn = scaleFactor > 1 && currentScale < maxZoom;
             const allowZoomOut = scaleFactor < 1 && currentScale > minZoom;
@@ -108,7 +115,7 @@ export const Viewport: FC<PropsWithChildren> = ({ children }) => {
                     : viewbox
             );
         },
-        [viewbox, maxZoom, minZoom, setZoom, setViewbox]
+        [viewbox, currentZoom, maxZoom, minZoom, setZoom, setViewbox]
     );
 
     useEffect(() => {

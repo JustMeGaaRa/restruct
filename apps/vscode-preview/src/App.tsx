@@ -3,6 +3,7 @@ import { RestructDarkTheme, ThemeProvider } from "@structurizr/react";
 import { WorkspaceChannel, WorkspacePreview } from "@restruct/ui";
 import { Flex, Spinner, Text } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
+import { bigBankPlc } from "./workspace";
 
 declare global {
     interface Window {
@@ -15,8 +16,13 @@ export const App = () => {
     const [activeWorkspaceIndex, setActiveWorkspaceIndex] = useState(0);
 
     useEffect(() => {
+        const isDev = import.meta.env?.DEV;
+
         if (!window.__WS_PORT__) {
             console.error("[App] Missing __WS_PORT__");
+            if (isDev) {
+                setWorkspaces([bigBankPlc]);
+            }
             return;
         }
 
@@ -27,11 +33,30 @@ export const App = () => {
         const unsubscribe = channel.subscribe((wss) => {
             console.log("[App] Received workspace update");
             setWorkspaces(wss);
-            // reset active index if the new workspaces array is smaller
-            setActiveWorkspaceIndex((curr) => (curr >= wss.length ? 0 : curr));
+            setActiveWorkspaceIndex((index) =>
+                index >= wss.length ? 0 : index
+            );
         });
 
+        let fallbackTimeout: number | undefined;
+        if (isDev) {
+            fallbackTimeout = window.setTimeout(() => {
+                setWorkspaces((prev) => {
+                    if (prev.length === 0) {
+                        console.warn(
+                            "[App] WebSocket connection timeout, using fallback workspace"
+                        );
+                        return [bigBankPlc];
+                    }
+                    return prev;
+                });
+            }, 1000);
+        }
+
         return () => {
+            if (fallbackTimeout) {
+                clearTimeout(fallbackTimeout);
+            }
             unsubscribe();
             channel.disconnect();
         };
@@ -42,7 +67,7 @@ export const App = () => {
             <Flex
                 alignItems="center"
                 justifyContent="center"
-                h="100vh"
+                h="100dvh"
                 w="100vw"
                 bg="neutral.900"
                 color="white"
@@ -59,16 +84,18 @@ export const App = () => {
         <ThemeProvider theme={RestructDarkTheme}>
             <WorkspacePreview
                 workspace={activeWorkspace}
-                setWorkspace={(newWs) => {
+                setWorkspace={(workspace) => {
                     const newWorkspaces = [...workspaces];
-                    newWorkspaces[activeWorkspaceIndex] = newWs;
+                    newWorkspaces[activeWorkspaceIndex] = workspace;
                     setWorkspaces(newWorkspaces);
                 }}
-                availableWorkspaces={workspaces.map((ws, i) => ({
-                    id: String(i),
-                    name: ws.name || `Workspace ${i + 1}`,
+                availableWorkspaces={workspaces.map((workspace, index) => ({
+                    id: String(index),
+                    name: workspace.name || `Workspace ${index + 1}`,
                 }))}
-                onWorkspaceSelect={(id) => setActiveWorkspaceIndex(Number(id))}
+                onWorkspaceSelect={(index) =>
+                    setActiveWorkspaceIndex(Number(index))
+                }
             />
         </ThemeProvider>
     );

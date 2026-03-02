@@ -7,6 +7,7 @@ import {
 } from "../utils/themeResolver";
 import { RestructDarkTheme } from "../types";
 
+// TODO(theme): use theme utilities from @structurizr/dsl
 export const useThemeResolvedElementStyle = (
     tags: string[] = []
 ): Partial<IElementStyle> => {

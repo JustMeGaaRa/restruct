@@ -2,6 +2,8 @@ import {
     IComponent,
     IContainer,
     IContainerView,
+    IDeploymentNode,
+    IDeploymentView,
     IModel,
     IPerson,
     IRelationship,
@@ -14,6 +16,16 @@ import { Relationship } from "../models";
 
 export type Element = IPerson | ISoftwareSystem | IContainer | IComponent;
 export type ElementArray = Array<Element>;
+
+export const isRelationshipBetweenElementsInView = (
+    elementsInView: Set<string> | Map<string, string>,
+    relationship: IRelationship
+) => {
+    return (
+        elementsInView.has(relationship.sourceIdentifier) &&
+        elementsInView.has(relationship.targetIdentifier)
+    );
+};
 
 export const visitWorkspaceHierarchy = (model: IModel): ElementArray => {
     return [
@@ -37,6 +49,24 @@ export const visitWorkspaceHierarchy = (model: IModel): ElementArray => {
                         }),
                 ];
             }),
+    ];
+};
+
+const visitDeploymentNodeRelationships = (
+    node: IDeploymentNode
+): Array<IRelationship> => {
+    return [
+        ...node.relationships,
+        ...node.containerInstances.flatMap(
+            (instance) => instance.relationships ?? []
+        ),
+        ...node.softwareSystemInstances.flatMap(
+            (instance) => instance.relationships ?? []
+        ),
+        ...node.infrastructureNodes.flatMap(
+            (instance) => instance.relationships ?? []
+        ),
+        ...node.deploymentNodes.flatMap(visitDeploymentNodeRelationships),
     ];
 };
 
@@ -67,6 +97,11 @@ export const visitWorkspaceRelationships = (
                         }),
                 ];
             }),
+        ...model.deploymentEnvironments.flatMap((deploymentEnvironment) => {
+            return deploymentEnvironment.deploymentNodes.flatMap(
+                visitDeploymentNodeRelationships
+            );
+        }),
     ];
 };
 
@@ -127,7 +162,7 @@ export const getElementParentMap = (model: IModel) => {
     return elementTree;
 };
 
-export const isRelationshipSame = (
+export const relationshipEquals = (
     relationship: IRelationship,
     sourceIdentifier: string,
     targetIdentifier: string
@@ -140,17 +175,17 @@ export const isRelationshipSame = (
     );
 };
 
-export const doesRelationshipExist = (
-    relationships: IRelationship[],
+export const anyRelationshipExist = (
+    existingRelationships: IRelationship[],
     sourceIdentifier: string,
     targetIdentifier: string
 ) => {
-    return relationships.some((relationship) =>
-        isRelationshipSame(relationship, sourceIdentifier, targetIdentifier)
+    return existingRelationships.some((relationship) =>
+        relationshipEquals(relationship, sourceIdentifier, targetIdentifier)
     );
 };
 
-export const creteImpliedRelationship = (
+export const setImpliedRelationshipIfNotExist = (
     elementIdentifier: string,
     elementParentIdentifier: string,
     originalRelationship: IRelationship,
@@ -181,8 +216,13 @@ export const creteImpliedRelationship = (
 
 export const getImpliedRelationships = (
     model: IModel,
-    view?: ISystemLandscapeView | ISystemContextView | IContainerView
+    view?:
+        | ISystemLandscapeView
+        | ISystemContextView
+        | IContainerView
+        | IDeploymentView
 ) => {
+    // TODO(workspace): use cached/memoized lookup
     const relationships = visitWorkspaceRelationships(model);
     const people = model.groups
         .flatMap((group) => group.people)
@@ -194,6 +234,7 @@ export const getImpliedRelationships = (
     const isSystemLandscapeView = view?.type === ViewType.SystemLandscape;
     const isSystemContextView = view?.type === ViewType.SystemContext;
     const isContainerView = view?.type === ViewType.Container;
+    const isDeploymentView = view?.type === ViewType.Deployment;
 
     const impliedRelationships = getRelationshipMap(relationships);
 
@@ -236,17 +277,19 @@ export const getImpliedRelationships = (
                     component,
                     externalSystemsOrPeople
                 ).forEach((relationship) => {
-                    creteImpliedRelationship(
-                        component.identifier,
-                        isContainerView
+                    const parentElementId =
+                        isContainerView || isDeploymentView
                             ? container.identifier
-                            : softwareSystemScope.identifier,
+                            : softwareSystemScope.identifier;
+                    setImpliedRelationshipIfNotExist(
+                        component.identifier,
+                        parentElementId,
                         relationship,
                         impliedRelationships
                     );
                 });
 
-                if (isContainerView) {
+                if (isContainerView || isDeploymentView) {
                     const otherScopeContainers = childContainers.filter(
                         (x) => x.identifier !== container.identifier
                     );
@@ -257,7 +300,7 @@ export const getImpliedRelationships = (
                         component,
                         otherScopeContainers
                     ).forEach((relationship) => {
-                        creteImpliedRelationship(
+                        setImpliedRelationshipIfNotExist(
                             component.identifier,
                             container.identifier,
                             relationship,
@@ -275,7 +318,7 @@ export const getImpliedRelationships = (
                     container,
                     externalSystemsOrPeople
                 ).forEach((relationship) => {
-                    creteImpliedRelationship(
+                    setImpliedRelationshipIfNotExist(
                         container.identifier,
                         softwareSystemScope.identifier,
                         relationship,
@@ -286,7 +329,7 @@ export const getImpliedRelationships = (
         });
     });
 
-    return [...impliedRelationships.values()];
+    return Array.from(impliedRelationships.values());
 };
 
 export const filterRelationshipsBetweenElements = (
@@ -296,7 +339,7 @@ export const filterRelationshipsBetweenElements = (
 ) => {
     return relationships.filter((relationship) =>
         externalElements.some((targetElement) =>
-            isRelationshipSame(
+            relationshipEquals(
                 relationship,
                 currentElement.identifier,
                 targetElement.identifier

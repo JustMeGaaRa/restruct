@@ -55,18 +55,21 @@ export const dagreeGraph = (): GraphAdapter<
             Dagre.layout(graph);
             return Promise.resolve({
                 elements: Object.fromEntries(
-                    graph.nodes().map((nodeId) => {
-                        const node = graph.node(nodeId);
-                        return [
-                            nodeId,
-                            {
-                                x: node.x,
-                                y: node.y,
-                                height: node.height,
-                                width: node.width,
-                            },
-                        ];
-                    })
+                    graph
+                        .nodes()
+                        .filter((nodeId) => graph.node(nodeId))
+                        .map((nodeId) => {
+                            const node = graph.node(nodeId);
+                            return [
+                                nodeId,
+                                {
+                                    x: node.x,
+                                    y: node.y,
+                                    height: node.height,
+                                    width: node.width,
+                                },
+                            ];
+                        })
                 ),
                 relationships: {},
             });

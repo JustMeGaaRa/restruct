@@ -10,7 +10,7 @@ import { IDiagramVisitor, ISupportVisitor } from "../../shared";
 import {
     isElementExplicitlyIncludedInView,
     isRelationshipBetweenElementsInView,
-    doesRelationshipExist,
+    anyRelationshipExist,
     visitWorkspaceRelationships,
 } from "../../utils";
 
@@ -46,7 +46,7 @@ export class ComponentViewStrategy
             people
                 .filter(
                     (person) =>
-                        doesRelationshipExist(
+                        anyRelationshipExist(
                             relationships,
                             component.identifier,
                             person.identifier
@@ -68,7 +68,7 @@ export class ComponentViewStrategy
             softwareSystems
                 .filter(
                     (softwareSystem) =>
-                        doesRelationshipExist(
+                        anyRelationshipExist(
                             relationships,
                             component.identifier,
                             softwareSystem.identifier
@@ -100,7 +100,7 @@ export class ComponentViewStrategy
                 )
                 .filter(
                     (container) =>
-                        doesRelationshipExist(
+                        anyRelationshipExist(
                             relationships,
                             component.identifier,
                             container.identifier

@@ -11,6 +11,8 @@ import {
     ComponentDiagramVisitor,
     ContainerDiagramBuilder,
     ContainerDiagramVisitor,
+    DeploymentDiagramBuilder,
+    DeploymentDiagramVisitor,
     ModelDiagramBuilder,
     ModelElementVisitor,
     SystemContextDiagramBuilder,
@@ -21,6 +23,7 @@ import {
 import {
     ComponentViewStrategy,
     ContainerViewStrategy,
+    DeploymentViewStrategy,
     ModelViewStrategy,
     SystemContextViewStrategy,
     SystemLandscapeViewStrategy,
@@ -91,5 +94,12 @@ export const createDeploymentDiagram = (
     workspace: IWorkspace,
     deploymentView: IDeploymentView
 ) => {
-    throw new Error("Not implemented");
+    const builder = new DeploymentDiagramBuilder();
+    const visitor = new DeploymentDiagramVisitor(builder);
+    const strategy = new DeploymentViewStrategy(
+        workspace.model,
+        deploymentView
+    );
+    strategy.accept(visitor);
+    return builder.build();
 };

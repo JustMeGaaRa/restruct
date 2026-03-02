@@ -171,7 +171,7 @@ export const createDefaultComponentView = (
 export const createDefaultDeploymentView = (): IDeploymentView => {
     const uniqueId = createUniqueId();
     return new DeploymentView({
-        // TODO: inintialize with proper identifier
+        // TODO(deployment): inintialize with proper identifier
         softwareSystemIdentifier: "...",
         environment: "New Environment",
         key: `deployment_view_${uniqueId}`,
