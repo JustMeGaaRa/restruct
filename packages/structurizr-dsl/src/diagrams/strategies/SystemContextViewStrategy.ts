@@ -5,16 +5,17 @@ import {
     ISoftwareSystem,
     ISystemContextView,
 } from "../../interfaces";
-import { IDiagramVisitor, ISupportVisitor } from "../../shared";
+import { IDiagramVisitor, ISupportDiagramVisitor } from "../../shared";
 import {
+    anyRelationshipEquals,
+    createWorkspaceExplorer,
     isElementExplicitlyIncludedInView,
-    isRelationshipBetweenElementsInView,
-    anyRelationshipExist,
-    getImpliedRelationships,
+    isRelationshipInView,
 } from "../../utils";
 
 export class SystemContextViewStrategy
-    implements ISupportVisitor<ISoftwareSystem, ISoftwareSystem | IPerson>
+    implements
+        ISupportDiagramVisitor<ISoftwareSystem, ISoftwareSystem | IPerson>
 {
     constructor(
         private model: IModel,
@@ -24,14 +25,15 @@ export class SystemContextViewStrategy
     accept(
         visitor: IDiagramVisitor<ISoftwareSystem, ISoftwareSystem | IPerson>
     ): void {
+        const {
+            getWorkspacePeople,
+            getWorkspaceSoftwareSystems,
+            getImpliedRelationships,
+        } = createWorkspaceExplorer(this.model);
         const visitedElements = new Set<string>();
-        const relationships = getImpliedRelationships(this.model, this.view);
-        const people = this.model.groups
-            .flatMap((group) => group.people)
-            .concat(this.model.people);
-        const softwareSystems = this.model.groups
-            .flatMap((group) => group.softwareSystems)
-            .concat(this.model.softwareSystems);
+        const relationships = getImpliedRelationships(this.view);
+        const people = getWorkspacePeople();
+        const softwareSystems = getWorkspaceSoftwareSystems();
 
         const visitConnectedSoftwareSystems = (
             softwareSystem: ISoftwareSystem
@@ -44,7 +46,7 @@ export class SystemContextViewStrategy
                 )
                 .filter(
                     (otherSoftwareSystem) =>
-                        anyRelationshipExist(
+                        anyRelationshipEquals(
                             relationships,
                             softwareSystem.identifier,
                             otherSoftwareSystem.identifier
@@ -64,7 +66,7 @@ export class SystemContextViewStrategy
             people
                 .filter(
                     (person) =>
-                        anyRelationshipExist(
+                        anyRelationshipEquals(
                             relationships,
                             softwareSystem.identifier,
                             person.identifier
@@ -102,10 +104,7 @@ export class SystemContextViewStrategy
         ) => {
             relationships
                 .filter((relationship) =>
-                    isRelationshipBetweenElementsInView(
-                        visitedElements,
-                        relationship
-                    )
+                    isRelationshipInView(visitedElements, relationship)
                 )
                 .forEach((relationship) =>
                     visitor.visitRelationship?.(relationship)

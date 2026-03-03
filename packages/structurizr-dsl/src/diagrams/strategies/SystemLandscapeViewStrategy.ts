@@ -1,12 +1,9 @@
 import { IModel, ISystemLandscapeView } from "../../interfaces";
-import { IDiagramVisitor, ISupportVisitor } from "../../shared";
-import {
-    isRelationshipBetweenElementsInView,
-    getImpliedRelationships,
-} from "../../utils";
+import { IDiagramVisitor, ISupportDiagramVisitor } from "../../shared";
+import { createWorkspaceExplorer, isRelationshipInView } from "../../utils";
 
 export class SystemLandscapeViewStrategy
-    implements ISupportVisitor<IModel, unknown>
+    implements ISupportDiagramVisitor<IModel, unknown>
 {
     constructor(
         private readonly model: IModel,
@@ -14,15 +11,14 @@ export class SystemLandscapeViewStrategy
     ) {}
 
     accept(visitor: IDiagramVisitor<IModel, unknown>): void {
+        const { getImpliedRelationships } = createWorkspaceExplorer(this.model);
         const visitedElements = new Set<string>();
-        const relationships = getImpliedRelationships(this.model, this.view);
+        const relationships = getImpliedRelationships(this.view);
 
         // iterate over all groups and find software system for the view
         this.model.groups.flatMap((group) => {
             visitedElements.add(group.identifier);
 
-            // visitSoftwareSystemArray(group.softwareSystems);
-            // visitPersonArray(group.people);
             group.softwareSystems.forEach((softwareSystem) => {
                 visitedElements.add(softwareSystem.identifier.toString());
             });
@@ -44,10 +40,7 @@ export class SystemLandscapeViewStrategy
 
         relationships
             .filter((relationship) =>
-                isRelationshipBetweenElementsInView(
-                    visitedElements,
-                    relationship
-                )
+                isRelationshipInView(visitedElements, relationship)
             )
             .forEach((relationship) =>
                 visitor.visitRelationship?.(relationship)

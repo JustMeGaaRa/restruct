@@ -1,12 +1,28 @@
-import { IWorkspace, RelationshipType } from "../../interfaces";
-import { IElementVisitor } from "../../shared";
+import {
+    IContainer,
+    IComponent,
+    IWorkspace,
+    RelationshipType,
+    IPerson,
+    ISoftwareSystem,
+} from "../../interfaces";
+import { IElementVisitor, ISupportElementVisitor } from "../../shared";
 
-export class ModelViewStrategy {
+export class ModelViewStrategy
+    implements
+        ISupportElementVisitor<
+            ISoftwareSystem | IContainer | IComponent | IPerson
+        >
+{
     constructor(private workspace: IWorkspace) {}
 
     public static PlaceholderModelWorkspaceId = "workspace";
 
-    accept<T>(visitor: IElementVisitor<T>): Array<T> {
+    accept(
+        visitor: IElementVisitor<
+            ISoftwareSystem | IContainer | IComponent | IPerson
+        >
+    ): void {
         const visitedWorkspace = visitor.visitWorkspace?.(this.workspace);
 
         const visitedGroups = this.workspace.model.groups
@@ -83,11 +99,5 @@ export class ModelViewStrategy {
                 });
                 return [visitedPerson].concat(visitedRelationships);
             });
-
-        // TODO(deployment): consider adding environments with deployment nodes to model view
-        return [visitedWorkspace]
-            .concat(visitedGroups)
-            .concat(visitedPeople)
-            .filter((element) => element !== undefined) as Array<T>;
     }
 }

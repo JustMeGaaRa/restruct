@@ -10,15 +10,12 @@ import {
     ISoftwareSystem,
     ISoftwareSystemInstance,
 } from "../../interfaces";
-import { IDiagramVisitor, ISupportVisitor } from "../../shared";
-import {
-    isRelationshipBetweenElementsInView,
-    getImpliedRelationships,
-} from "../../utils";
+import { IDiagramVisitor, ISupportDiagramVisitor } from "../../shared";
+import { createWorkspaceExplorer, isRelationshipInView } from "../../utils";
 
 export class DeploymentViewStrategy
     implements
-        ISupportVisitor<
+        ISupportDiagramVisitor<
             IDeploymentEnvironment,
             | IDeploymentNode
             | IInfrastructureNode
@@ -44,14 +41,13 @@ export class DeploymentViewStrategy
             | IContainer
         >
     ): void {
+        const {
+            getSoftwareSystemById,
+            getContainerById,
+            getImpliedRelationships,
+        } = createWorkspaceExplorer(this.model);
         const visitedElements = new Set<string>();
-        const relationships = getImpliedRelationships(this.model, this.view);
-        const softwareSystems = this.model.groups
-            .flatMap((group) => group.softwareSystems)
-            .concat(this.model.softwareSystems);
-        const containers = softwareSystems
-            .flatMap((x) => x.groups.flatMap((group) => group.containers))
-            .concat(softwareSystems.flatMap((system) => system.containers));
+        const relationships = getImpliedRelationships(this.view);
 
         const visitDeploymentNode = (deploymentNode: IDeploymentNode) => {
             deploymentNode.infrastructureNodes?.forEach((node) => {
@@ -60,11 +56,8 @@ export class DeploymentViewStrategy
             });
 
             deploymentNode.softwareSystemInstances?.forEach((instance) => {
-                // TODO(workspace): use cached/memoized lookup
-                const softwareSystem = softwareSystems.find(
-                    (softwareSystem) =>
-                        softwareSystem.identifier ===
-                        instance.softwareSystemIdentifier
+                const softwareSystem = getSoftwareSystemById(
+                    instance.softwareSystemIdentifier
                 )!;
 
                 visitedElements.add(instance.identifier!);
@@ -75,10 +68,8 @@ export class DeploymentViewStrategy
             });
 
             deploymentNode.containerInstances?.forEach((instance) => {
-                // TODO(workspace): use cached/memoized lookup
-                const container = containers.find(
-                    (container) =>
-                        container.identifier === instance.containerIdentifier
+                const container = getContainerById(
+                    instance.containerIdentifier
                 )!;
 
                 visitedElements.add(instance.identifier!);
@@ -118,10 +109,7 @@ export class DeploymentViewStrategy
         ) => {
             relationships
                 .filter((relationship) =>
-                    isRelationshipBetweenElementsInView(
-                        visitedElements,
-                        relationship
-                    )
+                    isRelationshipInView(visitedElements, relationship)
                 )
                 .forEach((relationship) =>
                     visitor.visitRelationship?.(relationship)

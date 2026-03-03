@@ -6,17 +6,20 @@ import {
     IPerson,
     ISoftwareSystem,
 } from "../../interfaces";
-import { IDiagramVisitor, ISupportVisitor } from "../../shared";
+import { IDiagramVisitor, ISupportDiagramVisitor } from "../../shared";
 import {
+    anyRelationshipEquals,
+    createWorkspaceExplorer,
     isElementExplicitlyIncludedInView,
-    isRelationshipBetweenElementsInView,
-    anyRelationshipExist,
-    visitWorkspaceRelationships,
+    isRelationshipInView,
 } from "../../utils";
 
 export class ComponentViewStrategy
     implements
-        ISupportVisitor<IContainer, ISoftwareSystem | IContainer | IPerson>
+        ISupportDiagramVisitor<
+            IContainer,
+            ISoftwareSystem | IContainer | IPerson
+        >
 {
     constructor(
         private model: IModel,
@@ -29,24 +32,24 @@ export class ComponentViewStrategy
             ISoftwareSystem | IContainer | IPerson
         >
     ): void {
+        const {
+            getWorkspacePeople,
+            getWorkspaceSoftwareSystems,
+            getWorkspaceContainers,
+            getWorkspaceRelationships,
+        } = createWorkspaceExplorer(this.model);
         const visitedElements = new Map<string, string>();
-        const relationships = visitWorkspaceRelationships(this.model);
-        const people = this.model.people.concat(
-            this.model.groups.flatMap((x) => x.people)
-        );
-        const softwareSystems = this.model.softwareSystems.concat(
-            this.model.groups.flatMap((x) => x.softwareSystems)
-        );
-        const containers = softwareSystems
-            .flatMap((x) => x.groups.flatMap((y) => y.containers))
-            .concat(softwareSystems.flatMap((x) => x.containers));
+        const relationships = getWorkspaceRelationships();
+        const people = getWorkspacePeople();
+        const softwareSystems = getWorkspaceSoftwareSystems();
+        const containers = getWorkspaceContainers();
 
         // 4.1.2. include all people that are directly connected to the current component
         const visitConnectedPeople = (component: IComponent) => {
             people
                 .filter(
                     (person) =>
-                        anyRelationshipExist(
+                        anyRelationshipEquals(
                             relationships,
                             component.identifier,
                             person.identifier
@@ -68,7 +71,7 @@ export class ComponentViewStrategy
             softwareSystems
                 .filter(
                     (softwareSystem) =>
-                        anyRelationshipExist(
+                        anyRelationshipEquals(
                             relationships,
                             component.identifier,
                             softwareSystem.identifier
@@ -100,7 +103,7 @@ export class ComponentViewStrategy
                 )
                 .filter(
                     (container) =>
-                        anyRelationshipExist(
+                        anyRelationshipEquals(
                             relationships,
                             component.identifier,
                             container.identifier
@@ -165,10 +168,7 @@ export class ComponentViewStrategy
                         this.view.containerIdentifier
             )
             .filter((relationship) =>
-                isRelationshipBetweenElementsInView(
-                    visitedElements,
-                    relationship
-                )
+                isRelationshipInView(visitedElements, relationship)
             )
             .forEach((relationship) =>
                 visitor.visitRelationship?.(relationship)

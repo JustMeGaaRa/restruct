@@ -1,23 +1,40 @@
 import {
     IComponent,
     IContainer,
-    IContainerView,
-    IDeploymentNode,
-    IDeploymentView,
-    IModel,
     IPerson,
     IRelationship,
     ISoftwareSystem,
-    ISystemContextView,
-    ISystemLandscapeView,
-    ViewType,
 } from "../interfaces";
 import { Relationship } from "../models";
 
 export type Element = IPerson | ISoftwareSystem | IContainer | IComponent;
 export type ElementArray = Array<Element>;
 
-export const isRelationshipBetweenElementsInView = (
+export const createRelationship = (
+    source: string,
+    target: string,
+    description?: string
+) => {
+    return new Relationship({
+        sourceIdentifier: source,
+        targetIdentifier: target,
+        description: description,
+    }).toSnapshot();
+};
+
+export const isRelationshipEqual = (
+    first: IRelationship,
+    second: IRelationship
+) => {
+    return (
+        (first.sourceIdentifier === second.sourceIdentifier &&
+            first.targetIdentifier === second.targetIdentifier) ||
+        (first.sourceIdentifier === second.targetIdentifier &&
+            first.targetIdentifier === second.sourceIdentifier)
+    );
+};
+
+export const isRelationshipInView = (
     elementsInView: Set<string> | Map<string, string>,
     relationship: IRelationship
 ) => {
@@ -27,309 +44,18 @@ export const isRelationshipBetweenElementsInView = (
     );
 };
 
-export const visitWorkspaceHierarchy = (model: IModel): ElementArray => {
-    return [
-        ...model.groups.flatMap((group) => group.people).concat(model.people),
-        ...model.groups
-            .flatMap((group) => group.softwareSystems)
-            .concat(model.softwareSystems)
-            .flatMap((softwareSystem) => {
-                return [
-                    softwareSystem,
-                    ...softwareSystem.groups
-                        .flatMap((x) => x.containers)
-                        .concat(softwareSystem.containers)
-                        .flatMap((container) => {
-                            return [
-                                container,
-                                ...container.groups
-                                    .flatMap((x) => x.components)
-                                    .concat(container.components),
-                            ];
-                        }),
-                ];
-            }),
-    ];
-};
-
-const visitDeploymentNodeRelationships = (
-    node: IDeploymentNode
-): Array<IRelationship> => {
-    return [
-        ...node.relationships,
-        ...node.containerInstances.flatMap(
-            (instance) => instance.relationships ?? []
-        ),
-        ...node.softwareSystemInstances.flatMap(
-            (instance) => instance.relationships ?? []
-        ),
-        ...node.infrastructureNodes.flatMap(
-            (instance) => instance.relationships ?? []
-        ),
-        ...node.deploymentNodes.flatMap(visitDeploymentNodeRelationships),
-    ];
-};
-
-export const visitWorkspaceRelationships = (
-    model: IModel
-): Array<IRelationship> => {
-    return [
-        ...model.relationships,
-        ...model.groups
-            .flatMap((group) => group.softwareSystems)
-            .concat(model.softwareSystems)
-            .flatMap((softwareSystem) => {
-                return [
-                    ...softwareSystem.relationships,
-                    ...softwareSystem.groups
-                        .flatMap((x) => x.containers)
-                        .concat(softwareSystem.containers)
-                        .flatMap((container) => {
-                            return [
-                                ...container.relationships,
-                                ...container.groups
-                                    .flatMap((x) => x.components)
-                                    .concat(container.components)
-                                    .flatMap((component) => {
-                                        return component.relationships;
-                                    }),
-                            ];
-                        }),
-                ];
-            }),
-        ...model.deploymentEnvironments.flatMap((deploymentEnvironment) => {
-            return deploymentEnvironment.deploymentNodes.flatMap(
-                visitDeploymentNodeRelationships
-            );
-        }),
-    ];
-};
-
-export const getElementMap = (elements: ElementArray) => {
-    const elementBag = new Map<string, Element>(
-        elements.map((element) => [element.identifier, element])
-    );
-    return elementBag;
-};
-
-export const getRelationshipMap = (relationships: Array<IRelationship>) => {
-    const relationshipMap = new Map<string, IRelationship>(
-        relationships.map((relationship) => [
-            relationship.identifier,
-            relationship,
-        ])
-    );
-    return relationshipMap;
-};
-
-export const getElementParentMap = (model: IModel) => {
-    const elementTree = new Map<string, string | undefined>();
-
-    model.groups
-        .flatMap((group) => group.softwareSystems)
-        .concat(model.softwareSystems)
-        .forEach((softwareSystem) => {
-            elementTree.set(softwareSystem.identifier, undefined);
-
-            softwareSystem.groups
-                .flatMap((group) => group.containers)
-                .concat(softwareSystem.containers)
-                .forEach((container) => {
-                    elementTree.set(
-                        container.identifier,
-                        softwareSystem.identifier
-                    );
-
-                    container.groups
-                        .flatMap((group) => group.components)
-                        .concat(container.components)
-                        .forEach((component) => {
-                            elementTree.set(
-                                component.identifier,
-                                container.identifier
-                            );
-                        });
-                });
-        });
-
-    model.groups
-        .flatMap((group) => group.people)
-        .concat(model.people)
-        .forEach((person) => {
-            elementTree.set(person.identifier, undefined);
-        });
-
-    return elementTree;
-};
-
-export const relationshipEquals = (
-    relationship: IRelationship,
-    sourceIdentifier: string,
-    targetIdentifier: string
-) => {
-    return (
-        (relationship.sourceIdentifier === sourceIdentifier &&
-            relationship.targetIdentifier === targetIdentifier) ||
-        (relationship.sourceIdentifier === targetIdentifier &&
-            relationship.targetIdentifier === sourceIdentifier)
-    );
-};
-
-export const anyRelationshipExist = (
+export const anyRelationshipEquals = (
     existingRelationships: IRelationship[],
     sourceIdentifier: string,
     targetIdentifier: string
 ) => {
-    return existingRelationships.some((relationship) =>
-        relationshipEquals(relationship, sourceIdentifier, targetIdentifier)
+    const targetRelationship = createRelationship(
+        sourceIdentifier,
+        targetIdentifier
     );
-};
-
-export const setImpliedRelationshipIfNotExist = (
-    elementIdentifier: string,
-    elementParentIdentifier: string,
-    originalRelationship: IRelationship,
-    impliedRelationships: Map<string, IRelationship>
-) => {
-    const isElementSource =
-        originalRelationship.sourceIdentifier === elementIdentifier;
-    const sourceIdentifier = isElementSource
-        ? elementParentIdentifier
-        : originalRelationship.sourceIdentifier;
-    const targetIdentifier = isElementSource
-        ? originalRelationship.targetIdentifier
-        : elementParentIdentifier;
-
-    const impliedRelationship = new Relationship({
-        sourceIdentifier: sourceIdentifier,
-        targetIdentifier: targetIdentifier,
-        description: originalRelationship.description,
-    }).toSnapshot();
-
-    if (!impliedRelationships.has(impliedRelationship.identifier)) {
-        impliedRelationships.set(
-            impliedRelationship.identifier,
-            impliedRelationship
-        );
-    }
-};
-
-export const getImpliedRelationships = (
-    model: IModel,
-    view?:
-        | ISystemLandscapeView
-        | ISystemContextView
-        | IContainerView
-        | IDeploymentView
-) => {
-    // TODO(workspace): use cached/memoized lookup
-    const relationships = visitWorkspaceRelationships(model);
-    const people = model.groups
-        .flatMap((group) => group.people)
-        .concat(model.people);
-    const softwareSystems = model.groups
-        .flatMap((group) => group.softwareSystems)
-        .concat(model.softwareSystems);
-
-    const isSystemLandscapeView = view?.type === ViewType.SystemLandscape;
-    const isSystemContextView = view?.type === ViewType.SystemContext;
-    const isContainerView = view?.type === ViewType.Container;
-    const isDeploymentView = view?.type === ViewType.Deployment;
-
-    const impliedRelationships = getRelationshipMap(relationships);
-
-    // RESTRICTION: System Landscape and System Context views only allow realtionships from:
-    // - Software System --> Person
-    // - Software System <-- Person
-    // - Software System --> Software System
-    // RESTRICTION: Container View only allows realtionships from:
-    // - Container --> Person | Software System
-    // - Container <-- Person | Software System
-    // - Container --> Container (in the same scope)
-    const softwareSystemsInScope =
-        isSystemContextView || isContainerView
-            ? softwareSystems.filter(
-                  (x) => x.identifier === view.softwareSystemIdentifier
-              )
-            : softwareSystems;
-
-    softwareSystemsInScope.forEach((softwareSystemScope) => {
-        // filter out the current software system to avoid self-referencing
-        const otherSoftwareSystems = softwareSystems.filter(
-            (x) => x.identifier !== softwareSystemScope.identifier
-        );
-        const externalSystemsOrPeople = [...otherSoftwareSystems, ...people];
-
-        const childContainers = softwareSystemScope.groups
-            .flatMap((group) => group.containers)
-            .concat(softwareSystemScope.containers);
-
-        childContainers.forEach((container) => {
-            const childComponents = container.groups
-                .flatMap((group) => group.components)
-                .concat(container.components);
-
-            childComponents.forEach((component) => {
-                // CASE: Check if any Components have explicit relationship with any Software System or Person
-                // and create an implied relationship from this Container to the Software System or Person
-                filterRelationshipsBetweenElements(
-                    relationships,
-                    component,
-                    externalSystemsOrPeople
-                ).forEach((relationship) => {
-                    const parentElementId =
-                        isContainerView || isDeploymentView
-                            ? container.identifier
-                            : softwareSystemScope.identifier;
-                    setImpliedRelationshipIfNotExist(
-                        component.identifier,
-                        parentElementId,
-                        relationship,
-                        impliedRelationships
-                    );
-                });
-
-                if (isContainerView || isDeploymentView) {
-                    const otherScopeContainers = childContainers.filter(
-                        (x) => x.identifier !== container.identifier
-                    );
-                    // CASE: Check if any Components have explicit relationship with other Containers in the scope
-                    // and create an implied relationship from this Container to the other Container
-                    filterRelationshipsBetweenElements(
-                        relationships,
-                        component,
-                        otherScopeContainers
-                    ).forEach((relationship) => {
-                        setImpliedRelationshipIfNotExist(
-                            component.identifier,
-                            container.identifier,
-                            relationship,
-                            impliedRelationships
-                        );
-                    });
-                }
-            });
-
-            if (isSystemLandscapeView || isSystemContextView) {
-                // CASE: Check if any Containers have explicit relationship with any Software System or Person
-                // and create an implied relationship from this Software System to the Software System or Person
-                filterRelationshipsBetweenElements(
-                    relationships,
-                    container,
-                    externalSystemsOrPeople
-                ).forEach((relationship) => {
-                    setImpliedRelationshipIfNotExist(
-                        container.identifier,
-                        softwareSystemScope.identifier,
-                        relationship,
-                        impliedRelationships
-                    );
-                });
-            }
-        });
-    });
-
-    return Array.from(impliedRelationships.values());
+    return existingRelationships.some((existingRelationship) =>
+        isRelationshipEqual(existingRelationship, targetRelationship)
+    );
 };
 
 export const filterRelationshipsBetweenElements = (
@@ -337,13 +63,16 @@ export const filterRelationshipsBetweenElements = (
     currentElement: IContainer | IComponent,
     externalElements: Array<ISoftwareSystem | IContainer | IPerson>
 ) => {
-    return relationships.filter((relationship) =>
-        externalElements.some((targetElement) =>
-            relationshipEquals(
-                relationship,
+    return relationships.filter((existingRelationship) =>
+        externalElements.some((targetElement) => {
+            const targetRelationship = createRelationship(
                 currentElement.identifier,
                 targetElement.identifier
-            )
-        )
+            );
+            return isRelationshipEqual(
+                existingRelationship,
+                targetRelationship
+            );
+        })
     );
 };

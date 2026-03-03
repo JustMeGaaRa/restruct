@@ -6,5 +6,6 @@ export * from "./ISupportRelationship";
 export * from "./ISupportScope";
 export * from "./ISupportSnapshot";
 export * from "./ISupportSupportingElement";
-export * from "./ISupportVisitor";
+export * from "./ISupporDiagramtVisitor";
+export * from "./ISupportElementVisitor";
 export * from "./WorkspaceResgistry";

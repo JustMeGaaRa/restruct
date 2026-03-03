@@ -6,16 +6,17 @@ import {
     IRelationship,
     ISoftwareSystem,
 } from "../../interfaces";
-import { IDiagramVisitor, ISupportVisitor } from "../../shared";
+import { IDiagramVisitor, ISupportDiagramVisitor } from "../../shared";
 import {
+    anyRelationshipEquals,
+    createWorkspaceExplorer,
     isElementExplicitlyIncludedInView,
-    isRelationshipBetweenElementsInView,
-    anyRelationshipExist,
-    getImpliedRelationships,
+    isRelationshipInView,
 } from "../../utils";
 
 export class ContainerViewStrategy
-    implements ISupportVisitor<ISoftwareSystem, ISoftwareSystem | IPerson>
+    implements
+        ISupportDiagramVisitor<ISoftwareSystem, ISoftwareSystem | IPerson>
 {
     constructor(
         private model: IModel,
@@ -25,14 +26,15 @@ export class ContainerViewStrategy
     accept(
         visitor: IDiagramVisitor<ISoftwareSystem, ISoftwareSystem | IPerson>
     ): void {
+        const {
+            getWorkspacePeople,
+            getWorkspaceSoftwareSystems,
+            getImpliedRelationships,
+        } = createWorkspaceExplorer(this.model);
         const visitedElements = new Map<string, string>();
-        const relationships = getImpliedRelationships(this.model, this.view);
-        const people = this.model.groups
-            .flatMap((x) => x.people)
-            .concat(this.model.people);
-        const softwareSystems = this.model.groups
-            .flatMap((x) => x.softwareSystems)
-            .concat(this.model.softwareSystems);
+        const relationships = getImpliedRelationships(this.view);
+        const people = getWorkspacePeople();
+        const softwareSystems = getWorkspaceSoftwareSystems();
 
         // 3.1.3. include all software systems that are directly connected to the current container
         const visitConnectedSoftwareSystems = (container: IContainer) => {
@@ -44,7 +46,7 @@ export class ContainerViewStrategy
                 )
                 .filter(
                     (otherSoftwareSystem) =>
-                        anyRelationshipExist(
+                        anyRelationshipEquals(
                             relationships,
                             container.identifier,
                             otherSoftwareSystem.identifier
@@ -72,7 +74,7 @@ export class ContainerViewStrategy
             people
                 .filter(
                     (person) =>
-                        anyRelationshipExist(
+                        anyRelationshipEquals(
                             relationships,
                             container.identifier,
                             person.identifier
@@ -137,10 +139,7 @@ export class ContainerViewStrategy
             const filtered = relationships.filter(
                 (relationship) =>
                     !isRelationshipWithScope(relationship) &&
-                    isRelationshipBetweenElementsInView(
-                        visitedElements,
-                        relationship
-                    )
+                    isRelationshipInView(visitedElements, relationship)
             );
             filtered.forEach((relationship) =>
                 visitor.visitRelationship?.(relationship)

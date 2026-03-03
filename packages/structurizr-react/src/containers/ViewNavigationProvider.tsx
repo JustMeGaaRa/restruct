@@ -1,8 +1,8 @@
 import {
     ElementType,
-    findContainerParent,
     findViewForElement,
     IElement,
+    IModel,
     ISoftwareSystem,
     IWorkspace,
     View,
@@ -149,6 +149,18 @@ export const useViewNavigation = () => {
 
     const zoomOutOfElement = useCallback(
         (workspace: IWorkspace, element: IElement) => {
+            const findContainerParent = (
+                model: IModel,
+                containerId: string
+            ): ISoftwareSystem | undefined => {
+                return model.softwareSystems
+                    .concat(model.groups.flatMap((x) => x.softwareSystems))
+                    .find((x) =>
+                        x.containers.some((c) => c.identifier === containerId)
+                    );
+            };
+
+            // TODO(navigation): use workspace explorer to find parent
             const parent = findContainerParent(
                 workspace.model,
                 element?.identifier

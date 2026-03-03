@@ -1,5 +1,5 @@
 import { IDiagramVisitor } from "./IDiagramVisitor";
 
-export interface ISupportVisitor<TScope, TSupporting> {
+export interface ISupportDiagramVisitor<TScope, TSupporting> {
     accept(visitor: IDiagramVisitor<TScope, TSupporting>): void;
 }
