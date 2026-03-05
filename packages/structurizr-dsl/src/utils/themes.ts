@@ -1,40 +1,47 @@
 import { IWorkspace, ITheme, ITag } from "../interfaces";
 import { Style } from "../models";
 
-export function foldStyles<
-    TStyleProperties extends { [key: string]: unknown },
+export function mergeStyles<
+    TStyleProperties extends Record<string, unknown>,
     TTagStyle extends Style<TStyleProperties>,
 >(
-    style: TStyleProperties,
-    tagStyles: TTagStyle[],
-    tags: ITag[]
+    targetStyle: TStyleProperties,
+    tagStyleCollection: Array<TTagStyle>,
+    tags: Array<ITag>
 ): TStyleProperties {
-    const applyStyle = (
-        style: TStyleProperties,
-        tagStyle: Partial<TStyleProperties>
+    const applyTagStyle = (
+        targetStyle: TStyleProperties,
+        tagStyle?: Partial<TStyleProperties>
     ) => {
-        return Object.fromEntries(
-            Object.entries({ ...style, ...tagStyle }).map(([key, value]) => [
-                key,
-                value !== undefined ? value : style[key],
-            ])
-        ) as TStyleProperties;
+        return tagStyle
+            ? (Object.fromEntries(
+                  Object.entries({ ...targetStyle, ...tagStyle }).map(
+                      ([key, value]) => [
+                          key,
+                          value !== undefined ? value : targetStyle[key],
+                      ]
+                  )
+              ) as TStyleProperties)
+            : targetStyle;
     };
 
     return tags
-        ? tags.reduce((state, tag) => {
-              const tagStyle = tagStyles.find((x) => x.tag === tag.name);
-              return tagStyle ? applyStyle(state, tagStyle) : state;
-          }, style)
-        : style;
+        ? tags.reduce((aggregatedStyle, tag) => {
+              const tagStyle = tagStyleCollection.find(
+                  (x) => x.tag === tag.name
+              );
+              return applyTagStyle(aggregatedStyle, tagStyle);
+          }, targetStyle)
+        : targetStyle;
 }
 
 export const applyTheme = (
     workspace: IWorkspace,
     theme: ITheme
 ): IWorkspace => {
-    const elements = workspace.views.configuration.styles.elements;
-    const relationships = workspace.views.configuration.styles.relationships;
+    const inlineElementStyles = workspace.views.configuration.styles.elements;
+    const inlineRelationshipStyles =
+        workspace.views.configuration.styles.relationships;
 
     return {
         ...workspace,
@@ -44,8 +51,8 @@ export const applyTheme = (
                 ...workspace.views.configuration,
                 styles: {
                     ...workspace.views.configuration.styles,
-                    elements: elements.concat(theme.elements ?? []),
-                    relationships: relationships.concat(
+                    elements: inlineElementStyles.concat(theme.elements ?? []),
+                    relationships: inlineRelationshipStyles.concat(
                         theme.relationships ?? []
                     ),
                 },

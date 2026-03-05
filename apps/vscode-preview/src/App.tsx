@@ -81,7 +81,7 @@ export const App = () => {
     const activeWorkspace = workspaces[activeWorkspaceIndex] as IWorkspace;
 
     return (
-        <ThemeProvider theme={RestructDarkTheme}>
+        <ThemeProvider defaultTheme={RestructDarkTheme}>
             <WorkspacePreview
                 workspace={activeWorkspace}
                 setWorkspace={(workspace) => {

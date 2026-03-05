@@ -1,5 +1,5 @@
 import { FC, useEffect } from "react";
-import { ITheme } from "@structurizr/dsl";
+import { ITheme, Theme } from "@structurizr/dsl";
 import { useThemes } from "../../containers";
 
 export const Styles: FC<{
@@ -29,7 +29,7 @@ export const Themes: FC<{ url?: string | string[] }> = ({ url }) => {
         const fetchTheme = (themeUrl: string) => {
             return fetch(themeUrl)
                 .then((response) => response.json())
-                .then((theme) => theme as ITheme);
+                .then((theme) => new Theme(theme).toSnapshot());
         };
 
         Promise.all(urlsString.split(",").map(fetchTheme))

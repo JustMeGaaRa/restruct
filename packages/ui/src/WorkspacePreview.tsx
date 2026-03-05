@@ -182,9 +182,6 @@ const WorkspacePreviewContent = ({
                     {workspace.views.configuration?.themes && (
                         <Themes url={workspace.views.configuration.themes} />
                     )}
-                    {workspace.views.configuration?.theme && (
-                        <Themes url={workspace.views.configuration.theme} />
-                    )}
                     {workspace.views.configuration?.styles && (
                         <Styles value={workspace.views.configuration.styles} />
                     )}

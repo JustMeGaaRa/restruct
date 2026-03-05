@@ -1,32 +1,44 @@
 import { useMemo } from "react";
-import { IElementStyle, IRelationshipStyle } from "@structurizr/dsl";
-import { useThemes } from "../containers";
 import {
-    resolveElementStyle,
-    resolveRelationshipStyle,
-} from "../utils/themeResolver";
-import { RestructDarkTheme } from "../types";
+    IElementStyle,
+    IRelationshipStyle,
+    ITag,
+    mergeStyles,
+} from "@structurizr/dsl";
+import { useThemes } from "../containers";
 
-// TODO(theme): use theme utilities from @structurizr/dsl
 export const useThemeResolvedElementStyle = (
-    tags: string[] = []
+    tags: ITag[] = []
 ): Partial<IElementStyle> => {
-    const { theme, themes, styles } = useThemes();
+    const { defaultTheme, themes, styles: inlineStyles } = useThemes();
 
     return useMemo(() => {
-        // Fallback to RestructDarkTheme if not provided
-        const defaultTheme = theme ?? RestructDarkTheme;
-        return resolveElementStyle(tags, defaultTheme, themes, styles);
-    }, [tags, theme, themes, styles]);
+        const styleCollection = [
+            defaultTheme.elements,
+            ...themes.map((t) => t.elements),
+            inlineStyles?.elements ?? [],
+        ];
+        return styleCollection.reduce(
+            (acc, styles) => mergeStyles(acc, styles, tags),
+            {} as Partial<IElementStyle>
+        );
+    }, [tags, defaultTheme, themes, inlineStyles]);
 };
 
 export const useThemeResolvedRelationshipStyle = (
-    tags: string[] = []
+    tags: ITag[] = []
 ): Partial<IRelationshipStyle> => {
-    const { theme, themes, styles } = useThemes();
+    const { defaultTheme, themes, styles: inlineStyles } = useThemes();
 
     return useMemo(() => {
-        const defaultTheme = theme ?? RestructDarkTheme;
-        return resolveRelationshipStyle(tags, defaultTheme, themes, styles);
-    }, [tags, theme, themes, styles]);
+        const styleCollection = [
+            defaultTheme.relationships,
+            ...themes.map((t) => t.relationships),
+            inlineStyles?.relationships ?? [],
+        ];
+        return styleCollection.reduce(
+            (acc, styles) => mergeStyles(acc, styles, tags),
+            {} as Partial<IRelationshipStyle>
+        );
+    }, [tags, defaultTheme, themes, inlineStyles]);
 };

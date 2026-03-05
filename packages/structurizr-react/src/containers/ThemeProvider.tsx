@@ -5,27 +5,26 @@ import {
     FC,
     PropsWithChildren,
     SetStateAction,
-    useCallback,
     useContext,
     useState,
 } from "react";
 import { RestructDarkTheme } from "../types";
 
 export const ThemesContext = createContext<{
-    theme?: ITheme | null;
+    defaultTheme: ITheme;
     styles?: Pick<ITheme, "elements" | "relationships">;
     themes: Array<ITheme>;
-    setTheme: Dispatch<SetStateAction<ITheme | undefined>>;
+    setDefaultTheme: Dispatch<SetStateAction<ITheme>>;
     setStyles: Dispatch<
         SetStateAction<Pick<ITheme, "elements" | "relationships"> | undefined>
     >;
     setThemes: Dispatch<SetStateAction<Array<ITheme>>>;
 }>({
-    theme: undefined,
+    defaultTheme: RestructDarkTheme,
     styles: undefined,
     themes: [],
-    setTheme: () => {
-        console.debug("Themes Context: dummy setTheme");
+    setDefaultTheme: () => {
+        console.debug("Themes Context: dummy setDefaultTheme");
     },
     setStyles: () => {
         console.debug("Themes Context: dummy setStyles");
@@ -37,12 +36,10 @@ export const ThemesContext = createContext<{
 
 export const ThemeProvider: FC<
     PropsWithChildren<{
-        theme?: ITheme;
+        defaultTheme: ITheme;
     }>
-> = ({ children, theme: originalTheme }) => {
-    const [theme, setTheme] = useState<ITheme | undefined>(
-        originalTheme ?? RestructDarkTheme
-    );
+> = ({ children, defaultTheme }) => {
+    const [theme, setTheme] = useState<ITheme>(defaultTheme);
     const [styles, setStyles] = useState<
         Pick<ITheme, "elements" | "relationships"> | undefined
     >();
@@ -51,10 +48,10 @@ export const ThemeProvider: FC<
     return (
         <ThemesContext.Provider
             value={{
-                theme,
+                defaultTheme: theme,
                 styles,
                 themes,
-                setTheme,
+                setDefaultTheme: setTheme,
                 setStyles,
                 setThemes,
             }}
@@ -65,25 +62,14 @@ export const ThemeProvider: FC<
 };
 
 export const useThemes = () => {
-    const { theme, styles, themes, setThemes, setStyles } =
+    const { defaultTheme, styles, themes, setThemes, setStyles } =
         useContext(ThemesContext);
 
-    const applyStyles = useCallback(
-        (styles: Pick<ITheme, "elements" | "relationships">) => {
-            setStyles(styles);
-        },
-        [setStyles]
-    );
-
-    const applyThemes = useCallback(
-        (themes: Array<ITheme>) => {
-            setThemes(themes);
-        },
-        [setThemes]
-    );
+    const applyStyles = setStyles;
+    const applyThemes = setThemes;
 
     return {
-        theme,
+        defaultTheme,
         styles,
         themes,
         applyStyles,

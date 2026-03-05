@@ -4,7 +4,7 @@ import { Url } from "./Url";
 import { Color } from "./Color";
 import { LineStyle } from "./LineStyle";
 
-export interface IElementStyle {
+export interface IElementStyle extends Record<string, unknown> {
     background: Color;
     border: LineStyle;
     color: Color;

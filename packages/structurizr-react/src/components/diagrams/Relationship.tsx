@@ -24,12 +24,7 @@ export const Relationship: FC<{ value: IRelationship }> = ({ value }) => {
         );
     }, []);
 
-    const tags =
-        value.tags && value.tags.length > 0
-            ? value.tags.map((t) => t.name)
-            : ["Relationship"];
-    const resolvedStyle = useThemeResolvedRelationshipStyle(tags);
-
+    const resolvedStyle = useThemeResolvedRelationshipStyle(value.tags);
     const color = resolvedStyle.color ?? "#E8E8E8";
     const thickness = resolvedStyle.thickness ?? 2;
 

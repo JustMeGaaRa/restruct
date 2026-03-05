@@ -8,14 +8,12 @@ export class Configuration implements ISupportSnapshot<IConfiguration> {
             elements: [],
             relationships: [],
         };
-        this.theme = params.theme;
         this.themes = params.themes ?? [];
         // this.branding = params.branding;
         // this.terminology = params.terminology;
     }
 
     public readonly styles: IStyles;
-    public readonly theme?: Url;
     public readonly themes: Url[];
     public readonly branding?: IBranding;
     public readonly terminology?: Terminology;
@@ -23,7 +21,6 @@ export class Configuration implements ISupportSnapshot<IConfiguration> {
     public toSnapshot(): IConfiguration {
         return {
             styles: this.styles,
-            theme: this.theme,
             themes: this.themes,
             // branding: this.branding,
             // terminology: this.terminology

@@ -32,18 +32,12 @@ export const Element: FC<
     borderWidth = 2,
     padding = 4,
 }) => {
-    // TODO(theme): use theme utilities here
-    const tags =
-        value.tags && value.tags.length > 0
-            ? value.tags.map((t) => t.name)
-            : ["Element", value.type];
-    const resolvedStyle = useThemeResolvedElementStyle(tags);
-
+    const resolvedStyle = useThemeResolvedElementStyle(value.tags);
     const backgroundColor = resolvedStyle.background ?? "#222425";
     const borderColor = resolvedStyle.stroke ?? "#535354";
     const resolvedBorderWidth = resolvedStyle.strokeWidth ?? borderWidth;
     const textColor = resolvedStyle.color ?? "#E8E8E8";
-    const typeColor = "#A1A2A3"; // Typically derived or less prominent color
+    const typeColor = "#A1A2A3";
     const techColor = "#535354";
 
     return (

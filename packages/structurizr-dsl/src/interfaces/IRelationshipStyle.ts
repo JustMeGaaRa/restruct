@@ -3,7 +3,7 @@ import { LineStyle } from "./LineStyle";
 import { Properties } from "./Properties";
 import { RoutingStyle } from "./RoutingStyle";
 
-export interface IRelationshipStyle {
+export interface IRelationshipStyle extends Record<string, unknown> {
     color: Color;
     fontSize: number;
     opacity: number;

@@ -24,5 +24,6 @@ export * from "./SystemContextView";
 export * from "./SystemLandscapeView";
 export * from "./Model";
 export * from "./Views";
+export * from "./Theme";
 export * from "./Workspace";
 export * from "./StructurizrDefaultTheme";
