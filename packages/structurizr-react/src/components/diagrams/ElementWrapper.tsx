@@ -3,30 +3,43 @@ import { FC, PropsWithChildren } from "react";
 import { Element } from "./Element";
 import { useViewMetadata } from "../../containers";
 import { Connector } from "@graph/svg";
+import {
+    ELEMENT_MODEL_DEFAULT_HEIGHT,
+    ELEMENT_MODEL_DEFAULT_WIDTH,
+} from "../../types";
+import { safeBoundingBox } from "../../utils";
 
-// TODO(parameters): pass height and width from metadata but make height 70 for this view
 export const ElementWrapper: FC<
     PropsWithChildren<{
         value: IElement;
     }>
 > = ({ value }) => {
     const { getElementMetadataById } = useViewMetadata();
-    const dimensions = getElementMetadataById(value.identifier);
-    const { height = 100, width = 200 } = dimensions ?? {
-        height: 100,
-        width: 200,
-    };
+    const bbox = getElementMetadataById(value.identifier);
+    const { x, y, width } = safeBoundingBox(
+        bbox,
+        ELEMENT_MODEL_DEFAULT_HEIGHT,
+        ELEMENT_MODEL_DEFAULT_WIDTH
+    );
 
     return (
         <Element
             className={"structurizr__element-model"}
             value={value}
-            position={dimensions}
-            height={70}
+            position={{ x, y }}
+            height={ELEMENT_MODEL_DEFAULT_HEIGHT}
             width={width}
         >
-            <Connector height={70} width={width} placement={"top-center"} />
-            <Connector height={70} width={width} placement={"bottom-center"} />
+            <Connector
+                height={ELEMENT_MODEL_DEFAULT_HEIGHT}
+                width={width}
+                placement={"top-center"}
+            />
+            <Connector
+                height={ELEMENT_MODEL_DEFAULT_HEIGHT}
+                width={width}
+                placement={"bottom-center"}
+            />
         </Element>
     );
 };

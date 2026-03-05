@@ -1,5 +1,6 @@
 import { FC, PropsWithChildren } from "react";
 import { Node, Text } from "@graph/svg";
+import { ITag } from "@structurizr/dsl";
 import { useThemeResolvedElementStyle } from "../../hooks";
 
 export interface IElement {
@@ -8,17 +9,16 @@ export interface IElement {
     name: string;
     description?: string;
     technology?: string[];
-    tags?: { name: string }[];
+    tags?: ITag[];
 }
 
-// TODO(parameters): make position, height and width required
 export const Element: FC<
     PropsWithChildren<{
         value: IElement;
         className?: string;
-        position?: { x: number; y: number };
-        height?: number;
-        width?: number;
+        position: { x: number; y: number };
+        height: number;
+        width: number;
         borderWidth?: number;
         padding?: number;
     }>
@@ -26,13 +26,13 @@ export const Element: FC<
     children,
     value,
     className,
-    position = { x: 0, y: 0 },
-    height = 200,
-    width = 200,
+    position,
+    height,
+    width,
     borderWidth = 2,
     padding = 4,
 }) => {
-    // Determine tags. If value has tags, use them; otherwise, default to "Element" and the type.
+    // TODO(theme): use theme utilities here
     const tags =
         value.tags && value.tags.length > 0
             ? value.tags.map((t) => t.name)

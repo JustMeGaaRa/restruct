@@ -2,6 +2,8 @@ import { FC } from "react";
 import { Connector } from "@graph/svg";
 import { useViewMetadata } from "../../containers";
 import { Element } from "./Element";
+import { ELEMENT_DEFAULT_HEIGHT, ELEMENT_DEFAULT_WIDTH } from "../../types";
+import { safeBoundingBox } from "../../utils";
 
 export interface IInfrastructureNode {
     type: "Infrastructure Node";
@@ -15,17 +17,17 @@ export const InfrastructureNode: FC<{
     value: IInfrastructureNode;
 }> = ({ value }) => {
     const { getElementMetadataById } = useViewMetadata();
-    const dimensions = getElementMetadataById(value.identifier);
-    // TODO(parameters): pass these default values to the Element component directly
-    const { height = 200, width = 200 } = dimensions ?? {
-        height: 200,
-        width: 200,
-    };
+    const bbox = getElementMetadataById(value.identifier);
+    const { x, y, height, width } = safeBoundingBox(
+        bbox,
+        ELEMENT_DEFAULT_HEIGHT,
+        ELEMENT_DEFAULT_WIDTH
+    );
 
     return (
         <Element
             className={"structurizr__element-infrastructure-node"}
-            position={dimensions}
+            position={{ x, y }}
             value={value}
             height={height}
             width={width}

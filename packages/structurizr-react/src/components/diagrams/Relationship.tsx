@@ -1,6 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { Edge, MarkerType, Text } from "@graph/svg";
+import { ITag } from "@structurizr/dsl";
 import { useViewMetadata } from "../../containers";
 import { useThemeResolvedRelationshipStyle } from "../../hooks";
 
@@ -9,7 +10,7 @@ export interface IRelationship {
     sourceIdentifier: string;
     targetIdentifier: string;
     description?: string;
-    tags?: { name: string }[];
+    tags?: ITag[];
 }
 
 export const Relationship: FC<{ value: IRelationship }> = ({ value }) => {

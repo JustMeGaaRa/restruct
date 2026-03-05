@@ -3,6 +3,8 @@ import { Boundary } from "./Boundary";
 import { Connector } from "@graph/svg";
 import { useViewMetadata } from "../../containers";
 import { Element } from "./Element";
+import { safeBoundingBox } from "../../utils";
+import { ELEMENT_DEFAULT_HEIGHT, ELEMENT_DEFAULT_WIDTH } from "../../types";
 
 export interface ISoftwareSystem {
     type: "Software System";
@@ -11,16 +13,22 @@ export interface ISoftwareSystem {
     description?: string;
 }
 
-export const SoftwareSystem: FC<PropsWithChildren<{ value: ISoftwareSystem }>> = ({ children, value }) => {
+export const SoftwareSystem: FC<
+    PropsWithChildren<{ value: ISoftwareSystem }>
+> = ({ children, value }) => {
     const { getElementMetadataById } = useViewMetadata();
-    const dimensions = getElementMetadataById(value.identifier);
-    const { height = 200, width = 200 } = dimensions ?? { height: 200, width: 200 };
+    const bbox = getElementMetadataById(value.identifier);
+    const { x, y, height, width } = safeBoundingBox(
+        bbox,
+        ELEMENT_DEFAULT_HEIGHT,
+        ELEMENT_DEFAULT_WIDTH
+    );
 
     return Children.count(children) > 0 ? (
         <Boundary
             className={"structurizr__boundary-system"}
             value={value}
-            position={dimensions}
+            position={{ x, y }}
             height={height}
             width={width}
         >
@@ -30,18 +38,38 @@ export const SoftwareSystem: FC<PropsWithChildren<{ value: ISoftwareSystem }>> =
         <Element
             className={"structurizr__element-system"}
             value={value}
-            position={dimensions}
+            position={{ x, y }}
             height={height}
             width={width}
         >
             <Connector height={height} width={width} placement={"top-left"} />
             <Connector height={height} width={width} placement={"top-center"} />
             <Connector height={height} width={width} placement={"top-right"} />
-            <Connector height={height} width={width} placement={"middle-left"} />
-            <Connector height={height} width={width} placement={"middle-right"} />
-            <Connector height={height} width={width} placement={"bottom-left"} />
-            <Connector height={height} width={width} placement={"bottom-center"} />
-            <Connector height={height} width={width} placement={"bottom-right"} />
+            <Connector
+                height={height}
+                width={width}
+                placement={"middle-left"}
+            />
+            <Connector
+                height={height}
+                width={width}
+                placement={"middle-right"}
+            />
+            <Connector
+                height={height}
+                width={width}
+                placement={"bottom-left"}
+            />
+            <Connector
+                height={height}
+                width={width}
+                placement={"bottom-center"}
+            />
+            <Connector
+                height={height}
+                width={width}
+                placement={"bottom-right"}
+            />
         </Element>
     );
 };

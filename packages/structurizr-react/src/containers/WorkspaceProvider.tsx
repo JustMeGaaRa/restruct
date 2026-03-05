@@ -68,6 +68,7 @@ export const useWorkspace = () => {
 export const useElementById = () => {
     const { workspace } = useWorkspace();
 
+    // TODO(workspace): replace with existing utilities
     const elementsById = useMemo(() => {
         const map = new Map<string, WorkspaceElement>();
         if (!workspace) return map;

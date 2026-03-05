@@ -6,6 +6,10 @@ import {
     useState,
 } from "react";
 import { GroupNode, Text } from "@graph/svg";
+import {
+    ELEMENT_BOUNDARY_DEFAULT_HEIGHT,
+    ELEMENT_BOUNDARY_DEFAULT_WIDTH,
+} from "../../types";
 
 export interface IBoundary {
     type: string;
@@ -17,7 +21,7 @@ export const Boundary: FC<
     PropsWithChildren<{
         value: IBoundary;
         className?: string;
-        position?: { x: number; y: number };
+        position: { x: number; y: number };
         height?: number;
         width?: number;
         borderWidth?: number;
@@ -32,8 +36,10 @@ export const Boundary: FC<
     padding = 16,
 }) => {
     const groupRef = useRef<SVGGElement>(null);
-    // TODO(parameters): use dimensions from constants or from parameters
-    const [size, setSize] = useState({ height: 200, width: 200 });
+    const [size, setSize] = useState({
+        height: ELEMENT_BOUNDARY_DEFAULT_HEIGHT,
+        width: ELEMENT_BOUNDARY_DEFAULT_WIDTH,
+    });
 
     useLayoutEffect(() => {
         if (groupRef.current) {

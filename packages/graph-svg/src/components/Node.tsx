@@ -2,14 +2,13 @@ import { FC, PropsWithChildren } from "react";
 import { cssCompose } from "../utils";
 import { Box } from "./Box";
 
-// TODO(parameters): make position, height and width required
 export const Node: FC<
     PropsWithChildren<{
         id?: string;
         className?: string;
-        position?: { x: number; y: number };
-        height?: number;
-        width?: number;
+        position: { x: number; y: number };
+        height: number;
+        width: number;
         backgroundColor?: string;
         borderColor?: string;
         borderWidth?: number;
@@ -20,9 +19,9 @@ export const Node: FC<
     children,
     id,
     className,
-    position = { x: 0, y: 0 },
-    height = 200,
-    width = 200,
+    position,
+    height,
+    width,
     backgroundColor = "#222425",
     borderColor = "#535354",
     borderWidth = 2,

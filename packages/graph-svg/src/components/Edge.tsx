@@ -30,9 +30,6 @@ function getPlacement(
     return source.y > target.y ? "top-center" : "bottom-center";
 }
 
-// TODO(parameters): don't use the default dimensions here as they are passed as parameters in other scope
-const defaultDimensions = { x: 0, y: 0, height: 200, width: 200 };
-
 export const Edge: FC<
     PropsWithChildren<{
         id: string;
@@ -58,7 +55,6 @@ export const Edge: FC<
     const [path, setPath] = useState<string>("");
     const [labelCenter, setLabelCenter] = useState({ x: 0, y: 0 });
 
-    // TODO(edge): fix edge rerender when source and target element dimensions change
     useLayoutEffect(() => {
         const bendingPoints = points ?? [];
 
@@ -67,55 +63,69 @@ export const Edge: FC<
 
         if (!sourceNode || !targetNode) return;
 
-        const sourceCenter = getAbsoluteCenterOrDefault(
-            sourceNode,
-            defaultDimensions
-        );
-        const targetCenter = getAbsoluteCenterOrDefault(
-            targetNode,
-            defaultDimensions
-        );
-        const sourceConnectorPlacement = getPlacement(
-            sourceCenter,
-            targetCenter
-        );
-        const targetConnectorPlacement = getPlacement(
-            targetCenter,
-            sourceCenter
-        );
-        const sourceConnector = getSvgGraphicsElementByClassName(
-            sourceNode,
-            sourceConnectorPlacement
-        );
-        const targetConnector = getSvgGraphicsElementByClassName(
-            targetNode,
-            targetConnectorPlacement
-        );
-
-        if (!sourceConnector || !targetConnector) return;
-
-        const sourceConnectorCenter = getAbsoluteCenterOrDefault(
-            sourceConnector,
-            defaultDimensions
-        );
-        const targetConnectorCenter = getAbsoluteCenterOrDefault(
-            targetConnector,
-            defaultDimensions
-        );
-
-        const labelCenter = {
-            x: (sourceConnectorCenter.x + targetConnectorCenter.x) / 2,
-            y: (sourceConnectorCenter.y + targetConnectorCenter.y) / 2,
-        };
-        const path = bendingPoints
-            .concat(targetConnectorCenter)
-            .reduce(
-                (path, point) => `${path} ${point.x},${point.y}`,
-                `${sourceConnectorCenter.x},${sourceConnectorCenter.y}`
+        function recalculate() {
+            const sourceCenter = getAbsoluteCenterOrDefault(
+                sourceNode!,
+                sourceNode!.getBBox()
+            );
+            const targetCenter = getAbsoluteCenterOrDefault(
+                targetNode!,
+                targetNode!.getBBox()
+            );
+            const sourceConnectorPlacement = getPlacement(
+                sourceCenter,
+                targetCenter
+            );
+            const targetConnectorPlacement = getPlacement(
+                targetCenter,
+                sourceCenter
+            );
+            const sourceConnector = getSvgGraphicsElementByClassName(
+                sourceNode!,
+                sourceConnectorPlacement
+            );
+            const targetConnector = getSvgGraphicsElementByClassName(
+                targetNode!,
+                targetConnectorPlacement
             );
 
-        setPath(path);
-        setLabelCenter(labelCenter);
+            if (!sourceConnector || !targetConnector) return;
+
+            const sourceConnectorCenter = getAbsoluteCenterOrDefault(
+                sourceConnector,
+                sourceConnector.getBBox()
+            );
+            const targetConnectorCenter = getAbsoluteCenterOrDefault(
+                targetConnector,
+                targetConnector.getBBox()
+            );
+
+            const labelCenter = {
+                x: (sourceConnectorCenter.x + targetConnectorCenter.x) / 2,
+                y: (sourceConnectorCenter.y + targetConnectorCenter.y) / 2,
+            };
+            const path = bendingPoints
+                .concat(targetConnectorCenter)
+                .reduce(
+                    (path, point) => `${path} ${point.x},${point.y}`,
+                    `${sourceConnectorCenter.x},${sourceConnectorCenter.y}`
+                );
+
+            setPath(path);
+            setLabelCenter(labelCenter);
+        }
+
+        recalculate();
+
+        const observer = new MutationObserver(recalculate);
+        const observerConfig = {
+            attributes: true,
+            attributeFilter: ["transform"],
+        };
+        observer.observe(sourceNode, observerConfig);
+        observer.observe(targetNode, observerConfig);
+
+        return () => observer.disconnect();
     }, [id, sourceNodeId, targetNodeId, points]);
 
     return (

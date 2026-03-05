@@ -2,6 +2,8 @@ import { Connector } from "@graph/svg";
 import { FC } from "react";
 import { Element } from "./Element";
 import { useViewMetadata, useElementById } from "../../containers";
+import { ELEMENT_DEFAULT_HEIGHT, ELEMENT_DEFAULT_WIDTH } from "../../types";
+import { safeBoundingBox } from "../../utils";
 
 export interface IContainerInstance {
     type: "Container Instance";
@@ -13,11 +15,12 @@ export const ContainerInstance: FC<{
     value: IContainerInstance;
 }> = ({ value }) => {
     const { getElementMetadataById } = useViewMetadata();
-    const dimensions = getElementMetadataById(value.identifier);
-    const { height = 200, width = 200 } = dimensions ?? {
-        height: 200,
-        width: 200,
-    };
+    const bbox = getElementMetadataById(value.identifier);
+    const { x, y, height, width } = safeBoundingBox(
+        bbox,
+        ELEMENT_DEFAULT_HEIGHT,
+        ELEMENT_DEFAULT_WIDTH
+    );
     const { getContainerById } = useElementById();
     const container = getContainerById(value.containerIdentifier);
 
@@ -27,7 +30,7 @@ export const ContainerInstance: FC<{
         <Element
             className={"structurizr__element-container-instance"}
             value={container}
-            position={dimensions}
+            position={{ x, y }}
             height={height}
             width={width}
         >

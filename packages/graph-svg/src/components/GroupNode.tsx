@@ -8,9 +8,9 @@ export const GroupNode = forwardRef<
     PropsWithChildren<{
         id?: string;
         className?: string;
-        position?: { x: number; y: number };
-        height?: number;
-        width?: number;
+        position: { x: number; y: number };
+        height: number;
+        width: number;
         backgroundColor?: string;
         borderColor?: string;
         borderDash?: boolean;
@@ -23,7 +23,7 @@ export const GroupNode = forwardRef<
             children,
             id,
             className,
-            position = { x: 0, y: 0 },
+            position,
             height,
             width,
             backgroundColor = "#161819",

@@ -15,7 +15,6 @@ export const Connector: FC<{
     height: number;
     width: number;
 }> = ({ placement, height, width }) => {
-    // TODO(parameters): make height and width as props, and current props use from provider
     const connectorHeight = 5;
     const connectorWidth = 5;
 

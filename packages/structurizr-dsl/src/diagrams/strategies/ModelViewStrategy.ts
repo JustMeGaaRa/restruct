@@ -1,28 +1,12 @@
-import {
-    IContainer,
-    IComponent,
-    IWorkspace,
-    RelationshipType,
-    IPerson,
-    ISoftwareSystem,
-} from "../../interfaces";
+import { IWorkspace, RelationshipType } from "../../interfaces";
 import { IElementVisitor, ISupportElementVisitor } from "../../shared";
 
-export class ModelViewStrategy
-    implements
-        ISupportElementVisitor<
-            ISoftwareSystem | IContainer | IComponent | IPerson
-        >
-{
+export class ModelViewStrategy implements ISupportElementVisitor<unknown> {
     constructor(private workspace: IWorkspace) {}
 
     public static PlaceholderModelWorkspaceId = "workspace";
 
-    accept(
-        visitor: IElementVisitor<
-            ISoftwareSystem | IContainer | IComponent | IPerson
-        >
-    ): void {
+    accept(visitor: IElementVisitor<unknown>): void {
         const visitedWorkspace = visitor.visitWorkspace?.(this.workspace);
 
         const visitedGroups = this.workspace.model.groups

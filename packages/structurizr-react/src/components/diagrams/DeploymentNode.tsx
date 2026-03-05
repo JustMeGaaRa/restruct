@@ -7,6 +7,11 @@ import {
 } from "react";
 import { GroupNode, Text } from "@graph/svg";
 import { useViewMetadata } from "../../containers";
+import {
+    ELEMENT_DEPLOYMENT_NODE_DEFAULT_HEIGHT,
+    ELEMENT_DEPLOYMENT_NODE_DEFAULT_WIDTH,
+} from "../../types";
+import { safeBoundingBox } from "../../utils";
 
 export interface IDeploymentNode {
     type: "Deployment Node";
@@ -24,25 +29,32 @@ export const DeploymentNode: FC<
     }>
 > = ({ children, value, borderWidth = 2, padding = 16 }) => {
     const { getElementMetadataById } = useViewMetadata();
-    const dimensions = getElementMetadataById(value.identifier);
+    const bbox = getElementMetadataById(value.identifier);
+    const { x, y } = safeBoundingBox(
+        bbox,
+        ELEMENT_DEPLOYMENT_NODE_DEFAULT_HEIGHT,
+        ELEMENT_DEPLOYMENT_NODE_DEFAULT_WIDTH
+    );
 
     const groupRef = useRef<SVGGElement>(null);
-    // TODO(parameters): use dimensions from constants or from parameters
-    const [size, setSize] = useState({ height: 350, width: 300 });
+    const [size, setSize] = useState({
+        height: ELEMENT_DEPLOYMENT_NODE_DEFAULT_HEIGHT,
+        width: ELEMENT_DEPLOYMENT_NODE_DEFAULT_WIDTH,
+    });
 
     useLayoutEffect(() => {
         if (groupRef.current) {
             const { height, width } = groupRef.current.getBBox();
             setSize({ height, width });
         }
-    }, [dimensions, children]);
+    }, [bbox, children]);
 
     return (
         <GroupNode
             ref={groupRef}
             id={value.identifier}
             className={"structurizr__element-deployment-node"}
-            position={dimensions}
+            position={{ x, y }}
             height={size.height}
             width={size.width}
             backgroundColor={"none"}

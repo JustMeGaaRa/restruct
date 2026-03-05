@@ -2,6 +2,8 @@ import { Connector } from "@graph/svg";
 import { FC } from "react";
 import { Element } from "./Element";
 import { useViewMetadata, useElementById } from "../../containers";
+import { safeBoundingBox } from "../../utils";
+import { ELEMENT_DEFAULT_HEIGHT, ELEMENT_DEFAULT_WIDTH } from "../../types";
 
 export interface ISoftwareSystemInstance {
     type: "Software System Instance";
@@ -13,11 +15,12 @@ export const SoftwareSystemInstance: FC<{
     value: ISoftwareSystemInstance;
 }> = ({ value }) => {
     const { getElementMetadataById } = useViewMetadata();
-    const dimensions = getElementMetadataById(value.identifier);
-    const { height = 200, width = 200 } = dimensions ?? {
-        height: 200,
-        width: 200,
-    };
+    const bbox = getElementMetadataById(value.identifier);
+    const { x, y, height, width } = safeBoundingBox(
+        bbox,
+        ELEMENT_DEFAULT_HEIGHT,
+        ELEMENT_DEFAULT_WIDTH
+    );
     const { getSoftwareSystemById } = useElementById();
     const softwareSystem = getSoftwareSystemById(
         value.softwareSystemIdentifier
@@ -29,7 +32,7 @@ export const SoftwareSystemInstance: FC<{
         <Element
             className={"structurizr__element-system-instance"}
             value={softwareSystem}
-            position={dimensions}
+            position={{ x, y }}
             height={height}
             width={width}
         >

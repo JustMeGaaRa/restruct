@@ -66,18 +66,14 @@ export const useViewport = () => {
         useContext(ViewportContext);
 
     const getBounds = useCallback(() => {
-        const contentElement = document
-            .getElementsByClassName("graph__viewport-content")
-            .item(0) as SVGGraphicsElement;
+        const contentElement = getViewportContentNode();
         if (!contentElement) throw new Error("Content element not found");
         return contentElement.getBBox();
     }, []);
 
     const fitBounds = useCallback(
         (bounds: { x: number; y: number; width: number; height: number }) => {
-            const svgElement = document
-                .getElementsByClassName("graph__viewport")
-                .item(0) as SVGSVGElement;
+            const svgElement = getViewportNode();
             if (!svgElement) return;
 
             const { width: viewportWidth, height: viewportHeight } =
@@ -124,9 +120,7 @@ export const useViewport = () => {
     );
 
     const zoomIn = useCallback(() => {
-        const svgElement = document
-            .getElementsByClassName("graph__viewport")
-            .item(0) as SVGSVGElement;
+        const svgElement = getViewportNode();
         if (!svgElement) return;
 
         const svgDimensions = svgElement.getBoundingClientRect();
@@ -148,9 +142,7 @@ export const useViewport = () => {
     }, [zoom, setZoom, setViewbox, maxZoom]);
 
     const zoomOut = useCallback(() => {
-        const svgElement = document
-            .getElementsByClassName("graph__viewport")
-            .item(0) as SVGSVGElement;
+        const svgElement = getViewportNode();
         if (!svgElement) return;
 
         const svgDimensions = svgElement.getBoundingClientRect();
@@ -186,3 +178,15 @@ export const useViewport = () => {
         zoomOut,
     };
 };
+
+function getViewportContentNode() {
+    return document
+        .getElementsByClassName("graph__viewport-content")
+        .item(0) as SVGGraphicsElement;
+}
+
+function getViewportNode() {
+    return document
+        .getElementsByClassName("graph__viewport")
+        .item(0) as SVGSVGElement;
+}
