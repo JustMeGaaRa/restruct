@@ -28,7 +28,7 @@ export const Group: FC<
 > = ({ children, value, borderWidth = 2, padding = 16 }) => {
     const { getElementMetadataById } = useViewMetadata();
     const bbox = getElementMetadataById(value.identifier);
-    const { x, y } = safeBoundingBox(
+    const { x, y, width, height } = safeBoundingBox(
         bbox,
         ELEMENT_BOUNDARY_DEFAULT_HEIGHT,
         ELEMENT_BOUNDARY_DEFAULT_WIDTH
@@ -53,31 +53,31 @@ export const Group: FC<
             id={value.identifier}
             className={"structurizr__element-group"}
             position={{ x, y }}
-            height={size.height}
-            width={size.width}
+            height={height ?? size.height}
+            width={width ?? size.width}
             backgroundColor={"none"}
             borderColor={"#535354"}
             borderDash={false}
         >
             <Text
                 x={borderWidth + padding}
-                y={size.height - borderWidth - padding - 16}
+                y={(height ?? size.height) - borderWidth - padding - 16}
                 fontSize={14}
                 fontFamily={"Inter"}
                 fill={"#E8E8E8"}
                 style={{ whiteSpace: "pre" }}
-                width={size.width - padding * 2 - borderWidth * 2}
+                width={(width ?? size.width) - padding * 2 - borderWidth * 2}
             >
                 {value.name}
             </Text>
             <Text
                 x={borderWidth + padding}
-                y={size.height - borderWidth - padding}
+                y={(height ?? size.height) - borderWidth - padding}
                 fontSize={11}
                 fontFamily={"Inter"}
                 fill={"#A1A2A3"}
                 style={{ whiteSpace: "pre" }}
-                width={size.width - padding * 2 - borderWidth * 2}
+                width={(width ?? size.width) - padding * 2 - borderWidth * 2}
             >
                 {value.type}
             </Text>

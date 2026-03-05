@@ -32,6 +32,8 @@ export const Boundary: FC<
     value,
     className,
     position,
+    height,
+    width,
     borderWidth = 2,
     padding = 16,
 }) => {
@@ -54,28 +56,28 @@ export const Boundary: FC<
             id={value.identifier}
             className={className}
             position={position}
-            height={size.height}
-            width={size.width}
+            height={height ?? size.height}
+            width={width ?? size.width}
         >
             <Text
                 x={borderWidth + padding}
-                y={size.height - borderWidth - padding - 16}
+                y={(height ?? size.height) - borderWidth - padding - 16}
                 fontSize={14}
                 fontFamily={"Inter"}
                 fill={"#E8E8E8"}
                 style={{ whiteSpace: "pre" }}
-                width={size.width - padding * 2 - borderWidth * 2}
+                width={(width ?? size.width) - padding * 2 - borderWidth * 2}
             >
                 {value.name}
             </Text>
             <Text
                 x={borderWidth + padding}
-                y={size.height - borderWidth - padding}
+                y={(height ?? size.height) - borderWidth - padding}
                 fontSize={11}
                 fontFamily={"Inter"}
                 fill={"#A1A2A3"}
                 style={{ whiteSpace: "pre" }}
-                width={size.width - padding * 2 - borderWidth * 2}
+                width={(width ?? size.width) - padding * 2 - borderWidth * 2}
             >
                 {value.type}
             </Text>

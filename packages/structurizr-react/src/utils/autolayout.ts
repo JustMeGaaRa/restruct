@@ -224,13 +224,19 @@ function buildGraphFromDeploymentDiagram(
     diagram: IDeploymentDiagram,
     graphAdapter: GraphAdapter<IElement, IRelationship, IViewMetadata>
 ) {
-    // TODO(deployment): consider adding the environment as the parent node
-    diagram.scope.deploymentNodes.map((node) => {
+    diagram.scope.deploymentNodes.forEach((node) => {
         buildGraphFromDeploymentNode(graphAdapter, node);
     });
 
-    // TODO(deployment): evaluate the need to process supporting elements here
-    diagram.relationships.map((relationship) => {
+    diagram.supportingElements.forEach((element) => {
+        graphAdapter.setNode(element.identifier, {
+            id: element.identifier,
+            ...defaultSize,
+            ...defaultPosition,
+        });
+    });
+
+    diagram.relationships.forEach((relationship) => {
         graphAdapter.setEdge(relationship.identifier, {
             id: relationship.identifier,
             source: relationship.sourceIdentifier,
@@ -249,7 +255,7 @@ function buildGraphFromDeploymentNode(
         ...defaultPosition,
     });
 
-    deploymentNode.softwareSystemInstances.map((instance) => {
+    deploymentNode.softwareSystemInstances.forEach((instance) => {
         graphAdapter.setNode(instance.identifier, {
             id: instance.identifier,
             parent: deploymentNode.identifier,
@@ -259,7 +265,7 @@ function buildGraphFromDeploymentNode(
         graphAdapter.setParent(instance.identifier, deploymentNode.identifier);
     });
 
-    deploymentNode.containerInstances.map((instance) => {
+    deploymentNode.containerInstances.forEach((instance) => {
         graphAdapter.setNode(instance.identifier, {
             id: instance.identifier,
             parent: deploymentNode.identifier,
@@ -269,17 +275,17 @@ function buildGraphFromDeploymentNode(
         graphAdapter.setParent(instance.identifier, deploymentNode.identifier);
     });
 
-    deploymentNode.infrastructureNodes.map((node) => {
+    deploymentNode.infrastructureNodes.forEach((node) => {
         graphAdapter.setNode(node.identifier, {
             id: node.identifier,
-            parent: node.identifier,
+            parent: deploymentNode.identifier,
             ...defaultSize,
             ...defaultPosition,
         });
         graphAdapter.setParent(node.identifier, deploymentNode.identifier);
     });
 
-    deploymentNode.deploymentNodes.flatMap((node) => {
+    deploymentNode.deploymentNodes.forEach((node) => {
         buildGraphFromDeploymentNode(graphAdapter, node);
         graphAdapter.setParent(node.identifier, deploymentNode.identifier);
     });
@@ -343,21 +349,25 @@ function createDiagramGraph(
     return graphAdapter;
 }
 
+import { elkjsGraph } from "./elkjs";
+
 function createLayoutAlgorithm(
-    algorithm: "cose" | "layered"
+    algorithm: "cose" | "layered" | "elkjs"
 ): GraphAdapter<IElement, IRelationship> {
     switch (algorithm) {
         case "cose":
             return cytoscapeGraph();
         case "layered":
             return dagreeGraph();
+        case "elkjs":
+            return elkjsGraph();
     }
 }
 
 export const autolayoutDiagram = (
     diagram: Diagram,
     viewType: ViewType,
-    algorithm: "cose" | "layered" = "layered"
+    algorithm: "cose" | "layered" | "elkjs" = "elkjs"
 ): Promise<IViewMetadata> => {
     return createDiagramGraph(
         viewType,

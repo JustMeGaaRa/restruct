@@ -34,7 +34,9 @@ export const ModelDiagram: FC<
             const diagram = createModelDiagram(workspace);
             setDiagram(diagram);
 
-            autolayoutDiagram(diagram, ViewType.Model).then(setMetadata);
+            autolayoutDiagram(diagram, ViewType.Model, "layered").then(
+                setMetadata
+            );
         }
     }, [workspace, value.key]);
 

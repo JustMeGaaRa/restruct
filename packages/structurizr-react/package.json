@@ -15,7 +15,8 @@
         "@dagrejs/dagre": "^1.1.4",
         "@graph/svg": "workspace:*",
         "@structurizr/dsl": "workspace:*",
-        "cytoscape": "^3.33.1"
+        "cytoscape": "^3.33.1",
+        "elkjs": "^0.11.1"
     },
     "devDependencies": {
         "@restruct/eslint-config": "workspace:*",
