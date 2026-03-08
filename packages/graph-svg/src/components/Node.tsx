@@ -2,6 +2,8 @@ import { FC, PropsWithChildren } from "react";
 import { cssCompose } from "../utils";
 import { Box } from "./Box";
 
+const HOVER_PADDING = 36;
+
 export const Node: FC<
     PropsWithChildren<{
         id?: string;
@@ -14,6 +16,8 @@ export const Node: FC<
         borderWidth?: number;
         borderRadius?: number;
         padding?: number;
+        onMouseEnter?: React.MouseEventHandler<SVGGraphicsElement>;
+        onMouseLeave?: React.MouseEventHandler<SVGGraphicsElement>;
     }>
 > = ({
     children,
@@ -27,12 +31,16 @@ export const Node: FC<
     borderWidth = 2,
     borderRadius = 16,
     padding = 4,
+    onMouseEnter,
+    onMouseLeave,
 }) => {
     return (
         <Box
             id={id}
             className={cssCompose("structurizr__node", className)}
             position={position}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
         >
             <defs>
                 <clipPath id="clip">
@@ -46,6 +54,13 @@ export const Node: FC<
                     />
                 </clipPath>
             </defs>
+            <rect
+                x={-HOVER_PADDING}
+                y={-HOVER_PADDING}
+                width={width + HOVER_PADDING * 2}
+                height={height + HOVER_PADDING * 2}
+                fill="transparent"
+            />
             <rect
                 cursor={"pointer"}
                 height={height}

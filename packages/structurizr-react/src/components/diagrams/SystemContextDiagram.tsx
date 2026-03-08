@@ -5,6 +5,7 @@ import {
     createSystemContextDiagram,
     isPerson,
     isSoftwareSystem,
+    createDefaultSystemContextView,
 } from "@structurizr/dsl";
 import { useViewport } from "@graph/svg";
 import { FC, PropsWithChildren, useEffect, useState } from "react";
@@ -14,7 +15,7 @@ import {
     useWorkspace,
 } from "../../containers";
 import { ZoomCallback } from "../../types";
-import { createDefaultSystemContextView, autolayoutDiagram } from "../../utils";
+import { autolayoutDiagram } from "../../utils";
 import { SoftwareSystem } from "./SoftwareSystem";
 import { Relationship } from "./Relationship";
 import { Person } from "./Person";

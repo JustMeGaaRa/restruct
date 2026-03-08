@@ -4,9 +4,12 @@ import {
     IElement,
     IModel,
     ISoftwareSystem,
-    IWorkspace,
     View,
     ViewType,
+    createDefaultComponentView,
+    createDefaultContainerView,
+    createDefaultSystemContextView,
+    createDefaultSystemLandscapeView,
 } from "@structurizr/dsl";
 import {
     createContext,
@@ -18,12 +21,7 @@ import {
     useContext,
     useState,
 } from "react";
-import {
-    createDefaultComponentView,
-    createDefaultContainerView,
-    createDefaultSystemContextView,
-    createDefaultSystemLandscapeView,
-} from "../utils";
+import { useWorkspace } from "./WorkspaceProvider";
 
 export const ViewNavigationContext = createContext<{
     currentView: View | null;
@@ -49,9 +47,12 @@ export const ViewNavigationProvider: FC<PropsWithChildren> = ({ children }) => {
 
 export const useViewNavigation = () => {
     const { currentView, setCurrentView } = useContext(ViewNavigationContext);
+    const { workspace } = useWorkspace();
 
     const openView = useCallback(
-        (workspace: IWorkspace, currentView: View) => {
+        (currentView: View) => {
+            if (!workspace) return;
+
             if (currentView === undefined) {
                 const view =
                     findViewForElement(
@@ -66,7 +67,7 @@ export const useViewNavigation = () => {
                 const view =
                     findViewForElement(
                         workspace,
-                        ViewType.Container,
+                        ViewType.SystemLandscape,
                         undefined
                     ) ?? createDefaultSystemLandscapeView();
                 setCurrentView(view);
@@ -76,7 +77,7 @@ export const useViewNavigation = () => {
                 const view =
                     findViewForElement(
                         workspace,
-                        ViewType.Container,
+                        ViewType.SystemContext,
                         currentView.softwareSystemIdentifier
                     ) ??
                     createDefaultSystemContextView(
@@ -113,7 +114,9 @@ export const useViewNavigation = () => {
     );
 
     const zoomIntoElement = useCallback(
-        (workspace: IWorkspace, element: IElement) => {
+        (element: IElement) => {
+            if (!workspace) return;
+
             if (element === undefined) {
                 const view =
                     findViewForElement(
@@ -148,28 +151,49 @@ export const useViewNavigation = () => {
     );
 
     const zoomOutOfElement = useCallback(
-        (workspace: IWorkspace, element: IElement) => {
+        (element: IElement) => {
+            if (!workspace) return;
+
+            if (element?.type === ElementType.SoftwareSystem) {
+                const view =
+                    findViewForElement(
+                        workspace,
+                        ViewType.SystemLandscape,
+                        undefined
+                    ) ?? createDefaultSystemLandscapeView();
+                setCurrentView(view);
+                return;
+            }
+
             const findContainerParent = (
                 model: IModel,
                 containerId: string
             ): ISoftwareSystem | undefined => {
                 return model.softwareSystems
                     .concat(model.groups.flatMap((x) => x.softwareSystems))
-                    .find((x) =>
-                        x.containers.some((c) => c.identifier === containerId)
-                    );
+                    .find((x) => {
+                        const allContainers = [
+                            ...x.containers,
+                            ...x.groups.flatMap((g) => g.containers),
+                        ];
+                        return allContainers.some(
+                            (c) => c.identifier === containerId
+                        );
+                    });
             };
 
             // TODO(navigation): use workspace explorer to find parent
-            const parent = findContainerParent(
-                workspace.model,
-                element?.identifier
-            );
-            if (parent !== undefined) {
-                zoomIntoElement(workspace, parent as ISoftwareSystem);
+            if (element?.type === ElementType.Container) {
+                const parent = findContainerParent(
+                    workspace.model,
+                    element?.identifier
+                );
+                if (parent !== undefined) {
+                    zoomIntoElement(parent as ISoftwareSystem);
+                }
             }
         },
-        [zoomIntoElement]
+        [zoomIntoElement, workspace]
     );
 
     return {

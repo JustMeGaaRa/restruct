@@ -5,6 +5,7 @@ import {
     createSystemLandscapeDiagram,
     isPerson,
     isSoftwareSystem,
+    createDefaultSystemLandscapeView,
 } from "@structurizr/dsl";
 import { useViewport } from "@graph/svg";
 import { FC, PropsWithChildren, useEffect, useState } from "react";
@@ -14,10 +15,7 @@ import {
     useWorkspace,
 } from "../../containers";
 import { ZoomCallback } from "../../types";
-import {
-    createDefaultSystemLandscapeView,
-    autolayoutDiagram,
-} from "../../utils";
+import { autolayoutDiagram } from "../../utils";
 import { SoftwareSystem } from "./SoftwareSystem";
 import { Relationship } from "./Relationship";
 import { Person } from "./Person";
@@ -41,6 +39,7 @@ export const SystemLandscapeDiagram: FC<
         relationships: {},
     });
 
+    // TODO(diagram): consider using Suspese and use hook while building diagram to avoid UI flicker
     useEffect(() => {
         if (workspace) {
             const systemLandscapeView =

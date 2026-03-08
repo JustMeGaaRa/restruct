@@ -2,6 +2,7 @@ import { beforeAll, describe, expect, test } from "vitest";
 import {
     ISystemContextDiagram,
     IWorkspace,
+    createDefaultSystemContextView,
     createSystemContextDiagram,
     isPerson,
     isSoftwareSystem,
@@ -81,5 +82,48 @@ describe("System Context Diagram (Implied Relationships)", () => {
     test("should have 2 relationship", () => {
         expect(diagram.relationships).toBeDefined();
         expect(diagram.relationships).toHaveLength(2);
+    });
+});
+
+describe("System Context Diagram (Default View)", () => {
+    let workspace: IWorkspace;
+    let diagram: ISystemContextDiagram;
+
+    beforeAll(() => {
+        workspace = createBigBankPlcWorkspace();
+        const softwareSystemId =
+            workspace.model.groups[0]!.softwareSystems![3]!.identifier;
+        const defaultSystemContextView =
+            createDefaultSystemContextView(softwareSystemId);
+        diagram = createSystemContextDiagram(
+            workspace,
+            defaultSystemContextView
+        );
+    });
+
+    test("should create a system context diagram", () => {
+        expect(diagram).toBeDefined();
+    });
+
+    test("should have scope defined", () => {
+        expect(diagram.scope).toBeDefined();
+        expect(isSoftwareSystem(diagram.scope)).toBe(true);
+    });
+
+    test("should have supporting elements with 2 software systems", () => {
+        expect(diagram.supportingElements).toBeDefined();
+        expect(
+            diagram.supportingElements.filter(isSoftwareSystem)
+        ).toHaveLength(2);
+    });
+
+    test("should have supporting elements with 1 person", () => {
+        expect(diagram.supportingElements).toBeDefined();
+        expect(diagram.supportingElements.filter(isPerson)).toHaveLength(1);
+    });
+
+    test("should have 4 relationships", () => {
+        expect(diagram.relationships).toBeDefined();
+        expect(diagram.relationships).toHaveLength(4);
     });
 });

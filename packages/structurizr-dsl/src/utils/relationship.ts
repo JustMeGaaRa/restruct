@@ -11,14 +11,14 @@ export type Element = IPerson | ISoftwareSystem | IContainer | IComponent;
 export type ElementArray = Array<Element>;
 
 export const createRelationship = (
-    source: string,
-    target: string,
+    sourceIdentifier: string,
+    targetIdentifier: string,
     description?: string
 ) => {
     return new Relationship({
-        sourceIdentifier: source,
-        targetIdentifier: target,
-        description: description,
+        sourceIdentifier,
+        targetIdentifier,
+        description,
     }).toSnapshot();
 };
 

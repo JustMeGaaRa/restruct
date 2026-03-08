@@ -7,18 +7,18 @@ export const Box = forwardRef<
         id?: string;
         className?: string;
         position?: { x: number; y: number };
-        onMouseOver?: React.MouseEventHandler<SVGGraphicsElement>;
-        onMouseOut?: React.MouseEventHandler<SVGGraphicsElement>;
+        onMouseEnter?: React.MouseEventHandler<SVGGraphicsElement>;
+        onMouseLeave?: React.MouseEventHandler<SVGGraphicsElement>;
     }>
->(({ children, id, className, position, onMouseOver, onMouseOut }, ref) => {
+>(({ children, id, className, position, onMouseEnter, onMouseLeave }, ref) => {
     return (
         <g
             ref={ref}
             id={id}
             className={className}
             transform={`translate(${position?.x ?? 0}, ${position?.y ?? 0})`}
-            onMouseOver={onMouseOver}
-            onMouseOut={onMouseOut}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
         >
             {children}
         </g>

@@ -5,7 +5,8 @@ import {
     useRef,
     useState,
 } from "react";
-import { GroupNode, Text } from "@graph/svg";
+import { GroupNode, Text, ViewportForeignObject } from "@graph/svg";
+import { useWorkspace } from "../../containers";
 import {
     ELEMENT_BOUNDARY_DEFAULT_HEIGHT,
     ELEMENT_BOUNDARY_DEFAULT_WIDTH,
@@ -42,6 +43,8 @@ export const Boundary: FC<
         height: ELEMENT_BOUNDARY_DEFAULT_HEIGHT,
         width: ELEMENT_BOUNDARY_DEFAULT_WIDTH,
     });
+    const { renderElementOverlay } = useWorkspace();
+    const [isHovered, setIsHovered] = useState(false);
 
     useLayoutEffect(() => {
         if (groupRef.current) {
@@ -58,6 +61,8 @@ export const Boundary: FC<
             position={position}
             height={height ?? size.height}
             width={width ?? size.width}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
         >
             <Text
                 x={borderWidth + padding}
@@ -82,6 +87,24 @@ export const Boundary: FC<
                 {value.type}
             </Text>
             {children}
+            {renderElementOverlay && (
+                <ViewportForeignObject
+                    position={{ x: 0, y: 0 }}
+                    pointerEvents="auto"
+                    zIndex={100}
+                >
+                    {renderElementOverlay(
+                        value as any,
+                        {
+                            x: position.x,
+                            y: position.y,
+                            width: width ?? size.width,
+                            height: height ?? size.height,
+                        },
+                        { isHovered, isBoundary: true }
+                    )}
+                </ViewportForeignObject>
+            )}
         </GroupNode>
     );
 };

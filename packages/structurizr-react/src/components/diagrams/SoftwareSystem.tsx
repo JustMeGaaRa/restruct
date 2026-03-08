@@ -14,8 +14,8 @@ export interface ISoftwareSystem {
 }
 
 export const SoftwareSystem: FC<
-    PropsWithChildren<{ value: ISoftwareSystem }>
-> = ({ children, value }) => {
+    PropsWithChildren<{ value: ISoftwareSystem; isScope?: boolean }>
+> = ({ children, value, isScope }) => {
     const { getElementMetadataById } = useViewMetadata();
     const bbox = getElementMetadataById(value.identifier);
     const { x, y, height, width } = safeBoundingBox(
@@ -24,7 +24,7 @@ export const SoftwareSystem: FC<
         ELEMENT_DEFAULT_WIDTH
     );
 
-    return Children.count(children) > 0 ? (
+    return isScope || Children.count(children) > 0 ? (
         <Boundary
             className={"structurizr__boundary-system"}
             value={value}

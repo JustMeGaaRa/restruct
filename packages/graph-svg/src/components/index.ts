@@ -11,3 +11,4 @@ export * from "./Node";
 export * from "./Text";
 export * from "./Viewport";
 export * from "./ViewportProvider";
+export * from "./ViewportForeignObject";

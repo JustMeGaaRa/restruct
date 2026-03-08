@@ -14,10 +14,9 @@ export interface IContainer {
     technology: string[];
 }
 
-export const Container: FC<PropsWithChildren<{ value: IContainer }>> = ({
-    children,
-    value,
-}) => {
+export const Container: FC<
+    PropsWithChildren<{ value: IContainer; isScope?: boolean }>
+> = ({ children, value, isScope }) => {
     const { getElementMetadataById } = useViewMetadata();
     const bbox = getElementMetadataById(value.identifier);
     const { x, y, height, width } = safeBoundingBox(
@@ -26,7 +25,7 @@ export const Container: FC<PropsWithChildren<{ value: IContainer }>> = ({
         ELEMENT_DEFAULT_WIDTH
     );
 
-    return Children.count(children) > 0 ? (
+    return isScope || Children.count(children) > 0 ? (
         <Boundary
             className={"structurizr__boundary-container"}
             value={value}

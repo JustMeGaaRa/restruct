@@ -1,9 +1,11 @@
 import {
+    createWorkspaceExplorer,
     IComponent,
     IContainer,
     IPerson,
     ISoftwareSystem,
     IWorkspace,
+    createDefaultWorkspace,
 } from "@structurizr/dsl";
 import {
     createContext,
@@ -14,6 +16,7 @@ import {
     useContext,
     useMemo,
     useState,
+    ReactNode,
 } from "react";
 
 export type WorkspaceElement =
@@ -26,8 +29,17 @@ export const WorkspaceProvider: FC<
     PropsWithChildren<{
         workspace: IWorkspace;
         setWorkspace: Dispatch<SetStateAction<IWorkspace>>;
+        renderElementOverlay?: (
+            element: WorkspaceElement,
+            dimensions: { x: number; y: number; width: number; height: number },
+            state: {
+                isHovered?: boolean;
+                isSelected?: boolean;
+                isBoundary?: boolean;
+            }
+        ) => ReactNode;
     }>
-> = ({ children, workspace, setWorkspace }) => {
+> = ({ children, workspace, setWorkspace, renderElementOverlay }) => {
     const [workspaceDomNode, setWorkspaceDomNode] =
         useState<HTMLDivElement | null>(null);
 
@@ -38,6 +50,7 @@ export const WorkspaceProvider: FC<
                 workspace,
                 setWorkspaceDomNode,
                 setWorkspace,
+                renderElementOverlay,
             }}
         >
             {children}
@@ -50,6 +63,15 @@ export const WorkspaceContext = createContext<{
     workspace: IWorkspace | null;
     setWorkspaceDomNode: (domNode: HTMLDivElement | null) => void;
     setWorkspace: Dispatch<SetStateAction<IWorkspace>>;
+    renderElementOverlay?: (
+        element: WorkspaceElement,
+        dimensions: { x: number; y: number; width: number; height: number },
+        state: {
+            isHovered?: boolean;
+            isSelected?: boolean;
+            isBoundary?: boolean;
+        }
+    ) => ReactNode;
 }>({
     workspace: null,
     workspaceDomNode: null,
@@ -62,79 +84,14 @@ export const WorkspaceContext = createContext<{
 });
 
 export const useWorkspace = () => {
-    return useContext(WorkspaceContext);
-};
-
-export const useElementById = () => {
-    const { workspace } = useWorkspace();
-
-    // TODO(workspace): replace with existing utilities
-    const elementsById = useMemo(() => {
-        const map = new Map<string, WorkspaceElement>();
-        if (!workspace) return map;
-
-        workspace.model.groups
-            .flatMap((g) => g.softwareSystems)
-            .concat(workspace.model.softwareSystems)
-            .forEach((system) => {
-                map.set(system.identifier, system);
-                system.groups
-                    ?.flatMap((g) => g.containers)
-                    .concat(system.containers)
-                    .forEach((container) => {
-                        map.set(container.identifier, container);
-                        container.groups
-                            ?.flatMap((g) => g.components)
-                            .concat(container.components)
-                            .forEach((component) => {
-                                map.set(component.identifier, component);
-                            });
-                    });
-            });
-
-        workspace.model.groups
-            .flatMap((g) => g.people)
-            .concat(workspace.model.people)
-            .forEach((person) => {
-                map.set(person.identifier, person);
-            });
-
-        return map;
-    }, [workspace]);
-
-    const getElementById = (id: string) => elementsById.get(id);
-
-    const getSoftwareSystemById = (id: string) => {
-        const element = getElementById(id);
-        return element?.type === "Software System"
-            ? (element as ISoftwareSystem)
-            : undefined;
-    };
-
-    const getContainerById = (id: string) => {
-        const element = getElementById(id);
-        return element?.type === "Container"
-            ? (element as IContainer)
-            : undefined;
-    };
-
-    const getComponentById = (id: string) => {
-        const element = getElementById(id);
-        return element?.type === "Component"
-            ? (element as IComponent)
-            : undefined;
-    };
-
-    const getPersonById = (id: string) => {
-        const element = getElementById(id);
-        return element?.type === "Person" ? (element as IPerson) : undefined;
-    };
+    const context = useContext(WorkspaceContext);
+    const explorer = useMemo(() => {
+        const workspace = context.workspace ?? createDefaultWorkspace();
+        return createWorkspaceExplorer(workspace.model);
+    }, [context.workspace?.model]);
 
     return {
-        getElementById,
-        getSoftwareSystemById,
-        getContainerById,
-        getComponentById,
-        getPersonById,
+        ...context,
+        ...explorer,
     };
 };

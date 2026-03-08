@@ -3,6 +3,7 @@ import {
     IContainerDiagram,
     IWorkspace,
     createContainerDiagram,
+    createDefaultContainerView,
     isPerson,
     isSoftwareSystem,
 } from "../../src";
@@ -94,5 +95,52 @@ describe("Container Diagram (Implied Relationships)", () => {
     test("should have exactly 3 relationships", () => {
         expect(diagram.relationships).toBeDefined();
         expect(diagram.relationships).toHaveLength(3);
+    });
+});
+
+describe("Container Diagram (Default View)", () => {
+    let workspace: IWorkspace;
+    let diagram: IContainerDiagram;
+
+    beforeAll(() => {
+        workspace = createBigBankPlcWorkspace();
+        const softwareSystemId =
+            workspace.model.groups[0]!.softwareSystems![3]!.identifier;
+        const defaultContainerView =
+            createDefaultContainerView(softwareSystemId);
+        diagram = createContainerDiagram(workspace, defaultContainerView);
+    });
+
+    test("should create a container diagram", () => {
+        expect(diagram).toBeDefined();
+    });
+
+    test("should have scope defined", () => {
+        expect(diagram.scope).toBeDefined();
+        expect(isSoftwareSystem(diagram.scope)).toBe(true);
+    });
+
+    test("should have primary elements with exactly 5 containers", () => {
+        expect(diagram.scope.containers).toBeDefined();
+        expect(diagram.scope.containers).toHaveLength(5);
+    });
+
+    test("should have supporting elements with exactly 1 person", () => {
+        expect(diagram.supportingElements).toBeDefined();
+        expect(diagram.supportingElements).toHaveLength(3);
+        expect(diagram.supportingElements.filter(isPerson)).toHaveLength(1);
+    });
+
+    test("should have supporting elements with exactly 2 software systems", () => {
+        expect(diagram.supportingElements).toBeDefined();
+        expect(diagram.supportingElements).toHaveLength(3);
+        expect(
+            diagram.supportingElements.filter(isSoftwareSystem)
+        ).toHaveLength(2);
+    });
+
+    test("should have 10 relationships", () => {
+        expect(diagram.relationships).toBeDefined();
+        expect(diagram.relationships).toHaveLength(10);
     });
 });

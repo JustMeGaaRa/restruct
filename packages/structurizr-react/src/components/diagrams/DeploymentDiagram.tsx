@@ -4,6 +4,7 @@ import {
     IDeploymentNode,
     IDeploymentView,
     ViewType,
+    createDefaultDeploymentView,
 } from "@structurizr/dsl";
 import { useViewport } from "@graph/svg";
 import { FC, PropsWithChildren, useEffect, useState } from "react";
@@ -13,7 +14,7 @@ import {
     useWorkspace,
 } from "../../containers";
 import { ZoomCallback } from "../../types";
-import { autolayoutDiagram, createDefaultDeploymentView } from "../../utils";
+import { autolayoutDiagram } from "../../utils";
 import { DeploymentNode } from "./DeploymentNode";
 import { InfrastructureNode } from "./InfrastructureNode";
 import { SoftwareSystemInstance } from "./SoftwareSystemInstance";

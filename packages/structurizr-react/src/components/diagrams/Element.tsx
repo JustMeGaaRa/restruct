@@ -1,7 +1,8 @@
-import { FC, PropsWithChildren } from "react";
-import { Node, Text } from "@graph/svg";
+import { FC, PropsWithChildren, useState } from "react";
+import { Node, Text, ViewportForeignObject } from "@graph/svg";
 import { ITag } from "@structurizr/dsl";
 import { useThemeResolvedElementStyle } from "../../hooks";
+import { useWorkspace } from "../../containers";
 
 export interface IElement {
     type: string;
@@ -39,6 +40,8 @@ export const Element: FC<
     const textColor = resolvedStyle.color ?? "#E8E8E8";
     const typeColor = "#A1A2A3";
     const techColor = "#535354";
+    const { renderElementOverlay } = useWorkspace();
+    const [isHovered, setIsHovered] = useState(false);
 
     return (
         <Node
@@ -50,6 +53,8 @@ export const Element: FC<
             backgroundColor={backgroundColor}
             borderColor={borderColor}
             borderWidth={resolvedBorderWidth}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
         >
             <Text
                 x={resolvedBorderWidth + width / 2}
@@ -105,6 +110,24 @@ export const Element: FC<
                 {value.technology?.join(", ")}
             </Text>
             {children}
+            {renderElementOverlay && (
+                <ViewportForeignObject
+                    position={{ x: 0, y: 0 }}
+                    pointerEvents="auto"
+                    zIndex={100}
+                >
+                    {renderElementOverlay(
+                        value as any,
+                        {
+                            x: position.x,
+                            y: position.y,
+                            width,
+                            height,
+                        },
+                        { isHovered }
+                    )}
+                </ViewportForeignObject>
+            )}
         </Node>
     );
 };

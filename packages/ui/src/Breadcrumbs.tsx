@@ -10,6 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { LuChevronRight, LuChevronDown } from "react-icons/lu";
 import { Fragment } from "react/jsx-runtime";
+import { ReactNode } from "react";
 
 export interface BreadcrumbOption {
     label: string;
@@ -18,16 +19,51 @@ export interface BreadcrumbOption {
 
 export interface BreadcrumbItem {
     label: string;
-    onClick?: () => void;
+    subtitle?: string;
+    icon?: (size: number) => ReactNode;
     options?: BreadcrumbOption[];
+    onClick?: () => void;
     onSelect?: (value: string) => void;
 }
 
 export interface BreadcrumbsProps {
     items: BreadcrumbItem[];
+    showSubtitle?: boolean;
 }
 
-export const Breadcrumbs = ({ items }: BreadcrumbsProps) => {
+const BreadcrumbItemContent = ({
+    item,
+    showSubtitle = true,
+}: {
+    item: BreadcrumbItem;
+    showSubtitle?: boolean;
+}) => (
+    <Box display={"flex"} flexDirection={"row"} gap={2}>
+        {item.icon && item.icon(showSubtitle ? 24 : 16)}
+        <Box display={"flex"} flexDirection={"column"} gap={0}>
+            {item.subtitle && showSubtitle && (
+                <Box
+                    as="span"
+                    fontSize="10px"
+                    color="gray.500"
+                    lineHeight="1"
+                    textTransform="uppercase"
+                    fontWeight="bold"
+                >
+                    {item.subtitle}
+                </Box>
+            )}
+            <Box as="span" fontSize="sm" lineHeight="1.2">
+                {item.label}
+            </Box>
+        </Box>
+    </Box>
+);
+
+export const Breadcrumbs = ({
+    items,
+    showSubtitle = true,
+}: BreadcrumbsProps) => {
     if (!items || items.length === 0) return null;
 
     return (
@@ -59,8 +95,7 @@ export const Breadcrumbs = ({ items }: BreadcrumbsProps) => {
                                             color={
                                                 isLast ? "white" : "gray.400"
                                             }
-                                            fontSize="sm"
-                                            height="32px"
+                                            height="auto"
                                             display="flex"
                                             alignItems="center"
                                             gap="1"
@@ -70,7 +105,10 @@ export const Breadcrumbs = ({ items }: BreadcrumbsProps) => {
                                             }}
                                             cursor="pointer"
                                         >
-                                            {item.label}
+                                            <BreadcrumbItemContent
+                                                item={item}
+                                                showSubtitle={showSubtitle}
+                                            />
                                             <LuChevronDown size="14" />
                                         </Breadcrumb.Link>
                                     </MenuTrigger>
@@ -108,17 +146,19 @@ export const Breadcrumbs = ({ items }: BreadcrumbsProps) => {
                             CustomLink = isLast ? (
                                 <Breadcrumb.CurrentLink
                                     color="white"
-                                    fontSize="sm"
                                     _hover={{ textDecoration: "none" }}
+                                    height="auto"
                                 >
-                                    {item.label}
+                                    <BreadcrumbItemContent
+                                        item={item}
+                                        showSubtitle={showSubtitle}
+                                    />
                                 </Breadcrumb.CurrentLink>
                             ) : (
                                 <Breadcrumb.Link
                                     onClick={item.onClick}
                                     color="gray.400"
-                                    fontSize="sm"
-                                    height="32px"
+                                    height="auto"
                                     _hover={{
                                         color: "white",
                                         textDecoration: "none",
@@ -130,7 +170,10 @@ export const Breadcrumbs = ({ items }: BreadcrumbsProps) => {
                                         item.onClick ? "auto" : "none"
                                     }
                                 >
-                                    {item.label}
+                                    <BreadcrumbItemContent
+                                        item={item}
+                                        showSubtitle={showSubtitle}
+                                    />
                                 </Breadcrumb.Link>
                             );
                         }

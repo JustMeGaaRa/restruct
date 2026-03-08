@@ -96,22 +96,11 @@ export const createDefaultInfrastructureNode = (): IInfrastructureNode => {
     }).toSnapshot();
 };
 
-export const createRelationship = (
-    sourceIdentifier: string,
-    targetIdentifier: string
-): IRelationship => {
-    return new Relationship({
-        sourceIdentifier,
-        targetIdentifier,
-    }).toSnapshot();
-};
-
 export const createDefaultSystemLandscapeView = (): ISystemLandscapeView => {
     const uniqueId = createUniqueId();
     return new SystemLandscapeView({
         key: `system_landscape_view_${uniqueId}`,
-        title: "System Landscape",
-        description: "Default system landscape view.",
+        include: [],
         autoLayout: {
             direction: AutoLayoutDirection.TopBotom,
             rankSeparation: 300,
@@ -127,7 +116,7 @@ export const createDefaultSystemContextView = (
     return new SystemContextView({
         softwareSystemIdentifier,
         key: `system_context_view_${uniqueId}`,
-        title: "System Context",
+        include: [],
         autoLayout: {
             direction: AutoLayoutDirection.TopBotom,
             rankSeparation: 300,
@@ -143,7 +132,7 @@ export const createDefaultContainerView = (
     return new ContainerView({
         softwareSystemIdentifier,
         key: `container_view_${uniqueId}`,
-        title: "Container",
+        include: [],
         autoLayout: {
             direction: AutoLayoutDirection.TopBotom,
             rankSeparation: 300,
@@ -159,7 +148,7 @@ export const createDefaultComponentView = (
     return new ComponentView({
         containerIdentifier,
         key: `component_view_${uniqueId}`,
-        title: "Component",
+        include: [],
         autoLayout: {
             direction: AutoLayoutDirection.TopBotom,
             rankSeparation: 300,

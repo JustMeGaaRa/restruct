@@ -1,7 +1,7 @@
 import { Connector } from "@graph/svg";
 import { FC } from "react";
 import { Element } from "./Element";
-import { useViewMetadata, useElementById } from "../../containers";
+import { useViewMetadata, useWorkspace } from "../../containers";
 import { safeBoundingBox } from "../../utils";
 import { ELEMENT_DEFAULT_HEIGHT, ELEMENT_DEFAULT_WIDTH } from "../../types";
 
@@ -21,7 +21,7 @@ export const SoftwareSystemInstance: FC<{
         ELEMENT_DEFAULT_HEIGHT,
         ELEMENT_DEFAULT_WIDTH
     );
-    const { getSoftwareSystemById } = useElementById();
+    const { getSoftwareSystemById } = useWorkspace();
     const softwareSystem = getSoftwareSystemById(
         value.softwareSystemIdentifier
     );

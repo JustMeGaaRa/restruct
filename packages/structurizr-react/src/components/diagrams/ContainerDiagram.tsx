@@ -5,6 +5,7 @@ import {
     createContainerDiagram,
     isPerson,
     isSoftwareSystem,
+    createDefaultContainerView,
 } from "@structurizr/dsl";
 import { useViewport } from "@graph/svg";
 import { FC, PropsWithChildren, useEffect, useState } from "react";
@@ -14,7 +15,7 @@ import {
     useWorkspace,
 } from "../../containers";
 import { ZoomCallback } from "../../types";
-import { createDefaultContainerView, autolayoutDiagram } from "../../utils";
+import { autolayoutDiagram } from "../../utils";
 import { SoftwareSystem } from "./SoftwareSystem";
 import { Container } from "./Container";
 import { Relationship } from "./Relationship";
@@ -68,6 +69,7 @@ export const ContainerDiagram: FC<
                 <SoftwareSystem
                     key={diagram.scope.identifier}
                     value={diagram.scope}
+                    isScope
                 >
                     {diagram?.scope.groups.map((group) => (
                         <Group key={group.identifier} value={group}>

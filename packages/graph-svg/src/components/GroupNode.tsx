@@ -3,6 +3,8 @@ import { PropsWithChildren, forwardRef } from "react";
 import { cssCompose } from "../utils";
 import { Box } from "./Box";
 
+const HOVER_PADDING = 36;
+
 export const GroupNode = forwardRef<
     SVGGElement,
     PropsWithChildren<{
@@ -16,6 +18,8 @@ export const GroupNode = forwardRef<
         borderDash?: boolean;
         borderWidth?: number;
         borderRadius?: number;
+        onMouseEnter?: React.MouseEventHandler<SVGGraphicsElement>;
+        onMouseLeave?: React.MouseEventHandler<SVGGraphicsElement>;
     }>
 >(
     (
@@ -31,6 +35,8 @@ export const GroupNode = forwardRef<
             borderDash = true,
             borderWidth = 2,
             borderRadius = 32,
+            onMouseEnter,
+            onMouseLeave,
         },
         ref
     ) => {
@@ -40,7 +46,16 @@ export const GroupNode = forwardRef<
                 id={id}
                 className={cssCompose("graph__group-node", className)}
                 position={position}
+                onMouseEnter={onMouseEnter}
+                onMouseLeave={onMouseLeave}
             >
+                <rect
+                    x={-HOVER_PADDING}
+                    y={-HOVER_PADDING}
+                    width={width + HOVER_PADDING * 2}
+                    height={height + HOVER_PADDING * 2}
+                    fill="transparent"
+                />
                 <rect
                     cursor={"pointer"}
                     height={height}

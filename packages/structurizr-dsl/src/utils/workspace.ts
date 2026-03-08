@@ -196,6 +196,10 @@ export const createWorkspaceExplorer = (model: IModel) => {
         return workspaceComponents.get(identifier);
     };
 
+    const getElementParentId = (identifier: string) => {
+        return elementParentMap.get(identifier);
+    };
+
     const getWorkspaceRelationships = (): Array<IRelationship> => {
         return Array.from(workspaceRelationships.values());
     };
@@ -349,6 +353,7 @@ export const createWorkspaceExplorer = (model: IModel) => {
         getContainerById,
         getWorkspaceComponents,
         getComponentById,
+        getElementParentId,
         getWorkspaceRelationships,
         getImpliedRelationships,
     };

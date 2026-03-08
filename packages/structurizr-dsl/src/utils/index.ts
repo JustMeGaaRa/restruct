@@ -5,3 +5,4 @@ export * from "./string";
 export * from "./themes";
 export * from "./views";
 export * from "./workspace";
+export * from "./workspace.defaults";

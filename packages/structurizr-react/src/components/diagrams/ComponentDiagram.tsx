@@ -3,6 +3,7 @@ import {
     IComponentView,
     ViewType,
     createComponentDiagram,
+    createDefaultComponentView,
     isComponent,
     isContainer,
     isPerson,
@@ -16,7 +17,7 @@ import {
     useWorkspace,
 } from "../../containers";
 import { ZoomCallback } from "../../types";
-import { createDefaultComponentView, autolayoutDiagram } from "../../utils";
+import { autolayoutDiagram } from "../../utils";
 import { Container } from "./Container";
 import { Component } from "./Component";
 import { SoftwareSystem } from "./SoftwareSystem";
@@ -68,7 +69,11 @@ export const ComponentDiagram: FC<
     return (
         <ViewMetadataProvider metadata={metadata} setMetadata={setMetadata}>
             {diagram?.scope && (
-                <Container key={diagram.scope.identifier} value={diagram.scope}>
+                <Container
+                    key={diagram.scope.identifier}
+                    value={diagram.scope}
+                    isScope
+                >
                     {diagram?.scope.groups.map((group) => (
                         <Group key={group.identifier} value={group}>
                             {group.components.map((element) => (

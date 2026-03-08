@@ -1,7 +1,7 @@
 import { Connector } from "@graph/svg";
 import { FC } from "react";
 import { Element } from "./Element";
-import { useViewMetadata, useElementById } from "../../containers";
+import { useViewMetadata, useWorkspace } from "../../containers";
 import { ELEMENT_DEFAULT_HEIGHT, ELEMENT_DEFAULT_WIDTH } from "../../types";
 import { safeBoundingBox } from "../../utils";
 
@@ -21,7 +21,7 @@ export const ContainerInstance: FC<{
         ELEMENT_DEFAULT_HEIGHT,
         ELEMENT_DEFAULT_WIDTH
     );
-    const { getContainerById } = useElementById();
+    const { getContainerById } = useWorkspace();
     const container = getContainerById(value.containerIdentifier);
 
     if (!container) return null;
