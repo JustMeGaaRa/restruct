@@ -1,3 +1,8 @@
+---
+sidebar_position: 1
+sidebar_label: Big Bank Plc
+---
+
 # Big Bank Plc Example
 
 ```js
@@ -30,7 +35,7 @@ let mainframeBankingSystemFacade: IComponent;
 let emailSystemFacade: IComponent;
 
 // Example usage of the fluent API with callbacks
-workspace("Big Bank plc.", "", (_) => {
+export default workspace("Big Bank plc.", "", (_) => {
     _.description("A default architecture for Big Bank plc.");
 
     _.model((_) => {
@@ -101,8 +106,4 @@ workspace("Big Bank plc.", "", (_) => {
         _.componentView(apiApplication.identifier, "Components");
     });
 });
-
-...
-
-const bigBankPlc = workspaceRegistry.getWorkspace("Big Bank plc.");
 ```

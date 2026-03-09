@@ -68,9 +68,15 @@ const config: Config = {
             items: [
                 {
                     type: "docSidebar",
-                    sidebarId: "tutorialSidebar",
+                    sidebarId: "dslSidebar",
                     position: "left",
-                    label: "Tutorial",
+                    label: "DSL",
+                },
+                {
+                    type: "docSidebar",
+                    sidebarId: "cliSidebar",
+                    position: "left",
+                    label: "CLI",
                 },
                 {
                     href: "https://github.com/JustMeGaaRa/restruct",

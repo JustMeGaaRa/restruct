@@ -1,3 +1,8 @@
+---
+sidebar_position: 3
+sidebar_label: Pet Clinic
+---
+
 # Pet Clinic Example
 
 ```js
@@ -22,7 +27,7 @@ let elb: IInfrastructureNode;
 let webApplicationInstance: IContainerInstance;
 let databaseInstance: IContainerInstance;
 
-workspace("Amazon Web Services Example", "An example AWS deployment.", (_) => {
+export default workspace("Amazon Web Services Example", "An example AWS deployment.", (_) => {
     _.model((_) => {
         springPetClinit = _.softwareSystem(
             "Spring PetClinic",
@@ -76,8 +81,4 @@ workspace("Amazon Web Services Example", "An example AWS deployment.", (_) => {
         _.themes(url("https://static.structurizr.com/themes/amazon-web-services-2020.04.30/theme.json"))
     });
 });
-
-...
-
-const petClinic = workspaceRegistry.getWorkspace("Amazon Web Services Example");
 ```
