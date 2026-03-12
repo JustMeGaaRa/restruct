@@ -2,11 +2,10 @@ import { createServer } from "vite";
 import { WebSocketServer } from "ws";
 import chokidar from "chokidar";
 import { build } from "esbuild";
-import path from "path";
 import fs from "fs-extra";
 import chalk from "chalk";
+import path from "path";
 import { fileURLToPath } from "url";
-import { builtinModules } from "module";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

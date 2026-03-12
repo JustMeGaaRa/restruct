@@ -60,8 +60,9 @@ export const initCommand = async (name?: string) => {
         const tsConfig = {
             compilerOptions: {
                 target: "ES2022",
-                module: "NodeNext",
-                moduleResolution: "NodeNext",
+                module: "ESNext",
+                moduleDetection: "force",
+                moduleResolution: "bundler",
                 strict: true,
                 esModuleInterop: true,
                 skipLibCheck: true,
