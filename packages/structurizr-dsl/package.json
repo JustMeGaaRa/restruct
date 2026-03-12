@@ -1,22 +1,37 @@
 {
     "name": "@structurizr/dsl",
-    "version": "0.0.0",
+    "version": "0.1.0-alpha.0",
     "type": "module",
-    "private": true,
+    "main": "./dist/cjs/index.cjs",
+    "module": "./dist/esm/index.mjs",
+    "types": "./dist/esm/index.d.mts",
     "exports": {
-        ".": "./src/index.ts"
+        ".": {
+            "require": {
+                "types": "./dist/cjs/index.d.cts",
+                "default": "./dist/cjs/index.cjs"
+            },
+            "import": {
+                "types": "./dist/esm/index.d.mts",
+                "default": "./dist/esm/index.mjs"
+            }
+        }
     },
+    "files": [
+        "dist"
+    ],
     "scripts": {
-        "build": "tsup src/index.ts --format esm,cjs --dts --clean",
+        "build": "tsdown",
         "test": "vitest",
-        "lint": "eslint ."
+        "lint": "eslint .",
+        "publish:dry-run": "npm publish --tag alpha --dry-run",
+        "publish:alpha": "npm publish --tag alpha --access public"
     },
     "devDependencies": {
         "@restruct/eslint-config": "workspace:*",
         "@restruct/typescript-config": "workspace:*",
-        "@types/node": "^20.11.24",
+        "tsdown": "^0.21.2",
         "typescript": "^5.3.3",
-        "vitest": "^2.1.1",
-        "tsup": "^8.0.2"
+        "vitest": "^2.1.1"
     }
 }

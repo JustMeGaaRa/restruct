@@ -18,7 +18,7 @@ import {
     IConfiguration,
     ElementType,
     ViewType,
-} from "@structurizr/dsl";
+} from "../interfaces";
 import {
     Component,
     ComponentView,
@@ -30,11 +30,10 @@ import {
     Group,
     InfrastructureNode,
     Person,
-    Relationship,
     SoftwareSystem,
     SystemContextView,
     SystemLandscapeView,
-} from "@structurizr/dsl";
+} from "../models";
 
 export const createUniqueId = (): string => {
     return crypto.randomUUID().replace("-", "");
