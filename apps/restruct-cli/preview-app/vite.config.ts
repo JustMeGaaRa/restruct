@@ -24,15 +24,15 @@ export default defineConfig({
         // Keep manual alias as backup/override
         alias: {
             "@": path.resolve(__dirname, "src"),
-            "@structurizr/dsl": path.resolve(
+            "@restruct/structurizr-dsl": path.resolve(
                 __dirname,
                 "../../../packages/structurizr-dsl/src/index.ts"
             ),
-            "@structurizr/react": path.resolve(
+            "@restruct/structurizr-react": path.resolve(
                 __dirname,
                 "../../../packages/structurizr-react/src/index.ts"
             ),
-            "@graph/svg": path.resolve(
+            "@restruct/react-svg": path.resolve(
                 __dirname,
                 "../../../packages/graph-svg/src/index.ts"
             ),

@@ -1,5 +1,5 @@
 import { Box, VStack, IconButton, Tooltip, Portal } from "@chakra-ui/react";
-import { useViewport } from "@graph/svg";
+import { useViewport } from "@restruct/react-svg";
 import { FiZoomIn, FiZoomOut, FiMaximize } from "react-icons/fi";
 import React from "react";
 

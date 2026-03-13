@@ -1,5 +1,5 @@
 import ELK, { ElkNode, LayoutOptions } from "elkjs/lib/elk.bundled.js";
-import { IElement, IRelationship } from "@structurizr/dsl";
+import { IElement, IRelationship } from "@restruct/structurizr-dsl";
 import { IViewMetadata } from "../containers";
 import { EdgeData, GraphAdapter, NodeData } from "./graph";
 

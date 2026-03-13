@@ -1,10 +1,10 @@
-import { useViewport } from "@graph/svg";
+import { useViewport } from "@restruct/react-svg";
 import {
     createModelDiagram,
     IModelDiagram,
     IModelView,
     ViewType,
-} from "@structurizr/dsl";
+} from "@restruct/structurizr-dsl";
 import { FC, PropsWithChildren, useState } from "react";
 import {
     IViewMetadata,

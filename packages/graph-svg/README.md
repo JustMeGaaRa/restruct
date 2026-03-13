@@ -1,4 +1,4 @@
-# `@graph/svg`
+# `@restruct/react-svg`
 
 A specialized utility package for generating and manipulating SVG-based graphs. This library serves as a low-level engine for the Restruct suite, providing the necessary primitives for rendering nodes, edges, and complex layouts in SVG format.
 
@@ -11,10 +11,10 @@ A specialized utility package for generating and manipulating SVG-based graphs. 
 
 ## 🛠️ Usage
 
-Typically used internally by `@structurizr/react`.
+Typically used internally by `@restruct/structurizr-react`.
 
 ```typescript
-import { Node, Edge } from '@graph/svg';
+import { Node, Edge } from '@restruct/react-svg';
 
 // Used within a React SVG context
 <svg>

@@ -1,23 +1,43 @@
 {
-    "name": "@graph/svg",
-    "version": "0.0.0",
+    "name": "@restruct/react-svg",
+    "version": "0.1.0-alpha.0",
     "type": "module",
-    "private": true,
+    "main": "./dist/cjs/index.cjs",
+    "module": "./dist/esm/index.mjs",
+    "types": "./dist/esm/index.d.mts",
     "exports": {
-        ".": "./src/index.ts"
+        ".": {
+            "require": {
+                "types": "./dist/cjs/index.d.cts",
+                "default": "./dist/cjs/index.cjs"
+            },
+            "import": {
+                "types": "./dist/esm/index.d.mts",
+                "default": "./dist/esm/index.mjs"
+            }
+        }
     },
+    "files": [
+        "dist"
+    ],
     "scripts": {
+        "build": "tsdown",
         "test": "vitest",
-        "lint": "eslint ."
+        "lint": "eslint .",
+        "publish:dry-run": "npm publish --tag alpha --dry-run",
+        "publish:alpha": "npm publish --tag alpha --access public"
     },
     "devDependencies": {
         "@restruct/eslint-config": "workspace:*",
         "@restruct/typescript-config": "workspace:*",
         "@types/react": "^19.0.0",
+        "tsdown": "^0.21.2",
         "typescript": "^5.3.3",
         "vitest": "^2.1.1"
     },
     "peerDependencies": {
-        "@types/react": "^19.0.0"
+        "@types/react": "^19.0.0",
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0"
     }
 }

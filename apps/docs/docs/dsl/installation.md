@@ -12,13 +12,13 @@ Structurizr DSL is a domain-specific language implemented in TypeScript for desc
 Install the package via npm:
 
 ```bash
-npm install @structurizr/dsl
+npm install @restruct/structurizr-dsl
 ```
 
 Or via yarn:
 
 ```bash
-yarn add @structurizr/dsl
+yarn add @restruct/structurizr-dsl
 ```
 
 ## Quick Start
@@ -26,7 +26,7 @@ yarn add @structurizr/dsl
 The DSL uses a callback-based fluent API to build a workspace.
 
 ```typescript
-import { workspace } from "@structurizr/dsl";
+import { workspace } from "@restruct/structurizr-dsl";
 
 export default workspace(
     "Architecture",

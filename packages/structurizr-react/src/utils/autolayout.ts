@@ -9,7 +9,7 @@ import {
     ISystemContextDiagram,
     ISystemLandscapeDiagram,
     ViewType,
-} from "@structurizr/dsl";
+} from "@restruct/structurizr-dsl";
 import { Diagram } from "../types";
 import { dagreeGraph } from "./dagree";
 import { cytoscapeGraph } from "./cytoscape";

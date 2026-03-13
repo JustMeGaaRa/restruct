@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { ZoomControls } from "./ZoomControls";
-import { ViewportProvider } from "@graph/svg";
+import { ViewportProvider } from "@restruct/react-svg";
 import { Box } from "@chakra-ui/react";
 
 const meta: Meta<typeof ZoomControls> = {

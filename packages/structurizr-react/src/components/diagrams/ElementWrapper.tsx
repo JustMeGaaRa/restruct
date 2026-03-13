@@ -1,8 +1,8 @@
-import { IElement } from "@structurizr/dsl";
+import { IElement } from "@restruct/structurizr-dsl";
 import { FC, PropsWithChildren } from "react";
 import { Element } from "./Element";
 import { useViewMetadata } from "../../containers";
-import { Connector } from "@graph/svg";
+import { Connector } from "@restruct/react-svg";
 import {
     ELEMENT_MODEL_DEFAULT_HEIGHT,
     ELEMENT_MODEL_DEFAULT_WIDTH,

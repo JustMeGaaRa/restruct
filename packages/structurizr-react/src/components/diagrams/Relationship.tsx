@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { Edge, MarkerType, Text } from "@graph/svg";
-import { ITag } from "@structurizr/dsl";
+import { Edge, MarkerType, Text } from "@restruct/react-svg";
+import { ITag } from "@restruct/structurizr-dsl";
 import { useViewMetadata } from "../../containers";
 import { useThemeResolvedRelationshipStyle } from "../../hooks";
 

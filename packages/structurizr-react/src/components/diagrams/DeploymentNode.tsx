@@ -5,7 +5,7 @@ import {
     useRef,
     useState,
 } from "react";
-import { GroupNode, Text } from "@graph/svg";
+import { GroupNode, Text } from "@restruct/react-svg";
 import { useViewMetadata } from "../../containers";
 import {
     ELEMENT_DEPLOYMENT_NODE_DEFAULT_HEIGHT,

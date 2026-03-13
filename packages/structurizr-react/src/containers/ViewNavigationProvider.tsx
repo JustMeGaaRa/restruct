@@ -10,7 +10,7 @@ import {
     createDefaultContainerView,
     createDefaultSystemContextView,
     createDefaultSystemLandscapeView,
-} from "@structurizr/dsl";
+} from "@restruct/structurizr-dsl";
 import {
     createContext,
     Dispatch,

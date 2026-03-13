@@ -1,5 +1,5 @@
 import { FC, PropsWithChildren } from "react";
-import { Connector } from "@graph/svg";
+import { Connector } from "@restruct/react-svg";
 import { useViewMetadata } from "../../containers";
 import { Element } from "./Element";
 import { safeBoundingBox } from "../../utils";

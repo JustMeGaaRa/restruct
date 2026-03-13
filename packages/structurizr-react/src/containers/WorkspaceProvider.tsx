@@ -6,7 +6,7 @@ import {
     ISoftwareSystem,
     IWorkspace,
     createDefaultWorkspace,
-} from "@structurizr/dsl";
+} from "@restruct/structurizr-dsl";
 import {
     createContext,
     Dispatch,

@@ -1,4 +1,4 @@
-# `@structurizr/dsl`
+# `@restruct/structurizr-dsl`
 
 A type-safe, developer-friendly TypeScript library for building **Structurizr** workspaces and **C4 Model** diagrams. This package allows you to define your architecture as code with full IDE support (Intellisense) and compute visual diagrams from your model.
 
@@ -9,9 +9,9 @@ A type-safe, developer-friendly TypeScript library for building **Structurizr** 
 ### Installation
 
 ```bash
-pnpm add @structurizr/dsl
+pnpm add @restruct/structurizr-dsl
 # or
-npm install @structurizr/dsl
+npm install @restruct/structurizr-dsl
 ```
 
 ### Basic Setup
@@ -22,7 +22,7 @@ import {
     ISoftwareSystem,
     workspace,
     workspaceRegistry,
-} from "@structurizr/dsl";
+} from "@restruct/structurizr-dsl";
 
 let springPetClinit: ISoftwareSystem;
 let webApplication: IContainer;
@@ -68,12 +68,12 @@ const petClinic = workspaceRegistry.getWorkspace("Amazon Web Services Example");
 
 ## 🛠️ What to Expect
 
-The `@structurizr/dsl` package provides:
+The `@restruct/structurizr-dsl` package provides:
 
 -   **Type Safety**: Every element (Person, Software System, Container, Component) is backed by TypeScript types.
 -   **Dual Coding Styles**: Support for both **Imperative** (step-by-step) and **Fluent** (chainable) API designs.
 -   **Standard Compliance**: Strictly follows the Structurizr and C4 model hierarchy and relationships.
--   **Diagram Computation**: Automatically calculates layout metadata and relationships for rendering engines like `@structurizr/react`.
+-   **Diagram Computation**: Automatically calculates layout metadata and relationships for rendering engines like `@restruct/structurizr-react`.
 
 ---
 

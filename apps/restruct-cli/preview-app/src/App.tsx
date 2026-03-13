@@ -1,8 +1,8 @@
-import { IWorkspace } from "@structurizr/dsl";
+import { IWorkspace } from "@restruct/structurizr-dsl";
 import { WorkspaceChannel, WorkspacePreview } from "@restruct/ui";
 import { useState, useEffect } from "react";
 import { Flex, Spinner, Text } from "@chakra-ui/react";
-import { RestructDarkTheme, ThemeProvider } from "@structurizr/react";
+import { RestructDarkTheme, ThemeProvider } from "@restruct/structurizr-react";
 
 // Injected by the build process or loaded via WebSocket
 declare global {

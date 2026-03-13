@@ -59,7 +59,7 @@ pnpm build
 
 ## 📦 Dependencies
 
--   **@structurizr/dsl**: For workspace parsing and manipulation.
--   **@structurizr/react**: Core diagram rendering components.
+-   **@restruct/structurizr-dsl**: For workspace parsing and manipulation.
+-   **@restruct/structurizr-react**: Core diagram rendering components.
 -   **@restruct/ui**: Shared UI components (Breadcrumbs, Toolbar, etc.).
 -   **Vite**: Fast tooling.

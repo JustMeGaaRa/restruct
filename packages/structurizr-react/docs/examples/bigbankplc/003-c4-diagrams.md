@@ -1,7 +1,7 @@
 # Structurizr Workspace - C4 Diagrams
 
 ```jsx
-import { Workspace } from "@structurizr/react";
+import { Workspace } from "@restruct/structurizr-react";
 import { FC } from "react";
 
 export const App: FC = () => {

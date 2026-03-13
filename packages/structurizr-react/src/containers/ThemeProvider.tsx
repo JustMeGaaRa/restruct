@@ -1,4 +1,4 @@
-import { ITheme } from "@structurizr/dsl";
+import { ITheme } from "@restruct/structurizr-dsl";
 import {
     createContext,
     Dispatch,

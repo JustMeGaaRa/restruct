@@ -13,7 +13,7 @@ import {
     ISoftwareSystem,
     workspace,
     workspaceRegistry
-} from "@structurizr/dsl";
+} from "@restruct/structurizr-dsl";
 
 let customer: IPerson;
 let supportStuff: IPerson;

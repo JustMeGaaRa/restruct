@@ -35,10 +35,14 @@ export function activate(context: vscode.ExtensionContext) {
 
     wss.on("connection", (ws) => {
         wsClients.add(ws);
-        outputChannel?.appendLine(`[WS] Client connected (total: ${wsClients.size})`);
+        outputChannel?.appendLine(
+            `[WS] Client connected (total: ${wsClients.size})`
+        );
 
         if (currentWorkspaces) {
-            outputChannel?.appendLine(`[WS] Sending cached ${currentWorkspaces.length} workspace(s) to new client`);
+            outputChannel?.appendLine(
+                `[WS] Sending cached ${currentWorkspaces.length} workspace(s) to new client`
+            );
             ws.send(
                 JSON.stringify({
                     type: "workspaces",
@@ -46,12 +50,16 @@ export function activate(context: vscode.ExtensionContext) {
                 })
             );
         } else {
-            outputChannel?.appendLine("[WS] No cached workspaces to send to new client");
+            outputChannel?.appendLine(
+                "[WS] No cached workspaces to send to new client"
+            );
         }
 
         ws.on("close", () => {
             wsClients.delete(ws);
-            outputChannel?.appendLine(`[WS] Client disconnected (remaining: ${wsClients.size})`);
+            outputChannel?.appendLine(
+                `[WS] Client disconnected (remaining: ${wsClients.size})`
+            );
         });
 
         ws.on("error", (err) => {
@@ -76,7 +84,9 @@ export function activate(context: vscode.ExtensionContext) {
             }
 
             const filePath = editor.document.fileName;
-            outputChannel?.appendLine(`[Command] Invoking preview for: ${filePath}`);
+            outputChannel?.appendLine(
+                `[Command] Invoking preview for: ${filePath}`
+            );
 
             if (!filePath.endsWith(".ts")) {
                 vscode.window.showErrorMessage(
@@ -103,7 +113,9 @@ function startPreview(context: vscode.ExtensionContext, filePath: string) {
         outputChannel?.appendLine("[Preview] Revealing existing panel");
         currentPanel.reveal(vscode.ViewColumn.Beside);
     } else {
-        outputChannel?.appendLine(`[Preview] Creating new panel for: ${filePath}`);
+        outputChannel?.appendLine(
+            `[Preview] Creating new panel for: ${filePath}`
+        );
         currentPanel = vscode.window.createWebviewPanel(
             "restructPreview",
             "Preview: " + path.basename(filePath),
@@ -118,7 +130,9 @@ function startPreview(context: vscode.ExtensionContext, filePath: string) {
 
         currentPanel.onDidDispose(
             () => {
-                outputChannel?.appendLine("[Panel] Webview disposed — cleaning up");
+                outputChannel?.appendLine(
+                    "[Panel] Webview disposed — cleaning up"
+                );
                 currentPanel = undefined;
                 if (activeListener) {
                     activeListener.dispose();
@@ -130,7 +144,9 @@ function startPreview(context: vscode.ExtensionContext, filePath: string) {
                 const clientCount = wsClients.size;
                 wsClients.forEach((ws) => ws.terminate());
                 wsClients.clear();
-                outputChannel?.appendLine(`[Panel] Terminated ${clientCount} WebSocket client(s)`);
+                outputChannel?.appendLine(
+                    `[Panel] Terminated ${clientCount} WebSocket client(s)`
+                );
             },
             null,
             context.subscriptions
@@ -150,7 +166,9 @@ function startPreview(context: vscode.ExtensionContext, filePath: string) {
         activeListener.dispose();
     }
     activeListener = changeListener;
-    outputChannel?.appendLine(`[Preview] Setting up file watcher for: ${filePath}`);
+    outputChannel?.appendLine(
+        `[Preview] Setting up file watcher for: ${filePath}`
+    );
 
     let debounceTimer: NodeJS.Timeout | undefined;
     const debouncedRun = () => {
@@ -183,9 +201,13 @@ async function runScript(filePath: string) {
 
     outputChannel?.appendLine(`[Script] Running for workspace of: ${filePath}`);
 
-    const workspaceFolder = vscode.workspace.getWorkspaceFolder(vscode.Uri.file(filePath));
+    const workspaceFolder = vscode.workspace.getWorkspaceFolder(
+        vscode.Uri.file(filePath)
+    );
     if (!workspaceFolder) {
-        vscode.window.showErrorMessage("The file is not part of a VS Code workspace.");
+        vscode.window.showErrorMessage(
+            "The file is not part of a VS Code workspace."
+        );
         return;
     }
 
@@ -194,10 +216,13 @@ async function runScript(filePath: string) {
     // Find all .ts files in the workspace (excluding typical build/module folders)
     const tsFilesUri = await vscode.workspace.findFiles(
         new vscode.RelativePattern(workspaceFolder, "**/*.ts"),
-        new vscode.RelativePattern(workspaceFolder, "{node_modules,dist,out,build,.git}/**") // Exclude overrides
+        new vscode.RelativePattern(
+            workspaceFolder,
+            "{node_modules,dist,out,build,.git}/**"
+        ) // Exclude overrides
     );
 
-    const tsFiles = tsFilesUri.map(uri => uri.fsPath);
+    const tsFiles = tsFilesUri.map((uri) => uri.fsPath);
 
     // Collect dirty (unsaved) file contents to inject via hook
     const dirtyFiles: Record<string, string> = {};
@@ -206,9 +231,11 @@ async function runScript(filePath: string) {
             dirtyFiles[path.resolve(doc.fileName)] = doc.getText();
         }
     });
-    
+
     // Also include the currently active document content if open, even if not dirty
-    const activeDoc = vscode.workspace.textDocuments.find(d => d.fileName === filePath);
+    const activeDoc = vscode.workspace.textDocuments.find(
+        (d) => d.fileName === filePath
+    );
     if (activeDoc) {
         dirtyFiles[path.resolve(activeDoc.fileName)] = activeDoc.getText();
     }
@@ -279,7 +306,7 @@ async function runScript(filePath: string) {
         }
 
         try {
-            const { workspaceRegistry } = require('@structurizr/dsl');
+            const { workspaceRegistry } = require('@restruct/structurizr-dsl');
             const workspaces = workspaceRegistry.getWorkspaces();
             const workspaceSnapshots = workspaces.map((ws) => ws.toSnapshot ? ws.toSnapshot() : ws);
             console.log('<START_OUTPUT>');
@@ -299,7 +326,7 @@ async function runScript(filePath: string) {
 
     const child = cp.spawn("node", [tempFilePath], {
         cwd: dir,
-        env: { ...process.env, TS_NODE_TRANSPILE_ONLY: 'true' }, // Pass environment variables
+        env: { ...process.env, TS_NODE_TRANSPILE_ONLY: "true" }, // Pass environment variables
     });
 
     let output = "";
@@ -345,22 +372,30 @@ async function runScript(filePath: string) {
             try {
                 const data = JSON.parse(jsonString);
                 if (data && Array.isArray(data)) {
-                    outputChannel?.appendLine(`[Script] Parsed ${data.length} workspace(s) successfully`);
+                    outputChannel?.appendLine(
+                        `[Script] Parsed ${data.length} workspace(s) successfully`
+                    );
                     currentWorkspaces = data;
                     broadcastWorkspaces(currentWorkspaces);
                 } else {
-                    outputChannel?.appendLine("[Script] JSON parsed but result is not an array");
+                    outputChannel?.appendLine(
+                        "[Script] JSON parsed but result is not an array"
+                    );
                     updateWebviewError(
-                        "Workspace snapshot not found. Make sure you use @structurizr/dsl."
+                        "Workspace snapshot not found. Make sure you use @restruct/structurizr-dsl."
                     );
                 }
             } catch (e) {
-                outputChannel?.appendLine(`[Script] Failed to parse JSON: ${e}`);
+                outputChannel?.appendLine(
+                    `[Script] Failed to parse JSON: ${e}`
+                );
                 updateWebviewError("Failed to parse JSON output.");
             }
         } else {
             // If we didn't find markers, maybe there was no output or it failed silently before printing markers
-            outputChannel?.appendLine(`[Script] Output markers not found. stdout snippet: ${output.slice(0, 200)}`);
+            outputChannel?.appendLine(
+                `[Script] Output markers not found. stdout snippet: ${output.slice(0, 200)}`
+            );
             if (errorOutput) {
                 updateWebviewError(errorOutput);
             } else {
@@ -383,7 +418,9 @@ function updateWebviewError(error: string) {
     if (!currentPanel) {
         return;
     }
-    outputChannel?.appendLine(`[Webview] Sending error to webview: ${error.slice(0, 300)}`);
+    outputChannel?.appendLine(
+        `[Webview] Sending error to webview: ${error.slice(0, 300)}`
+    );
     // We can still use postMessage for extension-level errors
     currentPanel.webview.postMessage({ command: "error", error: error });
 }

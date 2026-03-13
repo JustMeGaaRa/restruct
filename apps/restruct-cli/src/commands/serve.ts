@@ -38,7 +38,7 @@ export const serveCommand = async () => {
         importPath = importPath.replace(/\\/g, "/");
 
         const entryContent = `import "${importPath}";
-import { workspaceRegistry } from "@structurizr/dsl";
+import { workspaceRegistry } from "@restruct/structurizr-dsl";
 
 const workspaces = workspaceRegistry.getWorkspaces();
 export const workspaceSnapshots = workspaces.map(ws => ws.toSnapshot ? ws.toSnapshot() : ws);

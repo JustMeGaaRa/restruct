@@ -8,8 +8,8 @@ import {
     isContainer,
     isPerson,
     isSoftwareSystem,
-} from "@structurizr/dsl";
-import { useViewport } from "@graph/svg";
+} from "@restruct/structurizr-dsl";
+import { useViewport } from "@restruct/react-svg";
 import { FC, PropsWithChildren, useEffect, useState } from "react";
 import {
     IViewMetadata,

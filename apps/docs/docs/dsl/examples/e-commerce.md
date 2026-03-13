@@ -10,7 +10,7 @@ This document provides a full example of a software architecture defined using t
 The following example describes a simple e-commerce system with an internal banking system and an external email service.
 
 ```typescript
-import { workspace } from "@structurizr/dsl";
+import { workspace } from "@restruct/structurizr-dsl";
 
 export default workspace(
     "E-Commerce System",

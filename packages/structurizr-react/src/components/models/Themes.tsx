@@ -1,5 +1,5 @@
 import { FC, useEffect } from "react";
-import { ITheme, Theme } from "@structurizr/dsl";
+import { ITheme, Theme } from "@restruct/structurizr-dsl";
 import { useThemes } from "../../containers";
 
 export const Styles: FC<{

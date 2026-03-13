@@ -1,3 +1,6 @@
-import { IElement } from "@structurizr/dsl";
+import { IElement } from "@restruct/structurizr-dsl";
 
-export type ZoomCallback = (event: React.MouseEvent<HTMLButtonElement>, element: IElement) => void;
+export type ZoomCallback = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    element: IElement
+) => void;

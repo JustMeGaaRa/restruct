@@ -15,7 +15,7 @@ import {
     ISoftwareSystem,
     workspace,
     workspaceRegistry
-} from "@structurizr/dsl";
+} from "@restruct/structurizr-dsl";
 
 let springPetClinit: ISoftwareSystem;
 let webApplication: IContainer;

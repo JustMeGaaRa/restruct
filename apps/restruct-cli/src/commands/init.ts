@@ -45,7 +45,7 @@ export const initCommand = async (name?: string) => {
                 serve: "restruct serve",
             },
             dependencies: {
-                "@structurizr/dsl": "*",
+                "@restruct/structurizr-dsl": "*",
                 typescript: "^5.0.0",
             },
         };
@@ -76,7 +76,7 @@ export const initCommand = async (name?: string) => {
         });
 
         // Create workspace.ts
-        const workspaceContent = `import { workspace } from "@structurizr/dsl";
+        const workspaceContent = `import { workspace } from "@restruct/structurizr-dsl";
 
 workspace("Untitled Workspace", "", (_) => {
     _.description("A default architecture.");

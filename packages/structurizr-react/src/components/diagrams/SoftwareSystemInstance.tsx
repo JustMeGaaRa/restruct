@@ -1,4 +1,4 @@
-import { Connector } from "@graph/svg";
+import { Connector } from "@restruct/react-svg";
 import { FC } from "react";
 import { Element } from "./Element";
 import { useViewMetadata, useWorkspace } from "../../containers";

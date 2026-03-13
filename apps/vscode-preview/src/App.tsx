@@ -1,5 +1,5 @@
-import { IWorkspace } from "@structurizr/dsl";
-import { RestructDarkTheme, ThemeProvider } from "@structurizr/react";
+import { IWorkspace } from "@restruct/structurizr-dsl";
+import { RestructDarkTheme, ThemeProvider } from "@restruct/structurizr-react";
 import { WorkspaceChannel, WorkspacePreview } from "@restruct/ui";
 import { Flex, Spinner, Text } from "@chakra-ui/react";
 import { useState, useEffect } from "react";

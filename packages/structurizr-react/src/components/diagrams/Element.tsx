@@ -1,6 +1,6 @@
 import { FC, PropsWithChildren, useState } from "react";
-import { Node, Text, ViewportForeignObject } from "@graph/svg";
-import { ITag } from "@structurizr/dsl";
+import { Node, Text, ViewportForeignObject } from "@restruct/react-svg";
+import { ITag } from "@restruct/structurizr-dsl";
 import { useThemeResolvedElementStyle } from "../../hooks";
 import { useWorkspace } from "../../containers";
 

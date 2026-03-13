@@ -6,7 +6,7 @@ import {
     RoutingStyle,
     ShapeType,
     Tag,
-} from "@structurizr/dsl";
+} from "@restruct/structurizr-dsl";
 
 export const RestructElementStyle: IElementStyle = {
     shape: ShapeType.RoundedBox,

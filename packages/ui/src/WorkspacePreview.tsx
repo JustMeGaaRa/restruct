@@ -6,8 +6,8 @@ import {
     ISystemContextView,
     IWorkspace,
     ViewType,
-} from "@structurizr/dsl";
-import { Viewport, ViewportProvider } from "@graph/svg";
+} from "@restruct/structurizr-dsl";
+import { Viewport, ViewportProvider } from "@restruct/react-svg";
 import {
     ComponentDiagram,
     ContainerDiagram,
@@ -22,7 +22,7 @@ import {
     Themes,
     Styles,
     useWorkspace,
-} from "@structurizr/react";
+} from "@restruct/structurizr-react";
 import { ZoomControls } from "./ZoomControls";
 import { Breadcrumbs, BreadcrumbItem } from "./Breadcrumbs";
 import { LayerIcon } from "./LayerIcon";

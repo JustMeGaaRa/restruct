@@ -43,7 +43,7 @@ export const buildCommand = async () => {
 
         const entryContent = `
 import "${importPath}";
-import { workspaceRegistry } from "@structurizr/dsl";
+import { workspaceRegistry } from "@restruct/structurizr-dsl";
 
 const workspaces = workspaceRegistry.getWorkspaces();
 window.__WORKSPACES__ = workspaces.map(ws => ws.toSnapshot ? ws.toSnapshot() : ws);

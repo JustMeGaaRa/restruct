@@ -1,4 +1,4 @@
-import { IWorkspace } from "@structurizr/dsl";
+import { IWorkspace } from "@restruct/structurizr-dsl";
 
 type SubscriptionCallback = (workspaces: IWorkspace[]) => void;
 

@@ -10,7 +10,7 @@ The foundation of any Structurizr DSL architecture is the `workspace`.
 The `workspace` is a container for your architecture model, views, and documentation. It's usually defined as a top-level block.
 
 ```typescript
-import { workspace } from "@structurizr/dsl";
+import { workspace } from "@restruct/structurizr-dsl";
 
 workspace(
     "Architecture Workspace",

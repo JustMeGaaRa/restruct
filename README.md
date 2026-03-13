@@ -22,11 +22,11 @@ Restruct aims to bridge the gap between static architecture documents and dynami
 
 ## 🚀 Main Products
 
-### 🛠️ Restruct DSL (`@structurizr/dsl`)
+### 🛠️ Restruct DSL (`@restruct/structurizr-dsl`)
 
 The backbone of the suite. A type-safe TypeScript library for building Structurizr-compatible workspace models. It supports both imperative and fluent coding styles.
 
-### 🎨 Restruct React Components (`@structurizr/react`)
+### 🎨 Restruct React Components (`@restruct/structurizr-react`)
 
 A comprehensive library of React components for rendering C4 diagrams. These components are interactive, accessible, and highly customizable.
 

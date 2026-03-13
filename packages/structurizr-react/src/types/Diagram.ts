@@ -5,7 +5,7 @@ import {
     IModelDiagram,
     ISystemContextDiagram,
     ISystemLandscapeDiagram,
-} from "@structurizr/dsl";
+} from "@restruct/structurizr-dsl";
 
 export type Diagram =
     | ISystemLandscapeDiagram

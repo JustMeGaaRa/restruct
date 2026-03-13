@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Connector } from "@graph/svg";
+import { Connector } from "@restruct/react-svg";
 import { useViewMetadata } from "../../containers";
 import { Element } from "./Element";
 import { ELEMENT_DEFAULT_HEIGHT, ELEMENT_DEFAULT_WIDTH } from "../../types";

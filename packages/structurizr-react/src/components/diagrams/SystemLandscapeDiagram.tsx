@@ -6,8 +6,8 @@ import {
     isPerson,
     isSoftwareSystem,
     createDefaultSystemLandscapeView,
-} from "@structurizr/dsl";
-import { useViewport } from "@graph/svg";
+} from "@restruct/structurizr-dsl";
+import { useViewport } from "@restruct/react-svg";
 import { FC, PropsWithChildren, useEffect, useState } from "react";
 import {
     IViewMetadata,

@@ -5,7 +5,7 @@ import {
     useRef,
     useState,
 } from "react";
-import { GroupNode, Text, ViewportForeignObject } from "@graph/svg";
+import { GroupNode, Text, ViewportForeignObject } from "@restruct/react-svg";
 import { useWorkspace } from "../../containers";
 import {
     ELEMENT_BOUNDARY_DEFAULT_HEIGHT,

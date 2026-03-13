@@ -13,7 +13,7 @@ This CLI allows you to:
 ### `restruct init`
 
 -   Scaffolds a new project with `package.json`, `tsconfig.json`, and `workspace.ts`.
--   Uses `@structurizr/dsl` for defining architecture as code.
+-   Uses `@restruct/structurizr-dsl` for defining architecture as code.
 -   Includes `build` and `serve` scripts.
 
 ### `restruct build`

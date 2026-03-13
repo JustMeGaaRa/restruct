@@ -4,7 +4,7 @@ import {
     IRelationshipStyle,
     ITag,
     mergeStyles,
-} from "@structurizr/dsl";
+} from "@restruct/structurizr-dsl";
 import { useThemes } from "../containers";
 
 export const useThemeResolvedElementStyle = (

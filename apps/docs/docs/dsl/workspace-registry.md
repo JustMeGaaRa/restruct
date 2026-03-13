@@ -11,10 +11,10 @@ When you use the `workspace` utility, it automatically registers the resulting w
 
 ## Usage
 
-You can import `workspaceRegistry` directly from `@structurizr/dsl`.
+You can import `workspaceRegistry` directly from `@restruct/structurizr-dsl`.
 
 ```typescript
-import { workspaceRegistry } from "@structurizr/dsl";
+import { workspaceRegistry } from "@restruct/structurizr-dsl";
 ```
 
 ### Fetching a Specific Workspace
@@ -46,7 +46,7 @@ allWorkspaces.forEach((workspace) => {
 The registration happens automatically behind the scenes when you use the `workspace` helper:
 
 ```typescript
-import { workspace } from "@structurizr/dsl";
+import { workspace } from "@restruct/structurizr-dsl";
 
 // This call automatically registers "System A" into the workspaceRegistry
 workspace("System A", "Description", (_) => {
