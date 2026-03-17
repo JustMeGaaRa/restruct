@@ -6,8 +6,9 @@ import type * as Preset from "@docusaurus/preset-classic";
 
 const config: Config = {
     title: "re:struct",
-    tagline: "Dinosaurs are cool",
-    favicon: "img/favicon.ico",
+    tagline:
+        "The Architecture-as-Code SDK for modern systems. Define, visualize, and scale your technical design with TypeScript primitives and a developer-first toolchain.",
+    favicon: "img/favicon.svg",
 
     // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
     future: {
@@ -62,7 +63,7 @@ const config: Config = {
         navbar: {
             title: "re:struct",
             logo: {
-                alt: "re:struct Logo",
+                alt: "re:struct",
                 src: "img/logo.svg",
             },
             items: [
@@ -72,6 +73,12 @@ const config: Config = {
                     position: "left",
                     label: "DSL",
                 },
+                // {
+                //     type: "docSidebar",
+                //     sidebarId: "reactSidebar",
+                //     position: "left",
+                //     label: "React",
+                // },
                 {
                     type: "docSidebar",
                     sidebarId: "cliSidebar",
@@ -95,22 +102,13 @@ const config: Config = {
                             label: "DSL",
                             to: "/docs/dsl/installation",
                         },
-                    ],
-                },
-                {
-                    title: "Community",
-                    items: [
                         {
-                            label: "Stack Overflow",
-                            href: "https://stackoverflow.com/questions/tagged/docusaurus",
+                            label: "CLI",
+                            to: "/docs/cli/installation",
                         },
                         {
-                            label: "Discord",
-                            href: "https://discordapp.com/invite/docusaurus",
-                        },
-                        {
-                            label: "X",
-                            href: "https://x.com/docusaurus",
+                            label: "React",
+                            to: "/docs/react/installation",
                         },
                     ],
                 },
@@ -121,10 +119,14 @@ const config: Config = {
                             label: "GitHub",
                             href: "https://github.com/JustMeGaaRa/restruct",
                         },
+                        {
+                            label: "MIT License",
+                            href: "https://github.com/JustMeGaaRa/restruct/blob/main/LICENSE",
+                        },
                     ],
                 },
             ],
-            copyright: `Copyright © ${new Date().getFullYear()} re:struct. Built with Docusaurus.`,
+            copyright: `© ${new Date().getFullYear()} re:struct. Built with Docusaurus.`,
         },
         prism: {
             theme: prismThemes.github,

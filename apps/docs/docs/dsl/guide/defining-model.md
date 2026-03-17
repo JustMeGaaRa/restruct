@@ -1,8 +1,3 @@
----
-sidebar_position: 3
-sidebar_label: Defining the Model
----
-
 # Defining the Model
 
 The model is the core of your architecture documentation. It's where you define the entities that make up your software systems and the relationships between them.

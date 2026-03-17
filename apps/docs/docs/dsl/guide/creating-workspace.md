@@ -1,8 +1,3 @@
----
-sidebar_position: 2
-sidebar_label: Creating a Workspace
----
-
 # Creating a Workspace
 
 The foundation of any Structurizr DSL architecture is the `workspace`.

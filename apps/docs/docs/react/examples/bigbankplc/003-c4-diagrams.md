@@ -1,4 +1,8 @@
-# Structurizr Workspace - C4 Diagrams
+---
+sidebar_position: 3
+---
+
+# Dynamic C4 Diagrams
 
 ```jsx
 import { Workspace } from "@restruct/structurizr-react";

@@ -1,4 +1,8 @@
-# Structurizr Workspace - Dynamic Initialization
+---
+sidebar_position: 2
+---
+
+# Dynamic Initialization
 
 Key Points: Ideal for inline documentation or presentation of the existing architecture stored as.
 

@@ -1,4 +1,8 @@
-# Structurizr Workspace - Static Initialization
+---
+sidebar_position: 1
+---
+
+# Static Initialization
 
 Key Points: Ideal for documentation or presentation of the existing architecture materials.
 

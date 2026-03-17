@@ -1,52 +1,55 @@
-# Restruct Architecture Suite
+# re:struct Architecture SDK
 
 [![pnpm](https://img.shields.io/badge/maintained%20with-pnpm-cc00ff.svg)](https://pnpm.io/)
 [![Turborepo](https://img.shields.io/badge/built%20with-turborepo-0070f3.svg)](https://turbo.build/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Restruct** is a modern, developer-centric suite of tools designed to visualize, document, and present software architecture. Built on the foundations of the **Structurizr DSL** and the **C4 Model**, Restruct allows you to treat architecture as code while providing world-class visual experiences.
+**re:struct** is a TypeScript-first tooling suite for writing and visualizing software architecture using the **C4 Model** and a **Structurizr-compatible DSL**. It lets you define architecture as code and preview it interactively — in VS Code or directly from the command line.
 
 ---
 
-## 🌟 What to Expect
+## ✨ Features
 
-Restruct aims to bridge the gap between static architecture documents and dynamic, living software systems. With Restruct, you can:
-
--   **Design with DSL**: Use a clean, TypeScript-based DSL to define your software systems, containers, and components.
--   **Visualize Instantly**: High-fidelity, interactive C4 diagrams that support deep navigation through architectural layers.
--   **Collaborate in Real-time**: Built-in support for P2P collaborative sessions for team architecture reviews.
--   **Present Your Vision**: A unique "Presentation Mode" that allows you to record "stories" through your architecture and play them back for stakeholders.
--   **Developer-First**: Integrated deeply into the developer workflow, including a VS Code extension for live previews.
-
----
-
-## 🚀 Main Products
-
-### 🛠️ Restruct DSL (`@restruct/structurizr-dsl`)
-
-The backbone of the suite. A type-safe TypeScript library for building Structurizr-compatible workspace models. It supports both imperative and fluent coding styles.
-
-### 🎨 Restruct React Components (`@restruct/structurizr-react`)
-
-A comprehensive library of React components for rendering C4 diagrams. These components are interactive, accessible, and highly customizable.
-
-### 🔍 VS Code Extension & Preview (`apps/vscode-preview`)
-
-The primary interface for developers. It provides a real-time, interactive preview of your architecture DSL files directly within VS Code, featuring:
-
--   **C4 Rendering**: Automatic layout and rendering of your models.
--   **Interactive Viewport**: Infinite pan, zoom, and fit-to-screen.
--   **Breadcrumb Navigation**: Path-based navigation (e.g., `System > Container > Component`).
--   **Presentation Tools**: Record and present architecture walkthroughs.
+-   **Type-safe workspace modeling** — define Workspaces, Models, and Views with full TypeScript intellisense
+-   **C4 diagram support** — System Landscape, System Context, Container, Component, and Deployment views
+-   **Interactive diagrams** — pan, zoom, and navigate across C4 layers
+-   **VS Code Extension** — `Restruct: Preview Workspace` command with live reload via WebSocket
+-   **CLI tool** — manage architecture workspace project lifecycle with commands and dev preview
+-   **Documentation** — guides for DSL, React components, and CLI
+-   **Storybook** — isolated development for shared UI components
 
 ---
 
-## 🛠️ How to Start
+## 📦 Packages
+
+| Package                       | Description                                                               |
+| ----------------------------- | ------------------------------------------------------------------------- |
+| `@restruct/structurizr-dsl`   | Core C4 model library — elements, views, builders, auto-layout strategies |
+| `@restruct/structurizr-react` | React components for rendering C4 diagrams                                |
+| `@restruct/ui`                | Shared UI components to use for workspace preview                         |
+| `@restruct/react-svg`         | Low-level SVG/graph rendering primitives                                  |
+| `@restruct/eslint-config`     | Shared ESLint configuration                                               |
+| `@restruct/typescript-config` | Shared TypeScript configuration                                           |
+
+---
+
+## 🖥️ Apps
+
+| App                     | Description                                                                                                      |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `apps/vscode-extension` | VS Code extension — contributes the `Restruct: Preview Workspace` command and a WebSocket server for live reload |
+| `apps/vscode-preview`   | Vite + React webview rendered inside the VS Code preview panel                                                   |
+| `apps/cli`              | CLI tool — `restruct init / serve / build` for scaffolding and local previews                                    |
+| `apps/docs`             | Docusaurus documentation site with DSL quick-start guides and examples                                           |
+
+---
+
+## 🚀 Getting Started
 
 ### Prerequisites
 
--   **Node.js**: v18 or higher.
--   **pnpm**: v8 or higher (Restruct uses pnpm workspaces).
+-   **Node.js** v18 or higher
+-   **pnpm** v8 or higher
 
 ### 1. Clone & Install
 
@@ -58,7 +61,7 @@ pnpm install
 
 ### 2. Launch Development Environment
 
-To start the development server for all apps (Preview, Web, Docs) and watch for package changes:
+Start all apps and watch for package changes:
 
 ```bash
 pnpm dev
@@ -66,7 +69,7 @@ pnpm dev
 
 ### 3. Run Storybook
 
-To explore the UI components in isolation:
+Explore UI components in isolation:
 
 ```bash
 pnpm storybook
@@ -79,17 +82,18 @@ pnpm storybook
 ```text
 restruct/
 ├── apps/
-│   ├── vscode-preview/ # Core rendering engine & VS Code webview
-│   ├── web/            # Main web application (Next.js)
-│   └── docs/           # Documentation portal (Next.js)
+│   ├── vscode-extension/   # VS Code extension (preview command + WebSocket server)
+│   ├── vscode-preview/     # Vite/React webview for VS Code preview panel
+│   ├── restruct-cli/       # CLI: init / serve / build commands
+│   └── docs/               # Documentation portal (Docusaurus)
 ├── packages/
-│   ├── structurizr-dsl/# TS library for C4 modeling
-│   ├── structurizr-react/# React components for diagrams
-│   ├── ui/             # Shared UI Design System
-│   ├── graph-svg/      # Low-level SVG generation utilities
-│   ├── eslint-config/  # Shared linting rules
-│   └── typescript-config/# Shared TS configurations
-└── pnpm-workspace.yaml # Monorepo configuration
+│   ├── structurizr-dsl/    # @restruct/structurizr-dsl – TS C4 model library
+│   ├── structurizr-react/  # @restruct/structurizr-react – React C4 diagram components
+│   ├── ui/                 # @restruct/ui – Shared UI components
+│   ├── graph-svg/          # @restruct/react-svg – SVG/graph primitives
+│   ├── eslint-config/      # Shared ESLint config
+│   └── typescript-config/  # Shared TypeScript config
+└── pnpm-workspace.yaml
 ```
 
 ---
@@ -98,11 +102,11 @@ restruct/
 
 We welcome contributions! Please feel free to open issues or submit pull requests.
 
-1.  Fork the repo.
-2.  Create your feature branch (`git checkout -b feature/amazing-feature`).
-3.  Commit your changes (`git commit -m 'Add amazing feature'`).
-4.  Push to the branch (`git push origin feature/amazing-feature`).
-5.  Open a Pull Request.
+1. Fork the repo.
+2. Create your feature branch (`git checkout -b feature/amazing-feature`).
+3. Commit your changes (`git commit -m 'Add amazing feature'`).
+4. Push to the branch (`git push origin feature/amazing-feature`).
+5. Open a Pull Request.
 
 ---
 

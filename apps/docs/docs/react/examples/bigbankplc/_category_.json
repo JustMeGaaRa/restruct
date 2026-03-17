@@ -1,0 +1,8 @@
+{
+    "label": "Big Bank plc.",
+    "position": 1,
+    "link": {
+        "type": "generated-index",
+        "description": "Big Bank plc. is a fictional bank used as an example to demonstrate the capabilities of the Structurizr DSL."
+    }
+}

@@ -1,13 +1,12 @@
 ---
 sidebar_position: 1
-sidebar_label: Installation
 ---
 
-# Structurizr DSL
-
-Structurizr DSL is a domain-specific language implemented in TypeScript for describing software architecture. It provides a fluent and type-safe API to define your architecture models and views.
+# Quickstart
 
 ## Installation
+
+Structurizr DSL is a domain-specific language implemented in TypeScript for describing software architecture. It provides a fluent and type-safe API to define your architecture models and views.
 
 Install the package via npm:
 
@@ -15,13 +14,7 @@ Install the package via npm:
 npm install @restruct/structurizr-dsl
 ```
 
-Or via yarn:
-
-```bash
-yarn add @restruct/structurizr-dsl
-```
-
-## Quick Start
+## Define the workspace
 
 The DSL uses a callback-based fluent API to build a workspace.
 

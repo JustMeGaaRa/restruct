@@ -1,8 +1,3 @@
----
-sidebar_position: 4
-sidebar_label: Defining Views
----
-
 # Defining Views
 
 Views are how you visualize your software architecture. They are defined inside a `views` block within a `workspace`.

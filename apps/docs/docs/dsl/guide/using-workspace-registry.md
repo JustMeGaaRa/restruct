@@ -1,8 +1,3 @@
----
-sidebar_position: 5
-sidebar_label: Workspace Registry
----
-
 # Workspace Registry
 
 The `workspaceRegistry` is a singleton object that serves as a central repository for all architecture workspaces defined using the `workspace` fluent utility function.
