@@ -100,15 +100,15 @@ const config: Config = {
                     items: [
                         {
                             label: "DSL",
-                            to: "/docs/dsl/installation",
+                            to: "/docs/dsl/quickstart",
                         },
                         {
                             label: "CLI",
-                            to: "/docs/cli/installation",
+                            to: "/docs/cli/quickstart",
                         },
                         {
                             label: "React",
-                            to: "/docs/react/installation",
+                            to: "/docs/react/quickstart",
                         },
                     ],
                 },
