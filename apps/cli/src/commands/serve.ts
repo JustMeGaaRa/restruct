@@ -1,19 +1,19 @@
+import chalk from "chalk";
+import { build } from "esbuild";
+import { Command } from "commander";
+import * as fs from "node:fs";
+import * as path from "node:path";
+import { fileURLToPath } from "node:url";
 import { createServer } from "vite";
 import { WebSocketServer } from "ws";
 import chokidar from "chokidar";
-import { build } from "esbuild";
-import fs from "fs-extra";
-import chalk from "chalk";
-import path from "path";
-import { fileURLToPath } from "url";
+import { getEntryPoint } from "../utils/entry.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const packageRoot = path.resolve(__dirname, "../");
 
-import { getEntryPoint } from "../utils/entry.js";
-
-export const serveCommand = async () => {
+const serveCommand = async () => {
     const cwd = process.cwd();
     let entryPoint: string;
     try {
@@ -82,8 +82,11 @@ export const workspaceSnapshots = workspaces.map(ws => ws.toSnapshot ? ws.toSnap
 
                 console.log(chalk.green("Workspace updated."));
             }
-        } catch (err) {
-            console.error(chalk.red("Failed to build workspace:"), err);
+        } catch (err: unknown) {
+            console.error(
+                chalk.red("Failed to build workspace:\n"),
+                err instanceof Error ? err.message : String(err)
+            );
         } finally {
             if (fs.existsSync(tempEntry)) {
                 fs.unlinkSync(tempEntry);
@@ -167,3 +170,11 @@ export const workspaceSnapshots = workspaces.map(ws => ws.toSnapshot ? ws.toSnap
     await server.listen();
     server.printUrls();
 };
+
+export function createServeCommand(): Command {
+    const cmd = new Command("serve");
+
+    cmd.description("Serve the project with live updates").action(serveCommand);
+
+    return cmd;
+}

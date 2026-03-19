@@ -3,6 +3,7 @@ import fs from "fs-extra";
 import path from "path";
 import chalk from "chalk";
 import ora from "ora";
+import { Command } from "commander";
 
 export const initCommand = async (name?: string) => {
     let projectName = name;
@@ -103,10 +104,20 @@ dist
         );
         console.log(chalk.blue(`\nNext steps:`));
         console.log(`  cd ${projectName}`);
-        console.log(`  pnpm install`);
-        console.log(`  restruct serve\n`);
-    } catch (error) {
+        console.log(`  npm install`);
+        console.log(`  npm run serve\n`);
+    } catch (error: unknown) {
         spinner.fail(chalk.red("Failed to create project."));
-        console.error(error);
+        console.error(error instanceof Error ? error.message : String(error));
     }
 };
+
+export function createInitCommand(): Command {
+    const cmd = new Command("init");
+
+    cmd.description("Initialize a new Restruct project")
+        .argument("[name]", "Project name")
+        .action(initCommand);
+
+    return cmd;
+}

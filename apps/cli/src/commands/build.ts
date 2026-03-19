@@ -1,10 +1,12 @@
 import { build } from "esbuild";
-import fs from "fs-extra";
-import path from "path";
+import * as fs from "node:fs";
+import * as path from "node:path";
 import chalk from "chalk";
 import ora from "ora";
-import { fileURLToPath } from "url";
+import { fileURLToPath } from "node:url";
 import { getEntryPoint } from "../utils/entry.js";
+import { createEntryScript } from "../utils/wrapper.js";
+import { Command } from "commander";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,8 +17,8 @@ export const buildCommand = async () => {
     try {
         // 1. Clean dist of the user's project
         const userDist = path.join(process.cwd(), "dist");
-        fs.removeSync(userDist);
-        fs.ensureDirSync(userDist);
+        fs.rmSync(userDist);
+        fs.mkdirSync(userDist);
 
         // 2. Copy preview app
         const previewSrc = path.join(packageRoot, "dist", "preview");
@@ -25,7 +27,7 @@ export const buildCommand = async () => {
                 `Preview app not found at ${previewSrc}. Did you run 'pnpm build' in restruct-cli?`
             );
         }
-        fs.copySync(previewSrc, userDist);
+        fs.cpSync(previewSrc, userDist);
 
         // 3. Bundle workspace file
         let entryPoint: string;
@@ -41,14 +43,8 @@ export const buildCommand = async () => {
             : `./${entryPoint}`;
         importPath = importPath.replace(/\\/g, "/");
 
-        const entryContent = `
-import "${importPath}";
-import { workspaceRegistry } from "@restruct/structurizr-dsl";
-
-const workspaces = workspaceRegistry.getWorkspaces();
-window.__WORKSPACES__ = workspaces.map(ws => ws.toSnapshot ? ws.toSnapshot() : ws);
-`;
-        fs.writeFileSync(tempEntry, entryContent);
+        const entryScriptContent = createEntryScript(importPath);
+        fs.writeFileSync(tempEntry, entryScriptContent);
 
         await build({
             entryPoints: [tempEntry],
@@ -77,9 +73,17 @@ window.__WORKSPACES__ = workspaces.map(ws => ws.toSnapshot ? ws.toSnapshot() : w
         spinner.succeed(chalk.green("Build completed successfully!"));
         console.log(chalk.blue(`\nPreview available in: ${userDist}`));
         console.log(`You can serve it with: npx http-server dist\n`);
-    } catch (err) {
+    } catch (err: unknown) {
         spinner.fail(chalk.red("Build failed."));
-        console.error(err);
+        console.error(err instanceof Error ? err.message : err);
         process.exit(1);
     }
 };
+
+export function createBuildCommand(): Command {
+    const cmd = new Command("build");
+
+    cmd.description("Build the static site").action(buildCommand);
+
+    return cmd;
+}

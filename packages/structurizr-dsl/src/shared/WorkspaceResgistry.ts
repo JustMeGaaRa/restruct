@@ -1,4 +1,5 @@
 import { IWorkspace } from "../interfaces";
+import { IWorkspaceMetadata } from "../metadata";
 
 class WorkspaceRegistry {
     private workspaces: IWorkspace[] = [];
@@ -15,6 +16,19 @@ class WorkspaceRegistry {
 
     public getWorkspace(name: string): IWorkspace | undefined {
         return this.workspaces.find((workspace) => workspace.name === name);
+    }
+
+    public getMeta(): IWorkspaceMetadata[] {
+        return this.workspaces.map(
+            (workspace) =>
+                ({
+                    name: workspace.name ?? "Untitled workspace",
+                    lastModifiedDate: workspace.lastModifiedDate
+                        ? new Date(workspace.lastModifiedDate)
+                        : new Date(),
+                    views: workspace.views,
+                }) satisfies IWorkspaceMetadata
+        );
     }
 }
 

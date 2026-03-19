@@ -1,36 +1,22 @@
 #!/usr/bin/env node
 import { Command } from "commander";
-import chalk from "chalk";
-import { initCommand } from "./commands/init.js";
+import { createInitCommand } from "./commands/init.js";
+import { createBuildCommand } from "./commands/build.js";
+import { createServeCommand } from "./commands/serve.js";
+import { createExportCommand } from "./commands/export.js";
 
 const program = new Command();
 
 program
     .name("restruct")
-    .description("CLI for Restruct - Diagram as Code")
-    .version("0.0.1");
+    .description(
+        "re:struct cli - tool to create and manage architecture as a code projects"
+    )
+    .version("0.1.0-alpha.0");
 
-program
-    .command("init [name]")
-    .description("Initialize a new Restruct project")
-    .action(initCommand);
-
-import { buildCommand } from "./commands/build.js";
-
-// ... (init command registration)
-
-program
-    .command("build")
-    .description("Build the static site")
-    .action(buildCommand);
-
-import { serveCommand } from "./commands/serve.js";
-
-// ...
-
-program
-    .command("serve")
-    .description("Serve the project with live updates")
-    .action(serveCommand);
+program.addCommand(createInitCommand());
+program.addCommand(createBuildCommand());
+program.addCommand(createServeCommand());
+program.addCommand(createExportCommand());
 
 program.parse();
