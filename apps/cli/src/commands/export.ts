@@ -1,10 +1,11 @@
 import { Command, Option } from "commander";
 import { mkdirSync, existsSync, writeFileSync } from "node:fs";
 import { resolve, join } from "node:path";
-import { IWorkspace, IWorkspaceMetadata } from "@restruct/structurizr-dsl";
-import { getEntryPoint, loadWorkspaceModule } from "../utils/entry.js";
 import chalk from "chalk";
 import ora from "ora";
+import { IWorkspace, IWorkspaceMetadata } from "@restruct/structurizr-dsl";
+import { detectModuleEntry } from "../utils/entry.js";
+import { loadWorkspaceModule } from "../utils/module.js";
 
 export type OutputFormat = "json" | "svg" | "dsl";
 
@@ -80,7 +81,7 @@ function formatWorkspaces(
 const exportCommand = async (opts: ExportOptions) => {
     const spinner = ora("Loading workspaces...").start();
     try {
-        const entryPoint = getEntryPoint(process.cwd());
+        const entryPoint = detectModuleEntry(process.cwd());
         const { workspaces, meta } = await loadWorkspaceModule(
             process.cwd(),
             entryPoint

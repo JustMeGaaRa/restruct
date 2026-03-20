@@ -26,6 +26,7 @@ class WorkspaceRegistry {
                     lastModifiedDate: workspace.lastModifiedDate
                         ? new Date(workspace.lastModifiedDate)
                         : new Date(),
+                    authors: [],
                     views: workspace.views,
                 }) satisfies IWorkspaceMetadata
         );

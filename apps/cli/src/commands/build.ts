@@ -4,7 +4,7 @@ import * as path from "node:path";
 import chalk from "chalk";
 import ora from "ora";
 import { fileURLToPath } from "node:url";
-import { getEntryPoint } from "../utils/entry.js";
+import { detectModuleEntry } from "../utils/entry.js";
 import { createEntryScript } from "../utils/wrapper.js";
 import { Command } from "commander";
 
@@ -32,7 +32,7 @@ export const buildCommand = async () => {
         // 3. Bundle workspace file
         let entryPoint: string;
         try {
-            entryPoint = getEntryPoint(process.cwd());
+            entryPoint = detectModuleEntry(process.cwd());
         } catch (e: any) {
             throw new Error(e.message);
         }

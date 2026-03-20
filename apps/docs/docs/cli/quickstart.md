@@ -23,3 +23,11 @@ restruct init
 ```bash
 restruct serve
 ```
+
+## Export your workspaces
+
+```bash
+restruct export --pretty
+```
+
+This will generate workspace JSON files in the `exports` directory, including Git metadata for each workspace (authors and last modified dates).

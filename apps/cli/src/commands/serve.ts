@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 import { createServer } from "vite";
 import { WebSocketServer } from "ws";
 import chokidar from "chokidar";
-import { getEntryPoint } from "../utils/entry.js";
+import { detectModuleEntry } from "../utils/entry.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -17,7 +17,7 @@ const serveCommand = async () => {
     const cwd = process.cwd();
     let entryPoint: string;
     try {
-        entryPoint = getEntryPoint(cwd);
+        entryPoint = detectModuleEntry(cwd);
     } catch (e: any) {
         console.error(chalk.red(e.message));
         process.exit(1);

@@ -79,11 +79,13 @@ export class WorkspaceMetadata implements ISupportSnapshot<IWorkspaceMetadata> {
     constructor(values: IWorkspaceMetadata) {
         this.name = values.name;
         this.lastModifiedDate = values.lastModifiedDate;
+        this.authors = values.authors;
         this.views = new ViewsMetadata(values.views);
     }
 
     public readonly name: string;
     public readonly lastModifiedDate: Date;
+    public readonly authors?: string[];
     public readonly views: ViewsMetadata;
 
     public static Empty = new WorkspaceMetadata({
@@ -102,6 +104,7 @@ export class WorkspaceMetadata implements ISupportSnapshot<IWorkspaceMetadata> {
         return {
             name: this.name,
             lastModifiedDate: this.lastModifiedDate,
+            authors: this.authors,
             views: this.views.toSnapshot(),
         };
     }
