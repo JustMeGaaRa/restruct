@@ -7,8 +7,12 @@ import { GroupBuilder } from "./GroupBuilder";
 export class ContainerBuilder implements IBuilder<IContainer> {
     private container: IContainer;
 
-    constructor(name: string, description?: string) {
+    private idPath: string;
+
+    constructor(name: string, description?: string, parentPath: string = "") {
+        this.idPath = parentPath ? `${parentPath}/Container:${name}` : `Container:${name}`;
         this.container = new Container({
+            identifier: this.idPath,
             name,
             description,
             groups: [],
@@ -25,7 +29,7 @@ export class ContainerBuilder implements IBuilder<IContainer> {
     }
 
     group(name: string, callback: BuilderCallback<GroupBuilder>): IGroup {
-        const groupBuilder = new GroupBuilder(name);
+        const groupBuilder = new GroupBuilder(name, this.idPath);
         callback(groupBuilder);
         const group = groupBuilder.build();
         this.container.groups.push(group);
@@ -38,7 +42,7 @@ export class ContainerBuilder implements IBuilder<IContainer> {
         tags?: string[],
         callback?: BuilderCallback<ComponentBuilder>
     ): IComponent {
-        const componentBuilder = new ComponentBuilder(name, description, tags);
+        const componentBuilder = new ComponentBuilder(name, description, tags, this.idPath);
         callback?.(componentBuilder);
         const component = componentBuilder.build();
         this.container.components.push(component);

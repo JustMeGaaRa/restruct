@@ -13,8 +13,12 @@ export class DeploymentEnvironmentBuilder
 {
     private deploymentEnvironment: IDeploymentEnvironment;
 
-    constructor(name: string) {
+    private idPath: string;
+
+    constructor(name: string, parentPath: string = "") {
+        this.idPath = parentPath ? `${parentPath}/DeploymentEnvironment:${name}` : `DeploymentEnvironment:${name}`;
         this.deploymentEnvironment = new DeploymentEnvironment({
+            identifier: this.idPath,
             name,
             deploymentNodes: [],
             relationships: [],
@@ -25,7 +29,7 @@ export class DeploymentEnvironmentBuilder
         name: string,
         callback: BuilderCallback<DeploymentNodeBuilder>
     ): IDeploymentNode {
-        const deploymentNodeBuilder = new DeploymentNodeBuilder(name);
+        const deploymentNodeBuilder = new DeploymentNodeBuilder(name, this.idPath);
         callback(deploymentNodeBuilder);
         const deploymentNode = deploymentNodeBuilder.build();
         this.deploymentEnvironment.deploymentNodes.push(deploymentNode);

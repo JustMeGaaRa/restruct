@@ -7,8 +7,12 @@ import { GroupBuilder } from "./GroupBuilder";
 export class SoftwareSystemBuilder implements IBuilder<ISoftwareSystem> {
     private softwareSystem: ISoftwareSystem;
 
-    constructor(name: string, description?: string) {
+    private idPath: string;
+
+    constructor(name: string, description?: string, parentPath: string = "") {
+        this.idPath = parentPath ? `${parentPath}/SoftwareSystem:${name}` : `SoftwareSystem:${name}`;
         this.softwareSystem = new SoftwareSystem({
+            identifier: this.idPath,
             name,
             description,
             groups: [],
@@ -25,7 +29,7 @@ export class SoftwareSystemBuilder implements IBuilder<ISoftwareSystem> {
     }
 
     group(name: string, callback: BuilderCallback<GroupBuilder>): IGroup {
-        const groupBuilder = new GroupBuilder(name);
+        const groupBuilder = new GroupBuilder(name, this.idPath);
         callback(groupBuilder);
         const group = groupBuilder.build();
         this.softwareSystem.groups.push(group);
@@ -37,7 +41,7 @@ export class SoftwareSystemBuilder implements IBuilder<ISoftwareSystem> {
         description?: string,
         callback?: BuilderCallback<ContainerBuilder>
     ): IContainer {
-        const containerBuilder = new ContainerBuilder(name, description);
+        const containerBuilder = new ContainerBuilder(name, description, this.idPath);
         callback?.(containerBuilder);
         const container = containerBuilder.build();
         this.softwareSystem.containers.push(container);

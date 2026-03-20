@@ -5,8 +5,12 @@ import { Person } from "../Person";
 export class PersonBuilder implements IBuilder<IPerson> {
     private person: IPerson;
 
-    constructor(name: string, description?: string) {
+    private idPath: string;
+
+    constructor(name: string, description?: string, parentPath: string = "") {
+        this.idPath = parentPath ? `${parentPath}/Person:${name}` : `Person:${name}`;
         this.person = new Person({
+            identifier: this.idPath,
             name,
             description,
         }).toSnapshot();

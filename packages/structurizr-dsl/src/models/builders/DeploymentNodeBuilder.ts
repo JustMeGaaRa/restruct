@@ -14,8 +14,12 @@ import { SoftwareSystemInstance } from "../SoftwareSystemInstance";
 export class DeploymentNodeBuilder implements IBuilder<IDeploymentNode> {
     private node: IDeploymentNode;
 
-    constructor(name: string) {
+    private idPath: string;
+
+    constructor(name: string, parentPath: string = "") {
+        this.idPath = parentPath ? `${parentPath}/DeploymentNode:${name}` : `DeploymentNode:${name}`;
         this.node = new DeploymentNode({
+            identifier: this.idPath,
             name,
             deploymentNodes: [],
             infrastructureNodes: [],
@@ -29,7 +33,7 @@ export class DeploymentNodeBuilder implements IBuilder<IDeploymentNode> {
         name: string,
         callback?: BuilderCallback<DeploymentNodeBuilder>
     ): IDeploymentNode {
-        const deploymentNodeBuilder = new DeploymentNodeBuilder(name);
+        const deploymentNodeBuilder = new DeploymentNodeBuilder(name, this.idPath);
         callback?.(deploymentNodeBuilder);
         const deploymentNode = deploymentNodeBuilder.build();
         this.node.deploymentNodes.push(deploymentNode);
@@ -37,7 +41,9 @@ export class DeploymentNodeBuilder implements IBuilder<IDeploymentNode> {
     }
 
     infrastructureNode(name: string, description: string): IInfrastructureNode {
+        const identifier = `${this.idPath}/InfrastructureNode:${name}`;
         const infrastructureNode = new InfrastructureNode({
+            identifier,
             name,
             description,
         }).toSnapshot();
@@ -48,7 +54,9 @@ export class DeploymentNodeBuilder implements IBuilder<IDeploymentNode> {
     softwareSystemInstance(
         softwareSystemIdentifier: string
     ): ISoftwareSystemInstance {
+        const identifier = `${this.idPath}/SoftwareSystemInstance:${softwareSystemIdentifier}`;
         const softwareSystemInstance = new SoftwareSystemInstance({
+            identifier,
             softwareSystemIdentifier: softwareSystemIdentifier,
         }).toSnapshot();
         this.node.softwareSystemInstances.push(softwareSystemInstance);
@@ -56,7 +64,9 @@ export class DeploymentNodeBuilder implements IBuilder<IDeploymentNode> {
     }
 
     containerInstance(containerIdentifier: string): IContainerInstance {
+        const identifier = `${this.idPath}/ContainerInstance:${containerIdentifier}`;
         const containerInstance = new ContainerInstance({
+            identifier,
             containerIdentifier: containerIdentifier,
         }).toSnapshot();
         this.node.containerInstances.push(containerInstance);

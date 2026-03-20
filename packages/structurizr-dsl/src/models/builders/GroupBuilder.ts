@@ -15,8 +15,12 @@ import { SoftwareSystemBuilder } from "./SoftwareSystemBuilder";
 export class GroupBuilder implements IBuilder<IGroup> {
     private group: IGroup;
 
-    constructor(name: string) {
+    private idPath: string;
+
+    constructor(name: string, parentPath: string = "") {
+        this.idPath = parentPath ? `${parentPath}/Group:${name}` : `Group:${name}`;
         this.group = new Group({
+            identifier: this.idPath,
             name,
             people: [],
             softwareSystems: [],
@@ -30,7 +34,7 @@ export class GroupBuilder implements IBuilder<IGroup> {
         description?: string,
         callback?: BuilderCallback<PersonBuilder>
     ): IPerson {
-        const personBuilder = new PersonBuilder(name, description);
+        const personBuilder = new PersonBuilder(name, description, this.idPath);
         callback?.(personBuilder);
         const person = personBuilder.build();
         this.group.people.push(person);
@@ -44,7 +48,8 @@ export class GroupBuilder implements IBuilder<IGroup> {
     ): ISoftwareSystem {
         const softwareSystemBuilder = new SoftwareSystemBuilder(
             name,
-            description
+            description,
+            this.idPath
         );
         callback?.(softwareSystemBuilder);
         const softareSystem = softwareSystemBuilder.build();
@@ -57,7 +62,7 @@ export class GroupBuilder implements IBuilder<IGroup> {
         description?: string,
         callback?: BuilderCallback<ContainerBuilder>
     ): IContainer {
-        const containerBuilder = new ContainerBuilder(name, description);
+        const containerBuilder = new ContainerBuilder(name, description, this.idPath);
         callback?.(containerBuilder);
         const container = containerBuilder.build();
         this.group.containers.push(container);
@@ -70,7 +75,7 @@ export class GroupBuilder implements IBuilder<IGroup> {
         tags?: string[],
         callback?: BuilderCallback<ComponentBuilder>
     ): IComponent {
-        const componentBuilder = new ComponentBuilder(name, description, tags);
+        const componentBuilder = new ComponentBuilder(name, description, tags, this.idPath);
         callback?.(componentBuilder);
         const component = componentBuilder.build();
         this.group.components.push(component);
