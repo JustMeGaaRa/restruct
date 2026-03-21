@@ -1,9 +1,13 @@
 import { Command, Option } from "commander";
 import { mkdirSync, existsSync, writeFileSync } from "node:fs";
-import { resolve, join } from "node:path";
+import { resolve, join, dirname } from "node:path";
 import chalk from "chalk";
 import ora from "ora";
-import { IWorkspace, IWorkspaceMetadata } from "@restruct/structurizr-dsl";
+import {
+    IWorkspace,
+    IWorkspaceMetadata,
+    WorkspaceDslExporter,
+} from "@restruct/structurizr-dsl";
 import { detectModuleEntry } from "../utils/entry.js";
 import { loadWorkspaceModule } from "../utils/module.js";
 
@@ -18,36 +22,61 @@ export interface ExportOptions {
 }
 
 export interface ExportOutput {
-    output: string;
+    outputContent: string;
     format: OutputFormat;
     pretty: boolean;
-    filename: string;
+    relativeFilePath: string;
+}
+
+function sanitizeWorkspaceName(name: string | undefined): string {
+    if (!name) return "workspace";
+    return name
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^a-z0-9\-_]/g, "");
 }
 
 function toJson(workspace: IWorkspace, pretty: boolean): ExportOutput {
+    const workspaceName = sanitizeWorkspaceName(workspace.name);
     const output = JSON.stringify(workspace, null, pretty ? 2 : 0);
     return {
-        output,
+        outputContent: output,
         format: "json",
         pretty,
-        filename: `${workspace.name}.json`,
+        relativeFilePath: join(workspaceName, `${workspace.name}.json`),
     };
 }
 
 function toMetaJson(meta: IWorkspaceMetadata[], pretty: boolean): ExportOutput {
     const wrapper = { workspaces: meta };
     const output = JSON.stringify(wrapper, null, pretty ? 2 : 0);
-    return { output, format: "json", pretty, filename: "workspaces.meta.json" };
+    return {
+        outputContent: output,
+        format: "json",
+        pretty,
+        relativeFilePath: "workspaces.json",
+    };
 }
 
 function toSvg(workspace: IWorkspace, pretty: boolean): ExportOutput {
     const output = "Exporting to SVG...";
-    return { output, format: "svg", pretty, filename: `${workspace.name}.svg` };
+    return {
+        outputContent: output,
+        format: "svg",
+        pretty,
+        relativeFilePath: `${workspace.name}.svg`,
+    };
 }
 
-function toDsl(workspace: IWorkspace, pretty: boolean): ExportOutput {
-    const output = "Exporting to DSL...";
-    return { output, format: "dsl", pretty, filename: `${workspace.name}.dsl` };
+function toDsl(workspace: IWorkspace): ExportOutput {
+    const workspaceName = sanitizeWorkspaceName(workspace.name);
+    const output = new WorkspaceDslExporter().export(workspace);
+    return {
+        outputContent: output,
+        format: "dsl",
+        pretty: false,
+        relativeFilePath: join(workspaceName, `${workspace.name}.dsl`),
+    };
 }
 
 function formatWorkspaces(
@@ -66,7 +95,7 @@ function formatWorkspaces(
                 outputs.push(toSvg(workspace, options.pretty));
                 break;
             case "dsl":
-                outputs.push(toDsl(workspace, options.pretty));
+                outputs.push(toDsl(workspace));
                 break;
         }
     }
@@ -78,7 +107,7 @@ function formatWorkspaces(
     return outputs;
 }
 
-const exportCommand = async (opts: ExportOptions) => {
+const exportCommand = async (options: ExportOptions) => {
     const spinner = ora("Loading workspaces...").start();
     try {
         const entryPoint = detectModuleEntry(process.cwd());
@@ -88,31 +117,36 @@ const exportCommand = async (opts: ExportOptions) => {
         );
 
         spinner.text = "Formatting workspaces...";
-        const outputs = formatWorkspaces(workspaces, meta, opts);
+        const outputs = formatWorkspaces(workspaces, meta, options);
 
         if (outputs.length > 0) {
             spinner.text = "Exporting workspaces...";
-            const outDir = opts.output ? resolve(opts.output) : process.cwd();
-            const targetDirectory = join(outDir, "exports");
+            const outputDirectory = options.output
+                ? resolve(options.output)
+                : process.cwd();
+            const exportsDirectory = join(outputDirectory, "exports");
 
-            if (!existsSync(targetDirectory)) {
-                mkdirSync(targetDirectory, { recursive: true });
-            }
-
-            outputs.map((output) => {
-                const dest = resolve(targetDirectory, output.filename);
-                writeFileSync(dest, output.output, "utf-8");
+            outputs.forEach((output) => {
+                const workspaceFilePath = resolve(
+                    exportsDirectory,
+                    output.relativeFilePath
+                );
+                const workspaceDirectory = dirname(workspaceFilePath);
+                if (!existsSync(workspaceDirectory)) {
+                    mkdirSync(workspaceDirectory, { recursive: true });
+                }
+                writeFileSync(workspaceFilePath, output.outputContent);
             });
 
             spinner.succeed(
                 chalk.green(
-                    `Exported ${workspaces.length} workspaces to ${chalk.bold(targetDirectory)}`
+                    `Exported ${workspaces.length} workspaces to ${chalk.bold(exportsDirectory)}`
                 )
             );
 
             console.log(chalk.blue(`\nExport details:`));
             outputs.forEach((output) => {
-                console.log(`  ${chalk.gray("→")} ${output.filename}`);
+                console.log(`  ${chalk.gray("→")} ${output.relativeFilePath}`);
             });
             console.log(); // Add a blank line for readability
         } else {
@@ -131,7 +165,7 @@ export function createExportCommand(): Command {
     cmd.description("Export the project to a defined output format")
         .addOption(
             new Option("-f, --format <format>", "Output format")
-                .choices(["json"] satisfies OutputFormat[])
+                .choices(["json", "dsl"] satisfies OutputFormat[])
                 .default("json" satisfies OutputFormat)
         )
         .option("-p, --pretty", "Pretty-print output", false)

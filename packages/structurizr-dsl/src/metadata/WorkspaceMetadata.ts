@@ -80,7 +80,15 @@ export class WorkspaceMetadata implements ISupportSnapshot<IWorkspaceMetadata> {
         this.name = values.name;
         this.lastModifiedDate = values.lastModifiedDate;
         this.authors = values.authors;
-        this.views = new ViewsMetadata(values.views);
+        this.views = new ViewsMetadata(
+            values.views ?? {
+                systemLandscape: undefined,
+                systemContexts: [],
+                containers: [],
+                components: [],
+                deployments: [],
+            }
+        );
     }
 
     public readonly name: string;

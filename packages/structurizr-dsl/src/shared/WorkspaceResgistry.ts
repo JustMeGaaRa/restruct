@@ -18,7 +18,7 @@ class WorkspaceRegistry {
         return this.workspaces.find((workspace) => workspace.name === name);
     }
 
-    public getMeta(): IWorkspaceMetadata[] {
+    public getWorkspacesMetadata(): IWorkspaceMetadata[] {
         return this.workspaces.map(
             (workspace) =>
                 ({
@@ -27,7 +27,6 @@ class WorkspaceRegistry {
                         ? new Date(workspace.lastModifiedDate)
                         : new Date(),
                     authors: [],
-                    views: workspace.views,
                 }) satisfies IWorkspaceMetadata
         );
     }

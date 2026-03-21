@@ -24,7 +24,7 @@ import { detectWorkspaceEntries, generateWorkspaceMap } from "./workspace.js";
  * @param entryPoint The entry point relative to `cwd` (e.g. `workspaces/index.ts`)
  */
 function createWrapperScript(cwd: string, entryPoint: string): string {
-    const rel = (
+    const packageRelativePath = (
         entryPoint.startsWith("./") || entryPoint.startsWith("../")
             ? entryPoint
             : `./${entryPoint}`
@@ -33,18 +33,8 @@ function createWrapperScript(cwd: string, entryPoint: string): string {
     return (
         [
             `import { workspaceRegistry } from "@restruct/structurizr-dsl";`,
-            `const workspaceSources = new Map();`,
-            `const originalRegister = workspaceRegistry.register.bind(workspaceRegistry);`,
-            `workspaceRegistry.register = (workspace) => {`,
-            `    if (globalThis.__restruct_current_source) {`,
-            `        workspaceSources.set(workspace, globalThis.__restruct_current_source);`,
-            `    }`,
-            `    originalRegister(workspace);`,
-            `};`,
-            ``,
-            `await import("${rel}");`,
-            ``,
-            `export { workspaceRegistry, workspaceSources };`,
+            `await import("${packageRelativePath}");`,
+            `export { workspaceRegistry };`,
         ].join("\n") + "\n"
     );
 }
@@ -53,9 +43,8 @@ function createWrapperScript(cwd: string, entryPoint: string): string {
 interface WorkspaceBundle {
     workspaceRegistry: {
         getWorkspaces(): IWorkspace[];
-        getMeta(): IWorkspaceMetadata[];
+        getWorkspacesMetadata(): IWorkspaceMetadata[];
     };
-    workspaceSources: Map<IWorkspace, string>;
 }
 
 /**
@@ -176,7 +165,7 @@ export async function loadWorkspaceModule(
             pathToFileURL(tempBundle).href
         );
         const workspaces = module.workspaceRegistry.getWorkspaces();
-        const workspaceMeta = module.workspaceRegistry.getMeta();
+        const workspaceMeta = module.workspaceRegistry.getWorkspacesMetadata();
 
         const workspaceEntriesMap = await detectWorkspaceEntries(cwd);
         const workspaceMap = await generateWorkspaceMap(
