@@ -8,6 +8,7 @@ import {
     IWorkspaceMetadata,
     WorkspaceDslExporter,
 } from "@restruct/structurizr-dsl";
+import { WorkspaceSvgExporter } from "@restruct/structurizr-react";
 import { detectModuleEntry } from "../utils/entry.js";
 import { loadWorkspaceModule } from "../utils/module.js";
 
@@ -58,14 +59,19 @@ function toMetaJson(meta: IWorkspaceMetadata[], pretty: boolean): ExportOutput {
     };
 }
 
-function toSvg(workspace: IWorkspace, pretty: boolean): ExportOutput {
-    const output = "Exporting to SVG...";
-    return {
-        outputContent: output,
+async function toSvg(
+    workspace: IWorkspace,
+    pretty: boolean
+): Promise<ExportOutput[]> {
+    const workspaceName = sanitizeWorkspaceName(workspace.name);
+    const exporter = new WorkspaceSvgExporter();
+    const output = await exporter.export(workspace);
+    return Object.entries(output).map(([key, value]) => ({
+        outputContent: value,
         format: "svg",
         pretty,
-        relativeFilePath: `${workspace.name}.svg`,
-    };
+        relativeFilePath: join(workspaceName, `${key}.svg`),
+    }));
 }
 
 function toDsl(workspace: IWorkspace): ExportOutput {
@@ -79,29 +85,36 @@ function toDsl(workspace: IWorkspace): ExportOutput {
     };
 }
 
-function formatWorkspaces(
+async function formatWorkspaces(
     workspaces: IWorkspace[],
     meta: IWorkspaceMetadata[],
     options: ExportOptions
-): ExportOutput[] {
+): Promise<ExportOutput[]> {
     const outputs: ExportOutput[] = [];
 
     for (const workspace of workspaces) {
         switch (options.format) {
-            case "json":
-                outputs.push(toJson(workspace, options.pretty));
+            case "json": {
+                const jsonOutputs = toJson(workspace, options.pretty);
+                outputs.push(jsonOutputs);
                 break;
-            case "svg":
-                outputs.push(toSvg(workspace, options.pretty));
+            }
+            case "svg": {
+                const svgOutputs = await toSvg(workspace, options.pretty);
+                outputs.push(...svgOutputs);
                 break;
-            case "dsl":
-                outputs.push(toDsl(workspace));
+            }
+            case "dsl": {
+                const dslOutputs = toDsl(workspace);
+                outputs.push(dslOutputs);
                 break;
+            }
         }
     }
 
     if (options.meta) {
-        outputs.push(toMetaJson(meta, options.pretty));
+        const metaOutputs = toMetaJson(meta, options.pretty);
+        outputs.push(metaOutputs);
     }
 
     return outputs;
@@ -117,7 +130,7 @@ const exportCommand = async (options: ExportOptions) => {
         );
 
         spinner.text = "Formatting workspaces...";
-        const outputs = formatWorkspaces(workspaces, meta, options);
+        const outputs = await formatWorkspaces(workspaces, meta, options);
 
         if (outputs.length > 0) {
             spinner.text = "Exporting workspaces...";
@@ -165,7 +178,7 @@ export function createExportCommand(): Command {
     cmd.description("Export the project to a defined output format")
         .addOption(
             new Option("-f, --format <format>", "Output format")
-                .choices(["json", "dsl"] satisfies OutputFormat[])
+                .choices(["json", "dsl", "svg"] satisfies OutputFormat[])
                 .default("json" satisfies OutputFormat)
         )
         .option("-p, --pretty", "Pretty-print output", false)

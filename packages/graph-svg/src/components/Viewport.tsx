@@ -148,6 +148,7 @@ export const Viewport: FC<PropsWithChildren> = ({ children }) => {
     return (
         <svg
             ref={svgRef}
+            xmlns="http://www.w3.org/2000/svg"
             className={"graph__viewport"}
             cursor={"grab"}
             height={"100%"}
