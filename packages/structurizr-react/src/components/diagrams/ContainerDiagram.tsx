@@ -6,6 +6,7 @@ import {
     isPerson,
     isSoftwareSystem,
     createDefaultContainerView,
+    findOrDefault,
 } from "@restruct/structurizr-dsl";
 import { useViewport } from "@restruct/react-svg";
 import { FC, PropsWithChildren, useEffect, useState } from "react";
@@ -13,6 +14,7 @@ import {
     IViewMetadata,
     ViewMetadataProvider,
     useWorkspace,
+    useWorkspaceDiagram,
 } from "../../containers";
 import { ZoomCallback } from "../../types";
 import { autolayoutDiagram } from "../../utils";
@@ -31,31 +33,31 @@ export const ContainerDiagram: FC<
     }>
 > = ({ children, value, onZoomInClick, onZoomOutClick }) => {
     const { workspace } = useWorkspace();
+    const { diagrams: precalculatedDiagrams, metadata: precalculatedMetadata } =
+        useWorkspaceDiagram();
     const { autofit, fitBounds, getBounds } = useViewport();
+
     const [diagram, setDiagram] = useState<IContainerDiagram | null>(null);
     const [metadata, setMetadata] = useState<IViewMetadata>({
+        key: "",
         elements: {},
         relationships: {},
     });
 
     useEffect(() => {
         if (workspace) {
-            const containerView =
-                workspace.views.containers.find((x) => x.key === value.key) ??
-                createDefaultContainerView(value.softwareSystemIdentifier);
+            const containerView = findOrDefault(
+                workspace,
+                value,
+                createDefaultContainerView(value.softwareSystemIdentifier)
+            );
 
             const diagram = createContainerDiagram(workspace, containerView);
             setDiagram(diagram);
 
             autolayoutDiagram(diagram, ViewType.Container).then(setMetadata);
         }
-    }, [
-        workspace,
-        value.key,
-        value.softwareSystemIdentifier,
-        onZoomInClick,
-        onZoomOutClick,
-    ]);
+    }, [workspace, value, onZoomInClick, onZoomOutClick]);
 
     useEffect(() => {
         if (autofit) {
@@ -63,15 +65,22 @@ export const ContainerDiagram: FC<
         }
     }, [autofit, metadata, fitBounds, getBounds]);
 
+    const targetDiagram =
+        (precalculatedDiagrams.get(value.key) as IContainerDiagram) ?? diagram;
+    const targetMetadata = precalculatedMetadata.get(value.key) ?? metadata;
+
     return (
-        <ViewMetadataProvider metadata={metadata} setMetadata={setMetadata}>
-            {diagram?.scope && (
+        <ViewMetadataProvider
+            metadata={targetMetadata}
+            setMetadata={setMetadata}
+        >
+            {targetDiagram?.scope && (
                 <SoftwareSystem
-                    key={diagram.scope.identifier}
-                    value={diagram.scope}
+                    key={targetDiagram.scope.identifier}
+                    value={targetDiagram.scope}
                     isScope
                 >
-                    {diagram?.scope.groups.map((group) => (
+                    {targetDiagram?.scope.groups.map((group) => (
                         <Group key={group.identifier} value={group}>
                             {group.containers.map((element) => (
                                 <Container
@@ -81,22 +90,22 @@ export const ContainerDiagram: FC<
                             ))}
                         </Group>
                     ))}
-                    {diagram?.scope.containers.map((element) => (
+                    {targetDiagram?.scope.containers.map((element) => (
                         <Container key={element.identifier} value={element} />
                     ))}
                 </SoftwareSystem>
             )}
-            {diagram?.supportingElements
+            {targetDiagram?.supportingElements
                 .filter(isPerson)
                 .map((element) => (
                     <Person key={element.identifier} value={element} />
                 ))}
-            {diagram?.supportingElements
+            {targetDiagram?.supportingElements
                 .filter(isSoftwareSystem)
                 .map((element) => (
                     <SoftwareSystem key={element.identifier} value={element} />
                 ))}
-            {diagram?.relationships.map((relationship) => (
+            {targetDiagram?.relationships.map((relationship) => (
                 <Relationship
                     key={relationship.identifier}
                     value={relationship}

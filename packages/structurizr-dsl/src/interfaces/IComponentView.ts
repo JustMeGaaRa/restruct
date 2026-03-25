@@ -7,7 +7,7 @@ import { IAnimation } from "./IAnimation";
 export interface IComponentView {
     type: ViewType.Component;
     containerIdentifier: string;
-    key?: string;
+    key: string;
     include?: Array<string | All>;
     exclude?: Array<string>;
     autoLayout?: IAutoLayout;

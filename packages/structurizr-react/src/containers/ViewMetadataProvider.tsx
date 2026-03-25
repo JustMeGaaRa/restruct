@@ -10,6 +10,8 @@ import {
 export interface IElementMetadata {
     x: number;
     y: number;
+    absoluteX?: number;
+    absoluteY?: number;
     height?: number;
     width?: number;
 }
@@ -17,7 +19,7 @@ export interface IElementMetadata {
 export type IRelationshipMetadata = Array<{ x: number; y: number }>;
 
 export interface IViewMetadata {
-    key?: string;
+    key: string;
     elements: Record<string, IElementMetadata>;
     relationships: Record<string, IRelationshipMetadata>;
 }
@@ -27,37 +29,50 @@ const ViewMetadataContext = createContext<{
     setMetadata?: React.Dispatch<SetStateAction<IViewMetadata>>;
 }>({
     metadata: {
+        key: "",
         elements: {},
         relationships: {},
     },
-    setMetadata: () => { console.debug("setMetadata not implemented"); },
+    setMetadata: () => {
+        console.debug("setMetadata not implemented");
+    },
 });
 
-export const ViewMetadataProvider: FC<PropsWithChildren<{
-    metadata?: IViewMetadata;
-    setMetadata?: React.Dispatch<SetStateAction<IViewMetadata>>;
-}>> = ({
+export const ViewMetadataProvider: FC<
+    PropsWithChildren<{
+        metadata?: IViewMetadata;
+        setMetadata?: React.Dispatch<SetStateAction<IViewMetadata>>;
+    }>
+> = ({
     children,
     metadata,
-    setMetadata = () => { console.debug("setMetadata not implemented"); },
+    setMetadata = () => {
+        console.debug("setMetadata not implemented");
+    },
 }) => {
-        return (
-            <ViewMetadataContext.Provider value={{ metadata, setMetadata }}>
-                {children}
-            </ViewMetadataContext.Provider>
-        );
-    };
+    return (
+        <ViewMetadataContext.Provider value={{ metadata, setMetadata }}>
+            {children}
+        </ViewMetadataContext.Provider>
+    );
+};
 
 export const useViewMetadata = () => {
     const { metadata, setMetadata } = useContext(ViewMetadataContext);
 
-    const getElementMetadataById = useCallback((elementIdentifier: string) => {
-        return metadata?.elements[elementIdentifier];
-    }, [metadata]);
+    const getElementMetadataById = useCallback(
+        (elementIdentifier: string) => {
+            return metadata?.elements[elementIdentifier];
+        },
+        [metadata]
+    );
 
-    const getRElationshipMetadataById = useCallback((relationshipIdentifier: string) => {
-        return metadata?.relationships[relationshipIdentifier];
-    }, [metadata]);
+    const getRElationshipMetadataById = useCallback(
+        (relationshipIdentifier: string) => {
+            return metadata?.relationships[relationshipIdentifier];
+        },
+        [metadata]
+    );
 
     return {
         metadata,

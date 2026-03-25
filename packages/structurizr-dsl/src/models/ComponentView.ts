@@ -11,7 +11,9 @@ export class ComponentView implements ISupportSnapshot<IComponentView> {
     constructor(values: ComponentViewProps) {
         this.type = ViewType.Component;
         this.containerIdentifier = Identifier.parse(values.containerIdentifier);
-        this.key = values.key;
+        this.key =
+            values.key ??
+            `componentView_${this.containerIdentifier.toString()}`;
         this.description = values.description;
         this.include = values.include?.map((x) => Identifier.parse(x)) ?? [];
         this.exclude = values.exclude?.map((x) => Identifier.parse(x)) ?? [];
@@ -25,7 +27,7 @@ export class ComponentView implements ISupportSnapshot<IComponentView> {
 
     public type: ViewType.Component;
     public containerIdentifier: Identifier;
-    public key?: string;
+    public key: string;
     public include: Array<Identifier | All>;
     public exclude: Array<Identifier>;
     public autoLayout?: AutoLayout;

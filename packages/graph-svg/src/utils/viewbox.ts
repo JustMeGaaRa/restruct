@@ -1,6 +1,8 @@
 export type Dimensions = {
     x: number;
     y: number;
+    absoluteX?: number;
+    absoluteY?: number;
     height: number;
     width: number;
 };

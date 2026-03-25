@@ -13,7 +13,9 @@ export class ContainerView implements ISupportSnapshot<IContainerView> {
         this.softwareSystemIdentifier = Identifier.parse(
             values.softwareSystemIdentifier
         );
-        this.key = values.key;
+        this.key =
+            values.key ??
+            `containerView_${this.softwareSystemIdentifier.toString()}`;
         this.description = values.description;
         this.include = values.include?.map((i) => Identifier.parse(i)) ?? [];
         this.exclude = values.exclude?.map((i) => Identifier.parse(i)) ?? [];
@@ -27,7 +29,7 @@ export class ContainerView implements ISupportSnapshot<IContainerView> {
 
     public type: ViewType.Container;
     public softwareSystemIdentifier: Identifier;
-    public key?: string;
+    public key: string;
     public include: Array<Identifier | All>;
     public exclude: Array<Identifier>;
     public autoLayout?: AutoLayout;

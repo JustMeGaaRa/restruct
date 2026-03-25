@@ -1,6 +1,5 @@
 import {
     IContainer,
-    IRelationship,
     ISoftwareSystem,
     IWorkspace,
     IGroup,

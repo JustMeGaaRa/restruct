@@ -8,7 +8,7 @@ export interface IDeploymentView {
     type: ViewType.Deployment;
     softwareSystemIdentifier: string;
     environment: string;
-    key?: string;
+    key: string;
     title?: string;
     description?: string;
     include?: Array<string | All>;

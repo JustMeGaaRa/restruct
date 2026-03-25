@@ -77,7 +77,7 @@ export const elkjsGraph = (): GraphAdapter<
                 "elk.layered.nodePlacement.bk.fixedAlignment": "BALANCED",
 
                 "org.eclipse.elk.padding":
-                    "[top=50,left=50,bottom=100,right=50]",
+                    "[top=25,left=25,bottom=60,right=25]",
 
                 // PORTS:
                 // FIXED_ORDER prevents the "rope twisting" effect where edges cross
@@ -117,28 +117,45 @@ export const elkjsGraph = (): GraphAdapter<
 
             const elements: Record<
                 string,
-                { x: number; y: number; width: number; height: number }
+                {
+                    x: number;
+                    y: number;
+                    absoluteX: number;
+                    absoluteY: number;
+                    width: number;
+                    height: number;
+                }
             > = {};
 
-            const extractPositions = (node: ElkNode) => {
+            const extractPositions = (
+                node: ElkNode,
+                parentX = 0,
+                parentY = 0
+            ) => {
                 if (node.id !== "root") {
                     const x = node.x ?? 0;
                     const y = node.y ?? 0;
+                    const absoluteX = parentX + x;
+                    const absoluteY = parentY + y;
 
                     elements[node.id] = {
                         x: x,
                         y: y,
+                        absoluteX: absoluteX,
+                        absoluteY: absoluteY,
                         width: node.width ?? 200,
                         height: node.height ?? 200,
                     };
 
                     if (node.children) {
                         node.children.forEach((child) =>
-                            extractPositions(child)
+                            extractPositions(child, absoluteX, absoluteY)
                         );
                     }
                 } else if (node.children) {
-                    node.children.forEach((child) => extractPositions(child));
+                    node.children.forEach((child) =>
+                        extractPositions(child, 0, 0)
+                    );
                 }
             };
 

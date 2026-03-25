@@ -1,8 +1,7 @@
 import { FC, PropsWithChildren, useState } from "react";
 import { Node, Text, ViewportForeignObject } from "@restruct/react-svg";
 import { ITag } from "@restruct/structurizr-dsl";
-import { useThemeResolvedElementStyle } from "../../hooks";
-import { useWorkspace } from "../../containers";
+import { useWorkspace, useThemeResolvedElementStyle } from "../../containers";
 
 export interface IElement {
     type: string;

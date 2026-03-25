@@ -2,6 +2,7 @@ import {
     IComponent,
     IContainer,
     IContainerView,
+    IDeploymentEnvironment,
     IDeploymentNode,
     IDeploymentView,
     IElement,
@@ -117,6 +118,7 @@ export const traverseWorkspace = (model: IModel, visitor: IElementVisitor) => {
         );
     });
     model.deploymentEnvironments.forEach((deploymentEnvironment) => {
+        visitor.visitDeploymentEnvironment?.(deploymentEnvironment);
         deploymentEnvironment.deploymentNodes.forEach((node) =>
             visitDeploymentNode(node)
         );
@@ -126,6 +128,57 @@ export const traverseWorkspace = (model: IModel, visitor: IElementVisitor) => {
     );
 };
 
+const createElementInstancesMap = (
+    deploymentEnvironment: IDeploymentEnvironment
+) => {
+    const elementInstances = new Map<string, string[]>();
+
+    const addInstanceToElement = (
+        elementIdentifier: string,
+        instanceIdentifier: string
+    ) => {
+        if (!elementInstances.has(elementIdentifier)) {
+            elementInstances.set(elementIdentifier, []);
+        }
+        elementInstances.get(elementIdentifier)?.push(instanceIdentifier);
+    };
+
+    const getInstancesForElement = (elementIdentifier: string) => {
+        return elementInstances.get(elementIdentifier) ?? [];
+    };
+
+    const addDeploymentNodeToElement = (deploymentNode: IDeploymentNode) => {
+        deploymentNode.softwareSystemInstances.forEach(
+            (softwareSystemInstance) => {
+                addInstanceToElement(
+                    softwareSystemInstance.softwareSystemIdentifier,
+                    softwareSystemInstance.identifier
+                );
+            }
+        );
+
+        deploymentNode.containerInstances.forEach((containerInstance) => {
+            addInstanceToElement(
+                containerInstance.containerIdentifier,
+                containerInstance.identifier
+            );
+        });
+
+        deploymentNode.deploymentNodes.forEach((subnode) => {
+            addDeploymentNodeToElement(subnode);
+        });
+    };
+
+    deploymentEnvironment.deploymentNodes.forEach((deploymentNode) => {
+        addDeploymentNodeToElement(deploymentNode);
+    });
+
+    return {
+        elementInstances,
+        getInstancesForElement,
+    };
+};
+
 export const createWorkspaceExplorer = (model: IModel) => {
     const workspacePeople: Map<string, IPerson> = new Map();
     const workspaceSoftwareSystems: Map<string, ISoftwareSystem> = new Map();
@@ -133,6 +186,8 @@ export const createWorkspaceExplorer = (model: IModel) => {
     const workspaceComponents: Map<string, IComponent> = new Map();
     const workspaceRelationships: Map<string, IRelationship> = new Map();
     const workspaceElements: Map<string, IElement> = new Map();
+    const workspaceDeploymentEnvironments: Map<string, IDeploymentEnvironment> =
+        new Map();
     const elementParentMap = new Map<string, string | undefined>();
 
     traverseWorkspace(model, {
@@ -158,6 +213,13 @@ export const createWorkspaceExplorer = (model: IModel) => {
             workspaceComponents.set(component.identifier, component);
             workspaceElements.set(component.identifier, component);
             elementParentMap.set(component.identifier, param?.parentId);
+        },
+        visitDeploymentEnvironment: (environment, param) => {
+            workspaceDeploymentEnvironments.set(
+                environment.identifier,
+                environment
+            );
+            elementParentMap.set(environment.identifier, param?.parentId);
         },
         visitRelationship: (relationship) => {
             workspaceRelationships.set(relationship.identifier, relationship);
@@ -222,11 +284,12 @@ export const createWorkspaceExplorer = (model: IModel) => {
 
         const impliedRelationships = workspaceRelationships;
 
-        const setImpliedRelationshipIfNotExist = (
+        const setImpliedParentRelationshipIfNotExist = (
             elementIdentifier: string,
             elementParentIdentifier: string,
             originalRelationship: IRelationship
         ) => {
+            // NOTE: determine the source and target to remain the same direction
             const isElementSource =
                 originalRelationship.sourceIdentifier === elementIdentifier;
             const sourceIdentifier = isElementSource
@@ -236,6 +299,18 @@ export const createWorkspaceExplorer = (model: IModel) => {
                 ? originalRelationship.targetIdentifier
                 : elementParentIdentifier;
 
+            setImpliedRelationshipIfNotExist(
+                sourceIdentifier,
+                targetIdentifier,
+                originalRelationship
+            );
+        };
+
+        const setImpliedRelationshipIfNotExist = (
+            sourceIdentifier: string,
+            targetIdentifier: string,
+            originalRelationship: IRelationship
+        ) => {
             const impliedRelationship = createRelationship(
                 sourceIdentifier,
                 targetIdentifier,
@@ -250,6 +325,7 @@ export const createWorkspaceExplorer = (model: IModel) => {
             }
         };
 
+        // NOTE: create implied relationships between elements
         // RESTRICTION: System Landscape and System Context views only allow realtionships from:
         // - Software System --> Person
         // - Software System <-- Person
@@ -296,7 +372,7 @@ export const createWorkspaceExplorer = (model: IModel) => {
                             isContainerView || isDeploymentView
                                 ? container.identifier
                                 : softwareSystemScope.identifier;
-                        setImpliedRelationshipIfNotExist(
+                        setImpliedParentRelationshipIfNotExist(
                             component.identifier,
                             parentElementId,
                             relationship
@@ -314,7 +390,7 @@ export const createWorkspaceExplorer = (model: IModel) => {
                             component,
                             otherScopeContainers
                         ).forEach((relationship) => {
-                            setImpliedRelationshipIfNotExist(
+                            setImpliedParentRelationshipIfNotExist(
                                 component.identifier,
                                 container.identifier,
                                 relationship
@@ -331,7 +407,7 @@ export const createWorkspaceExplorer = (model: IModel) => {
                         container,
                         externalSystemsOrPeople
                     ).forEach((relationship) => {
-                        setImpliedRelationshipIfNotExist(
+                        setImpliedParentRelationshipIfNotExist(
                             container.identifier,
                             softwareSystemScope.identifier,
                             relationship
@@ -340,6 +416,57 @@ export const createWorkspaceExplorer = (model: IModel) => {
                 }
             });
         });
+
+        // NOTE: post process implied relationships between elements
+        // as implied relationships between instances within a deployment view
+        if (isDeploymentView) {
+            const deploymentEnvironmentInScope = Array.from(
+                workspaceDeploymentEnvironments.values()
+            ).filter(
+                (deploymentEnvironment) =>
+                    deploymentEnvironment.identifier === view.environment ||
+                    deploymentEnvironment.name === view.environment
+            );
+
+            deploymentEnvironmentInScope.forEach((environment) => {
+                // NOTE: collect all instances for each element referenced in deployment environment
+                const { getInstancesForElement } =
+                    createElementInstancesMap(environment);
+
+                // NOTE: iterate over existing element relationships in view
+                // and create implied relationships between instances
+                Array.from(impliedRelationships.values()).forEach(
+                    (relationship) => {
+                        const sources = getInstancesForElement(
+                            relationship.sourceIdentifier
+                        );
+                        const targets = getInstancesForElement(
+                            relationship.targetIdentifier
+                        );
+
+                        // NOTE: create a cartesian product of relationships between instances
+                        sources.forEach((sourceId) => {
+                            targets.forEach((targetId) => {
+                                // NOTE: avoid self-relationships
+                                if (
+                                    sourceId === targetId &&
+                                    relationship.sourceIdentifier !==
+                                        relationship.targetIdentifier
+                                ) {
+                                    return;
+                                }
+
+                                setImpliedRelationshipIfNotExist(
+                                    sourceId,
+                                    targetId,
+                                    relationship
+                                );
+                            });
+                        });
+                    }
+                );
+            });
+        }
 
         return Array.from(impliedRelationships.values());
     };

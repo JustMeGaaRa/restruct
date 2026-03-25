@@ -31,7 +31,6 @@
         "@dagrejs/dagre": "^1.1.4",
         "@restruct/react-svg": "workspace:*",
         "@restruct/structurizr-dsl": "workspace:*",
-        "cytoscape": "^3.33.1",
         "elkjs": "^0.11.1"
     },
     "devDependencies": {
@@ -44,7 +43,6 @@
         "vitest": "^2.1.1"
     },
     "peerDependencies": {
-        "@types/react": "^19.0.0",
         "react": "^19.0.0",
         "react-dom": "^19.0.0"
     }

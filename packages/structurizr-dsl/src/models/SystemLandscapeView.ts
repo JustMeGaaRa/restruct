@@ -9,7 +9,7 @@ export class SystemLandscapeView
 {
     constructor(values: SystemLandscapeViewProps) {
         this.type = ViewType.SystemLandscape;
-        this.key = values.key;
+        this.key = values.key ?? "systemLandscapeView";
         this.title = values.title;
         this.description = values.description;
         this.include = values.include?.map((x) => Identifier.parse(x)) ?? [];
@@ -22,7 +22,7 @@ export class SystemLandscapeView
     }
 
     public type: ViewType.SystemLandscape;
-    public key?: string;
+    public key: string;
     public description?: string;
     public include: Array<Identifier | All>;
     public exclude: Array<Identifier>;

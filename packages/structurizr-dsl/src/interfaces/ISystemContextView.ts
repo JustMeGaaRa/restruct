@@ -7,7 +7,7 @@ import { ViewType } from "./ViewType";
 export interface ISystemContextView {
     type: ViewType.SystemContext;
     softwareSystemIdentifier: string;
-    key?: string;
+    key: string;
     include?: Array<string | All>;
     exclude?: Array<string>;
     autoLayout?: IAutoLayout;

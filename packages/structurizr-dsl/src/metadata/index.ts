@@ -4,3 +4,6 @@ export * from "./IRelationshipMetadata";
 export * from "./IViewDefinitionMetadata";
 export * from "./IViewsMetadata";
 export * from "./IWorkspaceMetadata";
+export * from "./ViewDefinitionMetadata";
+export * from "./ViewsMetadata";
+export * from "./WorkspaceMetadata";

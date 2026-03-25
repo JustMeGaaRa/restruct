@@ -6,71 +6,77 @@ import {
     ISystemContextView,
     IWorkspace,
     ViewType,
+    fetchThemes,
+    createDefaultModelView,
 } from "@restruct/structurizr-dsl";
-import { Viewport, ViewportProvider } from "@restruct/react-svg";
 import {
-    ComponentDiagram,
-    ContainerDiagram,
-    SystemContextDiagram,
-    SystemLandscapeDiagram,
-    Workspace,
     WorkspaceProvider,
-    ViewNavigationProvider,
     useViewNavigation,
-    ModelDiagram,
-    DeploymentDiagram,
-    Themes,
-    Styles,
+    WorkspaceDiagramPreview,
     useWorkspace,
+    useThemes,
 } from "@restruct/structurizr-react";
+import { LuWorkflow, LuUser, LuContainer } from "react-icons/lu";
+import {
+    useState,
+    useEffect,
+    useMemo,
+    useCallback,
+    FC,
+    Dispatch,
+    SetStateAction,
+} from "react";
+import { ElementControlsOverlay } from "./ElementControlsOverlay";
 import { ZoomControls } from "./ZoomControls";
 import { Breadcrumbs, BreadcrumbItem } from "./Breadcrumbs";
 import { LayerIcon } from "./LayerIcon";
-import {
-    LuWorkflow,
-    LuUser,
-    LuContainer,
-    LuZoomIn,
-    LuZoomOut,
-} from "react-icons/lu";
-import { ButtonGroup, Flex, IconButton } from "@chakra-ui/react";
-import { useState, useEffect, useMemo } from "react";
-
-export interface WorkspacePreviewProps {
-    workspace: IWorkspace;
-    setWorkspace: (ws: IWorkspace) => void;
-    availableWorkspaces?: { id?: string; name: string }[];
-    onWorkspaceSelect?: (idOrName: string) => void;
-}
 
 type ViewMode = "diagrams" | "model" | "deployment";
 
-const WorkspacePreviewContent = ({
+export interface WorkspacePreviewProps {
+    workspace: IWorkspace;
+    setWorkspace: Dispatch<SetStateAction<IWorkspace>>;
+    availableWorkspaces: { id?: string; name: string }[];
+    onWorkspaceSelect?: (idOrName: string) => void;
+}
+
+export const WorkspacePreview: FC<WorkspacePreviewProps> = ({
     workspace,
-    availableWorkspaces = [],
+    availableWorkspaces,
+    setWorkspace,
     onWorkspaceSelect,
-}: WorkspacePreviewProps) => {
+}) => {
+    const { setThemes, setStyles } = useThemes();
+
+    useEffect(() => {
+        const fetchAndApplyThemes = async () => {
+            const themes = await fetchThemes(
+                workspace.views.configuration.themes
+            );
+            setThemes(themes);
+            setStyles(workspace.views.configuration.styles);
+        };
+        fetchAndApplyThemes();
+    }, [setThemes, setStyles, workspace.views.configuration]);
+
+    const [viewMode, setViewMode] = useState<ViewMode>("diagrams");
     const { getSoftwareSystemById, getContainerById, getElementParentId } =
         useWorkspace();
     const { currentView, setCurrentView } = useViewNavigation();
-    const [viewMode, setViewMode] = useState<ViewMode>("diagrams");
 
-    useEffect(() => {
-        if (!currentView && workspace?.views.systemLandscape) {
-            setCurrentView(workspace.views.systemLandscape as any);
-        }
-    }, [workspace, currentView, setCurrentView]);
-
-    function handleViewModeChange(view: ViewMode): void {
-        setViewMode(view);
-        if (view === "diagrams") {
-            setCurrentView(findAnyExisting(workspace)!);
-        } else if (view === "model") {
-            setCurrentView({ type: ViewType.Model, key: "model" } as any);
-        } else if (view === "deployment") {
-            setCurrentView(findViewByType(workspace, ViewType.Deployment)!);
-        }
-    }
+    const handleViewModeChange = useCallback(
+        (view: ViewMode) => {
+            setViewMode(view);
+            if (view === "diagrams") {
+                setCurrentView(findAnyExisting(workspace)!);
+            } else if (view === "model") {
+                setCurrentView(createDefaultModelView());
+            } else if (view === "deployment") {
+                setCurrentView(findViewByType(workspace, ViewType.Deployment)!);
+            }
+        },
+        [workspace, setCurrentView]
+    );
 
     const breadcrumbItems = useMemo<BreadcrumbItem[]>(() => {
         // TODO(navigation): move this to utility class
@@ -222,149 +228,34 @@ const WorkspacePreviewContent = ({
 
         return items;
     }, [
-        workspace,
+        workspace?.name,
+        workspace.views.systemLandscape,
+        workspace.views.systemContexts,
+        workspace.views.containers,
+        workspace.views.deployments,
         availableWorkspaces,
-        currentView,
         viewMode,
+        currentView,
         onWorkspaceSelect,
+        handleViewModeChange,
         setCurrentView,
+        getSoftwareSystemById,
+        getElementParentId,
+        getContainerById,
     ]);
 
     return (
-        <Flex
-            alignItems="center"
-            justifyContent="center"
-            h="100vh"
-            w="100vw"
-            position="relative"
-            overflow="hidden"
-            flexDirection="column"
-        >
-            <Workspace>
-                <ViewportProvider>
-                    <Viewport>
-                        {currentView &&
-                            currentView?.type === ViewType.SystemLandscape && (
-                                <SystemLandscapeDiagram value={currentView} />
-                            )}
-                        {currentView &&
-                            currentView?.type === ViewType.SystemContext && (
-                                <SystemContextDiagram
-                                    key={currentView.key}
-                                    value={currentView}
-                                />
-                            )}
-                        {currentView &&
-                            currentView?.type === ViewType.Container && (
-                                <ContainerDiagram
-                                    key={currentView.key}
-                                    value={currentView}
-                                />
-                            )}
-                        {currentView &&
-                            currentView?.type === ViewType.Component && (
-                                <ComponentDiagram
-                                    key={currentView.key}
-                                    value={currentView}
-                                />
-                            )}
-                        {currentView &&
-                            currentView?.type === ViewType.Deployment && (
-                                <DeploymentDiagram
-                                    key={currentView.key}
-                                    value={currentView}
-                                />
-                            )}
-                        {currentView?.type === ViewType.Model && (
-                            <ModelDiagram value={currentView as any} />
-                        )}
-
-                        <Themes url={workspace.views.configuration.themes} />
-                        <Styles value={workspace.views.configuration.styles} />
-                    </Viewport>
-
-                    <Breadcrumbs items={breadcrumbItems} />
-                    <ZoomControls />
-                </ViewportProvider>
-            </Workspace>
-        </Flex>
-    );
-};
-
-const ElementOverlay = ({
-    element,
-    bounds,
-    state,
-}: {
-    element: any;
-    bounds: any;
-    state: any;
-}) => {
-    const { zoomIntoElement, zoomOutOfElement } = useViewNavigation();
-    if (!state.isHovered && !state.isSelected) return null;
-
-    if (
-        element.type === "Person" ||
-        element.type === "Component" ||
-        element.type === "Group"
-    ) {
-        return null;
-    }
-
-    const isZoomOut = state.isBoundary;
-
-    return (
-        <ButtonGroup
-            position="absolute"
-            top={0}
-            right={2}
-            bg="#222425"
-            borderRadius="md"
-            border="1px solid"
-            borderColor="#535354"
-            gap={1}
-            boxShadow="lg"
-            alignItems="center"
-            zIndex={100}
-        >
-            <IconButton
-                aria-label={isZoomOut ? "Zoom Out" : "Zoom In"}
-                size="xs"
-                variant="ghost"
-                onClick={(e) => {
-                    e.stopPropagation();
-                    isZoomOut
-                        ? zoomOutOfElement(element)
-                        : zoomIntoElement(element);
-                }}
-                _hover={{ bg: "#333536" }}
-            >
-                {isZoomOut ? (
-                    <LuZoomOut color="#A1A2A3" />
-                ) : (
-                    <LuZoomIn color="#A1A2A3" />
-                )}
-            </IconButton>
-        </ButtonGroup>
-    );
-};
-
-export const WorkspacePreview = (props: WorkspacePreviewProps) => {
-    return (
         <WorkspaceProvider
-            workspace={props.workspace}
-            setWorkspace={props.setWorkspace as any}
-            renderElementOverlay={(element, bounds, state) => (
-                <ElementOverlay
-                    element={element}
-                    bounds={bounds}
-                    state={state}
-                />
+            workspace={workspace}
+            setWorkspace={setWorkspace}
+            renderElementOverlay={(element, _, state) => (
+                <ElementControlsOverlay element={element} state={state} />
             )}
         >
-            <ViewNavigationProvider>
-                <WorkspacePreviewContent {...props} />
-            </ViewNavigationProvider>
+            <WorkspaceDiagramPreview currentView={currentView}>
+                <Breadcrumbs items={breadcrumbItems} />
+                <ZoomControls />
+            </WorkspaceDiagramPreview>
         </WorkspaceProvider>
     );
 };

@@ -4,4 +4,6 @@ export interface IElementMetadata {
     y: number;
     height?: number;
     width?: number;
+    absoluteX?: number;
+    absoluteY?: number;
 }

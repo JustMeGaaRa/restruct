@@ -76,9 +76,9 @@ export class ViewsBuilder implements IBuilder<IViews> {
     }
 
     deploymentView(
-        softwareSystemIdentifier: string,
+        softwareSystemIdentifier: string | "*",
         environment: string,
-        key: string
+        key?: string
     ): IDeploymentView {
         const deploymentView = new DeploymentView({
             softwareSystemIdentifier,

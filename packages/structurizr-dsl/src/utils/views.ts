@@ -7,6 +7,7 @@ import {
     ViewType,
     IComponent,
 } from "../interfaces";
+import { createDefaultModelView } from "./workspace.defaults";
 
 export const findViewByKey = (
     workspace: IWorkspace,
@@ -18,6 +19,31 @@ export const findViewByKey = (
         workspace.views.containers.find((x) => x.key === viewKey) ??
         workspace.views.components.find((x) => x.key === viewKey) ??
         workspace.views.deployments.find((x) => x.key === viewKey)
+    );
+};
+
+export const findViewByType = (
+    workspace: IWorkspace,
+    viewType?: ViewType
+): View | undefined => {
+    return (
+        [workspace.views.systemLandscape].find((x) => x?.type === viewType) ??
+        workspace.views.systemContexts.find((x) => x.type === viewType) ??
+        workspace.views.containers.find((x) => x.type === viewType) ??
+        workspace.views.components.find((x) => x.type === viewType) ??
+        workspace.views.deployments.find((x) => x.type === viewType)
+    );
+};
+
+export const findOrDefault = <TView extends View>(
+    workspace: IWorkspace,
+    view: { type: ViewType; key: string },
+    defaultView: TView
+): TView => {
+    return (
+        (findViewByKey(workspace, view.key) as TView) ??
+        (findViewByType(workspace, view.type) as TView) ??
+        defaultView
     );
 };
 
@@ -48,19 +74,6 @@ export const findViewForElement = (
                 x.type === viewType &&
                 x.softwareSystemIdentifier === elementIdentifier
         )
-    );
-};
-
-export const findViewByType = (
-    workspace: IWorkspace,
-    viewType?: ViewType
-): View | undefined => {
-    return (
-        [workspace.views.systemLandscape].find((x) => x?.type === viewType) ??
-        workspace.views.systemContexts.find((x) => x.type === viewType) ??
-        workspace.views.containers.find((x) => x.type === viewType) ??
-        workspace.views.components.find((x) => x.type === viewType) ??
-        workspace.views.deployments.find((x) => x.type === viewType)
     );
 };
 

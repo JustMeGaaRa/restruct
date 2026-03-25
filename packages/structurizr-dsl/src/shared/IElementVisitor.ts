@@ -1,3 +1,4 @@
+import { IDeploymentEnvironment } from "../interfaces/IDeploymentEnvironment";
 import { IComponent } from "../interfaces/IComponent";
 import { IContainer } from "../interfaces/IContainer";
 import { IContainerInstance } from "../interfaces/IContainerInstance";
@@ -33,8 +34,14 @@ export interface IElementVisitor<T = unknown> {
     ) => T;
     visitComponent?: (
         component: IComponent,
-
         params?: { parentId?: string; children?: Array<T> }
+    ) => T;
+    visitDeploymentEnvironment?: (
+        deploymentEnvironment: IDeploymentEnvironment,
+        params?: {
+            parentId?: string;
+            children?: Array<T>;
+        }
     ) => T;
     visitDeploymentNode?: (
         deploymentNode: IDeploymentNode,

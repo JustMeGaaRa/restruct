@@ -1,10 +1,15 @@
 import { IWorkspace } from "@restruct/structurizr-dsl";
-import { RestructDarkTheme, ThemeProvider } from "@restruct/structurizr-react";
+import {
+    RestructDarkTheme,
+    ThemeProvider,
+    ViewNavigationProvider,
+} from "@restruct/structurizr-react";
 import { WorkspaceChannel, WorkspacePreview } from "@restruct/ui";
 import { Flex, Spinner, Text } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { bigBankPlc } from "./workspace";
 
+// NOTE: Injected by the build process or loaded via WebSocket
 declare global {
     interface Window {
         __WS_PORT__?: number;
@@ -16,11 +21,11 @@ export const App = () => {
     const [activeWorkspaceIndex, setActiveWorkspaceIndex] = useState(0);
 
     useEffect(() => {
-        const isDev = import.meta.env?.DEV;
+        const isDevelopment = import.meta.env?.DEV;
 
         if (!window.__WS_PORT__) {
             console.error("[App] Missing __WS_PORT__");
-            if (isDev) {
+            if (isDevelopment) {
                 setWorkspaces([bigBankPlc]);
             }
             return;
@@ -39,7 +44,7 @@ export const App = () => {
         });
 
         let fallbackTimeout: number | undefined;
-        if (isDev) {
+        if (isDevelopment) {
             fallbackTimeout = window.setTimeout(() => {
                 setWorkspaces((prev) => {
                     if (prev.length === 0) {
@@ -81,22 +86,42 @@ export const App = () => {
     const activeWorkspace = workspaces[activeWorkspaceIndex] as IWorkspace;
 
     return (
-        <ThemeProvider defaultTheme={RestructDarkTheme}>
-            <WorkspacePreview
-                workspace={activeWorkspace}
-                setWorkspace={(workspace) => {
-                    const newWorkspaces = [...workspaces];
-                    newWorkspaces[activeWorkspaceIndex] = workspace;
-                    setWorkspaces(newWorkspaces);
-                }}
-                availableWorkspaces={workspaces.map((workspace, index) => ({
-                    id: String(index),
-                    name: workspace.name || `Workspace ${index + 1}`,
-                }))}
-                onWorkspaceSelect={(index) =>
-                    setActiveWorkspaceIndex(Number(index))
-                }
-            />
-        </ThemeProvider>
+        <Flex
+            alignItems="center"
+            justifyContent="center"
+            bg="neutral.900"
+            h="100vh"
+            w="100vw"
+            position="relative"
+            overflow="hidden"
+            flexDirection="column"
+            color="white"
+        >
+            <ThemeProvider defaultTheme={RestructDarkTheme}>
+                <ViewNavigationProvider
+                    initialView={activeWorkspace.views.systemLandscape}
+                >
+                    <WorkspacePreview
+                        workspace={activeWorkspace}
+                        setWorkspace={(workspace) => {
+                            const newWorkspaces = [...workspaces];
+                            newWorkspaces[activeWorkspaceIndex] =
+                                workspace as any;
+                            setWorkspaces(newWorkspaces);
+                        }}
+                        availableWorkspaces={workspaces.map(
+                            (workspace, index) => ({
+                                id: String(index),
+                                name:
+                                    workspace.name || `Workspace ${index + 1}`,
+                            })
+                        )}
+                        onWorkspaceSelect={(index) =>
+                            setActiveWorkspaceIndex(Number(index))
+                        }
+                    />
+                </ViewNavigationProvider>
+            </ThemeProvider>
+        </Flex>
     );
 };

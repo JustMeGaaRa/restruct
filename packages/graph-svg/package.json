@@ -36,7 +36,6 @@
         "vitest": "^2.1.1"
     },
     "peerDependencies": {
-        "@types/react": "^19.0.0",
         "react": "^19.0.0",
         "react-dom": "^19.0.0"
     }

@@ -12,7 +12,6 @@ import {
 } from "@restruct/structurizr-dsl";
 import { Diagram } from "../types";
 import { dagreeGraph } from "./dagree";
-import { cytoscapeGraph } from "./cytoscape";
 import { IViewMetadata } from "../containers";
 import { GraphAdapter } from "./graph";
 
@@ -228,14 +227,6 @@ function buildGraphFromDeploymentDiagram(
         buildGraphFromDeploymentNode(graphAdapter, node);
     });
 
-    diagram.supportingElements.forEach((element) => {
-        graphAdapter.setNode(element.identifier, {
-            id: element.identifier,
-            ...defaultSize,
-            ...defaultPosition,
-        });
-    });
-
     diagram.relationships.forEach((relationship) => {
         graphAdapter.setEdge(relationship.identifier, {
             id: relationship.identifier,
@@ -352,11 +343,9 @@ function createDiagramGraph(
 import { elkjsGraph } from "./elkjs";
 
 function createLayoutAlgorithm(
-    algorithm: "cose" | "layered" | "elkjs"
+    algorithm: "layered" | "elkjs"
 ): GraphAdapter<IElement, IRelationship> {
     switch (algorithm) {
-        case "cose":
-            return cytoscapeGraph();
         case "layered":
             return dagreeGraph();
         case "elkjs":
@@ -367,7 +356,7 @@ function createLayoutAlgorithm(
 export const autolayoutDiagram = (
     diagram: Diagram,
     viewType: ViewType,
-    algorithm: "cose" | "layered" | "elkjs" = "elkjs"
+    algorithm: "layered" | "elkjs" = "elkjs"
 ): Promise<IViewMetadata> => {
     return createDiagramGraph(
         viewType,

@@ -6,7 +6,7 @@ import { ViewType } from "./ViewType";
 
 export interface ISystemLandscapeView {
     type: ViewType.SystemLandscape;
-    key?: string;
+    key: string;
     title?: string;
     description?: string;
     include?: Array<string | All>;

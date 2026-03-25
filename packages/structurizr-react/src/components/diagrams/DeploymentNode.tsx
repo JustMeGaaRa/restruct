@@ -1,10 +1,4 @@
-import {
-    FC,
-    PropsWithChildren,
-    useLayoutEffect,
-    useRef,
-    useState,
-} from "react";
+import { FC, PropsWithChildren } from "react";
 import { GroupNode, Text } from "@restruct/react-svg";
 import { useViewMetadata } from "../../containers";
 import {
@@ -36,50 +30,36 @@ export const DeploymentNode: FC<
         ELEMENT_DEPLOYMENT_NODE_DEFAULT_WIDTH
     );
 
-    const groupRef = useRef<SVGGElement>(null);
-    const [size, setSize] = useState({
-        height: ELEMENT_DEPLOYMENT_NODE_DEFAULT_HEIGHT,
-        width: ELEMENT_DEPLOYMENT_NODE_DEFAULT_WIDTH,
-    });
-
-    useLayoutEffect(() => {
-        if (groupRef.current) {
-            const { height, width } = groupRef.current.getBBox();
-            setSize({ height, width });
-        }
-    }, [bbox, children]);
-
     return (
         <GroupNode
-            ref={groupRef}
             id={value.identifier}
             className={"structurizr__element-deployment-node"}
             position={{ x, y }}
-            height={height ?? size.height}
-            width={width ?? size.width}
+            height={height}
+            width={width}
             backgroundColor={"none"}
             borderColor={"#535354"}
             borderDash={false}
         >
             <Text
                 x={borderWidth + padding}
-                y={(height ?? size.height) - borderWidth - padding - 16}
+                y={height - borderWidth - padding - 16}
                 fontSize={14}
                 fontFamily={"Inter"}
                 fill={"#E8E8E8"}
                 style={{ whiteSpace: "pre" }}
-                width={(width ?? size.width) - padding * 2 - borderWidth * 2}
+                width={width - padding * 2 - borderWidth * 2}
             >
                 {value.name}
             </Text>
             <Text
                 x={borderWidth + padding}
-                y={(height ?? size.height) - borderWidth - padding}
+                y={height - borderWidth - padding}
                 fontSize={11}
                 fontFamily={"Inter"}
                 fill={"#A1A2A3"}
                 style={{ whiteSpace: "pre" }}
-                width={(width ?? size.width) - padding * 2 - borderWidth * 2}
+                width={width - padding * 2 - borderWidth * 2}
             >
                 {value.type}
             </Text>

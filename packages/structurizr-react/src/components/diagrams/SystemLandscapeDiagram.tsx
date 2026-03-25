@@ -5,6 +5,7 @@ import {
     createSystemLandscapeDiagram,
     isPerson,
     isSoftwareSystem,
+    findOrDefault,
     createDefaultSystemLandscapeView,
 } from "@restruct/structurizr-dsl";
 import { useViewport } from "@restruct/react-svg";
@@ -13,6 +14,7 @@ import {
     IViewMetadata,
     ViewMetadataProvider,
     useWorkspace,
+    useWorkspaceDiagram,
 } from "../../containers";
 import { ZoomCallback } from "../../types";
 import { autolayoutDiagram } from "../../utils";
@@ -23,18 +25,22 @@ import { Group } from "./Group";
 
 export const SystemLandscapeDiagram: FC<
     PropsWithChildren<{
-        value?: ISystemLandscapeView;
+        value: ISystemLandscapeView;
         metadata?: IViewMetadata;
         onZoomInClick?: ZoomCallback;
         onZoomOutClick?: ZoomCallback;
     }>
 > = ({ children, value, onZoomInClick, onZoomOutClick }) => {
     const { workspace } = useWorkspace();
+    const { diagrams: precalculatedDiagrams, metadata: precalculatedMetadata } =
+        useWorkspaceDiagram();
     const { autofit, fitBounds, getBounds } = useViewport();
+
     const [diagram, setDiagram] = useState<ISystemLandscapeDiagram | null>(
         null
     );
     const [metadata, setMetadata] = useState<IViewMetadata>({
+        key: "",
         elements: {},
         relationships: {},
     });
@@ -42,10 +48,11 @@ export const SystemLandscapeDiagram: FC<
     // TODO(diagram): consider using Suspese and use hook while building diagram to avoid UI flicker
     useEffect(() => {
         if (workspace) {
-            const systemLandscapeView =
-                [workspace.views.systemLandscape].find(
-                    (x) => x?.key === value?.key
-                ) ?? createDefaultSystemLandscapeView();
+            const systemLandscapeView = findOrDefault(
+                workspace,
+                value,
+                createDefaultSystemLandscapeView()
+            );
 
             const diagram = createSystemLandscapeDiagram(
                 workspace,
@@ -57,7 +64,7 @@ export const SystemLandscapeDiagram: FC<
                 setMetadata
             );
         }
-    }, [workspace, onZoomInClick, onZoomOutClick, value?.key]);
+    }, [workspace, value, onZoomInClick, onZoomOutClick]);
 
     useEffect(() => {
         if (autofit) {
@@ -65,9 +72,17 @@ export const SystemLandscapeDiagram: FC<
         }
     }, [autofit, metadata, fitBounds, getBounds]);
 
+    const targetDiagram =
+        (precalculatedDiagrams.get(value.key) as ISystemLandscapeDiagram) ??
+        diagram;
+    const targetMetadata = precalculatedMetadata.get(value.key) ?? metadata;
+
     return (
-        <ViewMetadataProvider metadata={metadata} setMetadata={setMetadata}>
-            {diagram?.scope.groups.map((group) => (
+        <ViewMetadataProvider
+            metadata={targetMetadata}
+            setMetadata={setMetadata}
+        >
+            {targetDiagram?.scope.groups.map((group) => (
                 <Group key={group.identifier} value={group}>
                     {group.people.filter(isPerson).map((element) => (
                         <Person key={element.identifier} value={element} />
@@ -82,13 +97,13 @@ export const SystemLandscapeDiagram: FC<
                         ))}
                 </Group>
             ))}
-            {diagram?.scope.people.map((element) => (
+            {targetDiagram?.scope.people.map((element) => (
                 <Person key={element.identifier} value={element} />
             ))}
-            {diagram?.scope.softwareSystems.map((element) => (
+            {targetDiagram?.scope.softwareSystems.map((element) => (
                 <SoftwareSystem key={element.identifier} value={element} />
             ))}
-            {diagram?.relationships.map((relationship) => (
+            {targetDiagram?.relationships.map((relationship) => (
                 <Relationship
                     key={relationship.identifier}
                     value={relationship}

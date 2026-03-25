@@ -24,10 +24,10 @@ import {
 import { useWorkspace } from "./WorkspaceProvider";
 
 export const ViewNavigationContext = createContext<{
-    currentView: View | null;
-    setCurrentView: Dispatch<SetStateAction<View | null>>;
+    currentView: View | undefined;
+    setCurrentView: Dispatch<SetStateAction<View | undefined>>;
 }>({
-    currentView: null,
+    currentView: undefined,
     setCurrentView: () => {
         console.debug(
             "WorkspaceNavigationContext: setCurrentView not implemented"
@@ -35,8 +35,12 @@ export const ViewNavigationContext = createContext<{
     },
 });
 
-export const ViewNavigationProvider: FC<PropsWithChildren> = ({ children }) => {
-    const [currentView, setCurrentView] = useState<View | null>(null);
+export const ViewNavigationProvider: FC<
+    PropsWithChildren<{
+        initialView?: View | undefined;
+    }>
+> = ({ children, initialView }) => {
+    const [currentView, setCurrentView] = useState(initialView);
 
     return (
         <ViewNavigationContext.Provider value={{ currentView, setCurrentView }}>

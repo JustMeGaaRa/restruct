@@ -1,5 +1,5 @@
 import { IWorkspace, ITheme, ITag } from "../interfaces";
-import { Style } from "../models";
+import { Style, Theme } from "../models";
 
 export function mergeStyles<
     TStyleProperties extends Record<string, unknown>,
@@ -61,8 +61,14 @@ export const applyTheme = (
     };
 };
 
-export const fetchTheme = async (url: string): Promise<ITheme> => {
-    const themeResponse = await fetch(url);
-    if (!themeResponse.ok) throw new Error(`Theme not found`);
-    return (await themeResponse.json()) as ITheme;
+export const fetchTheme = async (url: string) => {
+    const response = await fetch(url);
+    const theme = await response.json();
+    return new Theme(theme).toSnapshot();
+};
+
+export const fetchThemes = async (url?: string | string[]) => {
+    const urlArray = Array.isArray(url) ? url : url ? [url] : [];
+    const themes = await Promise.all(urlArray.map(fetchTheme));
+    return themes;
 };

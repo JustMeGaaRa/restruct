@@ -10,6 +10,7 @@ import {
     IViewMetadata,
     useWorkspace,
     ViewMetadataProvider,
+    useWorkspaceDiagram,
 } from "../../containers";
 import { useEffect } from "react";
 import { autolayoutDiagram } from "../../utils";
@@ -22,9 +23,13 @@ export const ModelDiagram: FC<
     }>
 > = ({ children, value }) => {
     const { workspace } = useWorkspace();
+    const { diagrams: precalculatedDiagrams, metadata: precalculatedMetadata } =
+        useWorkspaceDiagram();
     const { autofit, fitBounds, getBounds } = useViewport();
+
     const [diagram, setDiagram] = useState<IModelDiagram | null>(null);
     const [metadata, setMetadata] = useState<IViewMetadata>({
+        key: "",
         elements: {},
         relationships: {},
     });
@@ -46,12 +51,19 @@ export const ModelDiagram: FC<
         }
     }, [autofit, metadata, fitBounds, getBounds]);
 
+    const targetDiagram =
+        (precalculatedDiagrams.get(value.key) as IModelDiagram) ?? diagram;
+    const targetMetadata = precalculatedMetadata.get(value.key) ?? metadata;
+
     return (
-        <ViewMetadataProvider metadata={metadata} setMetadata={setMetadata}>
-            {diagram?.supportingElements.map((element) => (
+        <ViewMetadataProvider
+            metadata={targetMetadata}
+            setMetadata={setMetadata}
+        >
+            {targetDiagram?.supportingElements.map((element) => (
                 <ElementWrapper key={element.identifier} value={element} />
             ))}
-            {diagram?.relationships.map((relationship) => (
+            {targetDiagram?.relationships.map((relationship) => (
                 <Relationship
                     key={relationship.identifier}
                     value={relationship}

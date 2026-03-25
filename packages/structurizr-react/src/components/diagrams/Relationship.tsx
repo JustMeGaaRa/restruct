@@ -1,9 +1,10 @@
-import { FC, useEffect, useState } from "react";
-import { createPortal } from "react-dom";
-import { Edge, MarkerType, Text } from "@restruct/react-svg";
 import { ITag } from "@restruct/structurizr-dsl";
-import { useViewMetadata } from "../../containers";
-import { useThemeResolvedRelationshipStyle } from "../../hooks";
+import { Edge, MarkerType, Text } from "@restruct/react-svg";
+import { FC } from "react";
+import {
+    useViewMetadata,
+    useThemeResolvedRelationshipStyle,
+} from "../../containers";
 
 export interface IRelationship {
     identifier: string;
@@ -15,24 +16,36 @@ export interface IRelationship {
 
 export const Relationship: FC<{ value: IRelationship }> = ({ value }) => {
     const { metadata } = useViewMetadata();
-    const [portalNode, setPortalNode] = useState<Element | null>(null);
-
-    useEffect(() => {
-        // TODO(viewport): use dom node from context provider
-        setPortalNode(
-            document.getElementsByClassName("graph__viewport-content").item(0)
-        );
-    }, []);
 
     const resolvedStyle = useThemeResolvedRelationshipStyle(value.tags);
     const color = resolvedStyle.color ?? "#E8E8E8";
     const thickness = resolvedStyle.thickness ?? 2;
+    const sourceBbox = metadata?.elements?.[value.sourceIdentifier];
+    const targetBbox = metadata?.elements?.[value.targetIdentifier];
 
+    // TODO: resolve an issue with relationship rendering issue when nested
+    // WARN: relationship is rendered incorrectly when nested because of absolute positioning
     return (
-        portalNode &&
-        createPortal(
+        sourceBbox &&
+        targetBbox && (
             <Edge
                 id={value.identifier}
+                source={{
+                    x: sourceBbox.x,
+                    y: sourceBbox.y,
+                    absoluteX: sourceBbox.absoluteX,
+                    absoluteY: sourceBbox.absoluteY,
+                    width: sourceBbox.width ?? 0,
+                    height: sourceBbox.height ?? 0,
+                }}
+                target={{
+                    x: targetBbox.x,
+                    y: targetBbox.y,
+                    absoluteX: targetBbox.absoluteX,
+                    absoluteY: targetBbox.absoluteY,
+                    width: targetBbox.width ?? 0,
+                    height: targetBbox.height ?? 0,
+                }}
                 sourceNodeId={value.sourceIdentifier}
                 targetNodeId={value.targetIdentifier}
                 points={metadata?.relationships?.[value.identifier]}
@@ -49,8 +62,7 @@ export const Relationship: FC<{ value: IRelationship }> = ({ value }) => {
                 >
                     {value.description}
                 </Text>
-            </Edge>,
-            portalNode
+            </Edge>
         )
     );
 };

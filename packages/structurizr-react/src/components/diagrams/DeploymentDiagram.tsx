@@ -5,6 +5,7 @@ import {
     IDeploymentView,
     ViewType,
     createDefaultDeploymentView,
+    findOrDefault,
 } from "@restruct/structurizr-dsl";
 import { useViewport } from "@restruct/react-svg";
 import { FC, PropsWithChildren, useEffect, useState } from "react";
@@ -12,6 +13,7 @@ import {
     IViewMetadata,
     ViewMetadataProvider,
     useWorkspace,
+    useWorkspaceDiagram,
 } from "../../containers";
 import { ZoomCallback } from "../../types";
 import { autolayoutDiagram } from "../../utils";
@@ -30,32 +32,31 @@ export const DeploymentDiagram: FC<
     }>
 > = ({ children, value, onZoomInClick, onZoomOutClick }) => {
     const { workspace } = useWorkspace();
+    const { diagrams: precalculatedDiagrams, metadata: precalculatedMetadata } =
+        useWorkspaceDiagram();
     const { autofit, fitBounds, getBounds } = useViewport();
+
     const [diagram, setDiagram] = useState<IDeploymentDiagram | null>(null);
     const [metadata, setMetadata] = useState<IViewMetadata>({
+        key: "",
         elements: {},
         relationships: {},
     });
 
     useEffect(() => {
         if (workspace) {
-            const deploymentView =
-                workspace.views.deployments.find((x) => x.key === value.key) ??
-                createDefaultDeploymentView();
+            const deploymentView = findOrDefault(
+                workspace,
+                value,
+                createDefaultDeploymentView()
+            );
 
             const diagram = createDeploymentDiagram(workspace, deploymentView);
             setDiagram(diagram);
 
             autolayoutDiagram(diagram, ViewType.Deployment).then(setMetadata);
         }
-    }, [
-        workspace,
-        value.key,
-        value.softwareSystemIdentifier,
-        value.environment,
-        onZoomInClick,
-        onZoomOutClick,
-    ]);
+    }, [workspace, value, onZoomInClick, onZoomOutClick]);
 
     useEffect(() => {
         if (autofit) {
@@ -63,16 +64,23 @@ export const DeploymentDiagram: FC<
         }
     }, [autofit, metadata, fitBounds, getBounds]);
 
+    const targetDiagram =
+        (precalculatedDiagrams.get(value.key) as IDeploymentDiagram) ?? diagram;
+    const targetMetadata = precalculatedMetadata.get(value.key) ?? metadata;
+
     return (
-        <ViewMetadataProvider metadata={metadata} setMetadata={setMetadata}>
-            {diagram?.scope &&
-                diagram?.scope.deploymentNodes.map((deploymentNode) => (
+        <ViewMetadataProvider
+            metadata={targetMetadata}
+            setMetadata={setMetadata}
+        >
+            {targetDiagram?.scope &&
+                targetDiagram?.scope.deploymentNodes.map((deploymentNode) => (
                     <DeploymentNodeRecursive
                         key={deploymentNode.identifier}
                         value={deploymentNode}
                     />
                 ))}
-            {diagram?.relationships.map((relationship) => (
+            {targetDiagram?.relationships.map((relationship) => (
                 <Relationship
                     key={relationship.identifier}
                     value={relationship}

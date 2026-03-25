@@ -1,10 +1,14 @@
 import { IWorkspace } from "@restruct/structurizr-dsl";
+import {
+    RestructDarkTheme,
+    ThemeProvider,
+    ViewNavigationProvider,
+} from "@restruct/structurizr-react";
 import { WorkspaceChannel, WorkspacePreview } from "@restruct/ui";
-import { useState, useEffect } from "react";
 import { Flex, Spinner, Text } from "@chakra-ui/react";
-import { RestructDarkTheme, ThemeProvider } from "@restruct/structurizr-react";
+import { useState, useEffect } from "react";
 
-// Injected by the build process or loaded via WebSocket
+// NOTE: Injected by the build process or loaded via WebSocket
 declare global {
     interface Window {
         __WORKSPACES__?: IWorkspace[];
@@ -46,7 +50,7 @@ export const App = () => {
                 bg="neutral.900"
                 color="white"
             >
-                <Spinner size="xl" />
+                <Spinner size="lg" color="white" mr={4} borderWidth="2px" />
                 <Text>Loading workspace...</Text>
             </Flex>
         );
@@ -55,20 +59,38 @@ export const App = () => {
     const activeWorkspace = workspaces[activeWorkspaceIndex] as IWorkspace;
 
     return (
-        <ThemeProvider defaultTheme={RestructDarkTheme}>
-            <WorkspacePreview
-                workspace={activeWorkspace}
-                setWorkspace={(newWs) => {
-                    const newWorkspaces = [...workspaces];
-                    newWorkspaces[activeWorkspaceIndex] = newWs;
-                    setWorkspaces(newWorkspaces);
-                }}
-                availableWorkspaces={workspaces.map((ws, i) => ({
-                    id: String(i),
-                    name: ws.name || `Workspace ${i + 1}`,
-                }))}
-                onWorkspaceSelect={(id) => setActiveWorkspaceIndex(Number(id))}
-            />
-        </ThemeProvider>
+        <Flex
+            alignItems="center"
+            justifyContent="center"
+            bg="neutral.900"
+            h="100vh"
+            w="100vw"
+            position="relative"
+            overflow="hidden"
+            flexDirection="column"
+        >
+            <ThemeProvider defaultTheme={RestructDarkTheme}>
+                <ViewNavigationProvider
+                    initialView={activeWorkspace.views.systemLandscape}
+                >
+                    <WorkspacePreview
+                        workspace={activeWorkspace}
+                        setWorkspace={(workspace) => {
+                            const newWorkspaces = [...workspaces];
+                            newWorkspaces[activeWorkspaceIndex] =
+                                workspace as any;
+                            setWorkspaces(newWorkspaces);
+                        }}
+                        availableWorkspaces={workspaces.map((ws, index) => ({
+                            id: String(index),
+                            name: ws.name || `Workspace ${index + 1}`,
+                        }))}
+                        onWorkspaceSelect={(index) =>
+                            setActiveWorkspaceIndex(Number(index))
+                        }
+                    />
+                </ViewNavigationProvider>
+            </ThemeProvider>
+        </Flex>
     );
 };

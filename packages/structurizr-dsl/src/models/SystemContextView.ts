@@ -13,7 +13,9 @@ export class SystemContextView implements ISupportSnapshot<ISystemContextView> {
         this.softwareSystemIdentifier = Identifier.parse(
             values.softwareSystemIdentifier
         );
-        this.key = values.key;
+        this.key =
+            values.key ??
+            `systemContextView_${this.softwareSystemIdentifier.toString()}`;
         this.description = values.description;
         this.include = values.include?.map((x) => Identifier.parse(x)) ?? [];
         this.exclude = values.exclude?.map((x) => Identifier.parse(x)) ?? [];
@@ -27,7 +29,7 @@ export class SystemContextView implements ISupportSnapshot<ISystemContextView> {
 
     public type: ViewType.SystemContext;
     public softwareSystemIdentifier: Identifier;
-    public key?: string;
+    public key: string;
     public include: Array<Identifier | All>;
     public exclude: Array<Identifier>;
     public autoLayout?: AutoLayout;

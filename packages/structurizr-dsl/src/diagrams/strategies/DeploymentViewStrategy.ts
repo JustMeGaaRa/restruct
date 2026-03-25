@@ -41,48 +41,26 @@ export class DeploymentViewStrategy
             | IContainer
         >
     ): void {
-        const {
-            getSoftwareSystemById,
-            getContainerById,
-            getImpliedRelationships,
-        } = createWorkspaceExplorer(this.model);
+        const { getImpliedRelationships } = createWorkspaceExplorer(this.model);
         const visitedElements = new Set<string>();
         const relationships = getImpliedRelationships(this.view);
 
         const visitDeploymentNode = (deploymentNode: IDeploymentNode) => {
             deploymentNode.infrastructureNodes?.forEach((node) => {
                 visitedElements.add(node.identifier);
-                visitor.visitSupportingElement?.(node);
             });
 
             deploymentNode.softwareSystemInstances?.forEach((instance) => {
-                const softwareSystem = getSoftwareSystemById(
-                    instance.softwareSystemIdentifier
-                )!;
-
                 visitedElements.add(instance.identifier!);
-                visitedElements.add(instance.softwareSystemIdentifier);
-
-                visitor.visitSupportingElement?.(softwareSystem);
-                visitor.visitSupportingElement?.(instance);
             });
 
             deploymentNode.containerInstances?.forEach((instance) => {
-                const container = getContainerById(
-                    instance.containerIdentifier
-                )!;
-
                 visitedElements.add(instance.identifier!);
-                visitedElements.add(instance.containerIdentifier);
-
-                visitor.visitSupportingElement?.(container);
-                visitor.visitSupportingElement?.(instance);
             });
 
             deploymentNode.deploymentNodes?.forEach(visitDeploymentNode);
 
             visitedElements.add(deploymentNode.identifier);
-            return visitor.visitSupportingElement?.(deploymentNode);
         };
 
         // TODO(deployment): handle the deployment view scoped to a specific software system instance
@@ -90,7 +68,9 @@ export class DeploymentViewStrategy
             this.model.deploymentEnvironments
                 .filter(
                     (deploymentEnvironment) =>
-                        deploymentEnvironment.name === this.view.environment
+                        deploymentEnvironment.name === this.view.environment ||
+                        deploymentEnvironment.identifier ===
+                            this.view.environment
                 )
                 .forEach((deploymentEnvironment) => {
                     visitedElements.add(deploymentEnvironment.identifier);

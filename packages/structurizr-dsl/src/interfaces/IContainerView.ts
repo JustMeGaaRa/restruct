@@ -6,7 +6,7 @@ import { IAnimation } from "./IAnimation";
 export interface IContainerView {
     type: ViewType.Container;
     softwareSystemIdentifier: string;
-    key?: string;
+    key: string;
     include?: Array<string>;
     exclude?: Array<string>;
     autoLayout?: IAutoLayout;

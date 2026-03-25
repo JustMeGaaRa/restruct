@@ -15,7 +15,6 @@ import {
     SetStateAction,
     useContext,
     useMemo,
-    useState,
     ReactNode,
 } from "react";
 
@@ -40,15 +39,10 @@ export const WorkspaceProvider: FC<
         ) => ReactNode;
     }>
 > = ({ children, workspace, setWorkspace, renderElementOverlay }) => {
-    const [workspaceDomNode, setWorkspaceDomNode] =
-        useState<HTMLDivElement | null>(null);
-
     return (
         <WorkspaceContext.Provider
             value={{
-                workspaceDomNode,
                 workspace,
-                setWorkspaceDomNode,
                 setWorkspace,
                 renderElementOverlay,
             }}
@@ -59,9 +53,7 @@ export const WorkspaceProvider: FC<
 };
 
 export const WorkspaceContext = createContext<{
-    workspaceDomNode: HTMLDivElement | null;
     workspace: IWorkspace | null;
-    setWorkspaceDomNode: (domNode: HTMLDivElement | null) => void;
     setWorkspace: Dispatch<SetStateAction<IWorkspace>>;
     renderElementOverlay?: (
         element: WorkspaceElement,
@@ -74,10 +66,6 @@ export const WorkspaceContext = createContext<{
     ) => ReactNode;
 }>({
     workspace: null,
-    workspaceDomNode: null,
-    setWorkspaceDomNode: () => {
-        console.debug("Workspace Context: dummy setWorkspaceDomNode");
-    },
     setWorkspace: () => {
         console.debug("Workspace Context: dummy setWorkspace");
     },
@@ -85,10 +73,11 @@ export const WorkspaceContext = createContext<{
 
 export const useWorkspace = () => {
     const context = useContext(WorkspaceContext);
+
     const explorer = useMemo(() => {
         const workspace = context.workspace ?? createDefaultWorkspace();
         return createWorkspaceExplorer(workspace.model);
-    }, [context.workspace?.model]);
+    }, [context.workspace]);
 
     return {
         ...context,
