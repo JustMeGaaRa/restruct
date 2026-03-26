@@ -7,7 +7,7 @@ import {
 import { WorkspaceChannel, WorkspacePreview } from "@restruct/ui";
 import { Flex, Spinner, Text } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
-import { bigBankPlc } from "./workspace";
+import bigBankPlc from "./workspace";
 
 // NOTE: Injected by the build process or loaded via WebSocket
 declare global {

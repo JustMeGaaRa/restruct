@@ -6,7 +6,6 @@ import {
     IPerson,
     ISoftwareSystem,
     workspace,
-    workspaceRegistry,
 } from "@restruct/structurizr-dsl";
 
 let customer: IPerson;
@@ -31,7 +30,7 @@ let primaryDatabaseServer: IDeploymentNode;
 let secondaryDatabaseServer: IDeploymentNode;
 
 // Example usage of the fluent API with callbacks
-workspace("Big Bank plc.", "", (_) => {
+export default workspace("Big Bank plc.", "", (_) => {
     _.description("A default architecture for Big Bank plc.");
 
     _.model((_) => {
@@ -336,7 +335,3 @@ workspace("Big Bank plc.", "", (_) => {
         );
     });
 });
-
-const bigBankPlc = workspaceRegistry.getWorkspace("Big Bank plc.")!;
-
-export { bigBankPlc };

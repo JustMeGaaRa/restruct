@@ -1,15 +1,22 @@
 import { useState, useEffect } from "react";
 import { Github } from "lucide-react";
 import logo from "./assets/restruct.svg";
+import { Carousel } from "./components/Carousel";
+import { Card } from "./components/Card";
 
 function App() {
     const [isScrolled, setIsScrolled] = useState(false);
 
     const sdkComponents = [
         {
-            title: "VSCode Extension",
+            title: "Core Libraries",
             description:
-                "A specialized previewer for Structurizr DSL diagrams written in TypeScript. Visualize your architecture as you code with real-time feedback.",
+                "The dsl and react packages provide primitives for TypeScript diagrams and React components for custom apps.",
+        },
+        {
+            title: "Visual Studio Code Extension",
+            description:
+                "A specialized previewer for architecture-as-code diagrams written in TypeScript. Visualize your architecture as you code with real-time feedback.",
         },
         {
             title: "re:struct CLI",
@@ -17,14 +24,32 @@ function App() {
                 "A powerful toolchain to create projects from templates, build static standalone documentation, or serve live dev previews while you work.",
         },
         {
-            title: "Core Libraries",
-            description:
-                "The @restruct/structurizr-dsl and @restruct/structurizr-react packages provide primitives for TypeScript diagrams and React components for custom apps.",
-        },
-        {
             title: "Community Hub",
             description:
                 "A GitHub-backed repository for public architectures and a web app for online previews, allowing you to find and test templates without local cloning.",
+        },
+    ];
+
+    const manifestoPrinciples = [
+        {
+            title: "Data first, tool second",
+            description:
+                "We build OSS that keeps you in control of your architecture data. Tools are replaceable; your artifacts are the source of truth.",
+        },
+        {
+            title: "Open, portable standards",
+            description:
+                "We commit to open, portable formats and standards. Interoperability beats lock-in, and your work should outlive any single product.",
+        },
+        {
+            title: "Reuse what people trust",
+            description:
+                "We integrate with the tools you already use. Version control, editors, and existing workflows are first-class citizens—not afterthoughts.",
+        },
+        {
+            title: "Deliver anywhere",
+            description:
+                "We ship experiences that are universally accessible. Web-native delivery so the same project runs anywhere, for everyone.",
         },
     ];
 
@@ -127,29 +152,33 @@ function App() {
                     </p>
                 </div>
 
-                {/* Component Grid Overview */}
+                {/* Paginated Component Overview */}
                 <div className="container mx-auto relative z-10">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {sdkComponents.map((comp, idx) => (
-                            <div
-                                key={idx}
-                                className="glass-card p-8 flex flex-col items-start gap-4 group animate-fade-in-up"
-                                style={{
-                                    animationDelay: `${0.4 + idx * 0.1}s`,
-                                }}
-                            >
-                                <div className="text-4xl font-display font-bold text-[#E3FB51]/20 group-hover:text-[#E3FB51] transition-colors duration-700">
-                                    0{idx + 1}
-                                </div>
-                                <h3 className="text-xl font-display font-bold text-white group-hover:text-[#E3FB51] transition-colors duration-500">
-                                    {comp.title}
-                                </h3>
-                                <p className="text-white/40 text-sm leading-relaxed group-hover:text-white/60 transition-colors duration-500">
-                                    {comp.description}
-                                </p>
-                            </div>
-                        ))}
-                    </div>
+                    <Carousel
+                        pageLabels={["01. SDK Components", "02. The Manifesto"]}
+                        pages={[
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 auto-rows-fr">
+                                {sdkComponents.map((comp, idx) => (
+                                    <Card
+                                        key={idx}
+                                        index={idx + 1}
+                                        title={comp.title}
+                                        description={comp.description}
+                                    />
+                                ))}
+                            </div>,
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 auto-rows-fr">
+                                {manifestoPrinciples.map((principle, idx) => (
+                                    <Card
+                                        key={idx}
+                                        index={idx + 1}
+                                        title={principle.title}
+                                        description={principle.description}
+                                    />
+                                ))}
+                            </div>,
+                        ]}
+                    />
                 </div>
 
                 {/* Floating scroll indicator */}

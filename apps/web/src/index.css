@@ -21,6 +21,8 @@
             background-position: 0% 50%;
         }
     }
+
+    --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 :root {
@@ -57,7 +59,7 @@ body {
 
 header {
     border-bottom: 1px solid transparent;
-    transition: 
+    transition:
         padding 0.8s cubic-bezier(0.16, 1, 0.3, 1),
         background-color 0.8s cubic-bezier(0.16, 1, 0.3, 1),
         backdrop-filter 0.8s cubic-bezier(0.16, 1, 0.3, 1),
@@ -75,20 +77,14 @@ header {
     backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: 24px;
-    transition: 
+    transition:
         background-color 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-        border-color 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-        transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-        box-shadow 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        border-color 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .glass-card:hover {
     background: rgba(255, 255, 255, 0.06);
     border-color: rgba(227, 251, 81, 0.4);
-    transform: translateY(-8px) scale(1.01);
-    box-shadow: 
-        0 20px 40px -15px rgba(0, 0, 0, 0.5),
-        0 0 20px 0 rgba(227, 251, 81, 0.05);
 }
 
 /* Custom Animations */
@@ -165,9 +161,9 @@ header {
     animation: fadeIn 1s ease-out both;
 }
 
-a, 
+a,
 button {
-    transition: 
+    transition:
         color 0.5s cubic-bezier(0.16, 1, 0.3, 1),
         background-color 0.5s cubic-bezier(0.16, 1, 0.3, 1),
         border-color 0.5s cubic-bezier(0.16, 1, 0.3, 1),
