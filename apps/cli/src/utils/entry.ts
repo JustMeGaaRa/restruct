@@ -33,6 +33,8 @@ export function detectModuleEntry(cwd: string): string {
         "workspace.ts",
         "workspaces/index.ts",
         "workspaces/workspace.ts",
+        "workspace/index.ts",
+        "workspace/workspace.ts",
     ];
 
     for (const fallback of fallbacks) {
@@ -52,7 +54,7 @@ export function detectModuleEntry(cwd: string): string {
             checkedPaths.map((p) => `  • ${p}`).join("\n") +
             `\n\nHints:\n` +
             `  • Are you running this command in the correct directory?\n` +
-            `  • Create an entry point file at ./workspaces/index.ts\n` +
+            `  • Create an entry point file at ./workspaces/index.ts or ./workspace/index.ts\n` +
             `  • Or specify a "source" or "main" field in your package.json.`
     );
 }

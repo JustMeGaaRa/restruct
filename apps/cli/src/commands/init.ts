@@ -76,7 +76,10 @@ export const initCommand = async (name?: string) => {
             spaces: 4,
         });
 
-        // Create workspace.ts
+        // Create workspaces/index.ts
+        const workspacesDir = path.join(projectPath, "workspaces");
+        fs.ensureDirSync(workspacesDir);
+
         const workspaceContent = `import { workspace } from "@restruct/structurizr-dsl";
 
 workspace("Untitled Workspace", "", (_) => {
@@ -85,7 +88,7 @@ workspace("Untitled Workspace", "", (_) => {
 `;
 
         fs.writeFileSync(
-            path.join(projectPath, "workspaces/index.ts"),
+            path.join(workspacesDir, "index.ts"),
             workspaceContent
         );
 
@@ -98,6 +101,36 @@ dist
             path.join(projectPath, ".gitignore"),
             gitignoreContent
         );
+
+        // Create README.md
+        const readmeContent = `# ${projectName}
+
+Architecture documentation using [re:struct](https://github.com/JustMeGaaRa/restruct).
+
+## Getting Started
+
+1.  **Install dependencies:**
+    \`\`\`bash
+    npm install
+    \`\`\`
+
+2.  **Start development server:**
+    \`\`\`bash
+    npm run serve
+    \`\`\`
+
+3.  **Build static site:**
+    \`\`\`bash
+    npm run build
+    \`\`\`
+
+## Project Structure
+
+-   \`workspaces/\`: Entry point for your architecture definitions.
+-   \`dist/\`: Generated static site.
+-   \`exports/\`: Exported workspace files (JSON, DSL, SVG).
+`;
+        fs.writeFileSync(path.join(projectPath, "README.md"), readmeContent);
 
         spinner.succeed(
             chalk.green(`Project ${projectName} created successfully!`)
