@@ -61,20 +61,20 @@ export const elkjsGraph = (): GraphAdapter<
                 "elk.layered.mergeEdges": "true",
 
                 // SPACING:
-                // Vertical separation between nodes.
-                "elk.spacing.nodeNode": "200",
                 // Horizontal separation (length of edges). Critical for label visibility.
+                "elk.spacing.nodeNode": "200",
+                // Vertical separation between nodes.
                 "elk.layered.spacing.nodeNodeBetweenLayers": "200",
                 // Distance between parallel edge segments to prevent overlap/coincidence.
                 "elk.spacing.edgeEdge": "20",
                 // Distance between an edge and a node it does not connect to.
-                "elk.spacing.edgeNode": "20",
+                "elk.spacing.edgeNode": "100",
 
                 // NODE PLACEMENT:
                 // BRANDES_KOEPF produces straighter vertical lines and balanced trees
                 // compared to NETWORK_SIMPLEX.
                 "elk.layered.nodePlacement.strategy": "BRANDES_KOEPF",
-                "elk.layered.nodePlacement.bk.fixedAlignment": "BALANCED",
+                "elk.layered.nodePlacement.bk.fixedAlignment": "RIGHTDOWN",
 
                 "org.eclipse.elk.padding":
                     "[top=25,left=25,bottom=60,right=25]",
@@ -162,6 +162,7 @@ export const elkjsGraph = (): GraphAdapter<
             extractPositions(layoutedGraph);
 
             return {
+                key: "",
                 elements,
                 relationships: {},
             };
