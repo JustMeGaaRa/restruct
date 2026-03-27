@@ -2,7 +2,7 @@
     "name": "@restruct/vscode-extension",
     "displayName": "Restruct",
     "description": "An extension for develpers to write and preview the architecture models and diagrams using structurizr workspace structure.",
-    "version": "0.1.0-alpha.0",
+    "version": "0.2.0",
     "engines": {
         "vscode": "^1.94.0"
     },

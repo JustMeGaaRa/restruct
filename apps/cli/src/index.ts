@@ -12,7 +12,7 @@ program
     .description(
         "re:struct cli - tool to create and manage architecture as a code projects"
     )
-    .version("0.1.0-alpha.0");
+    .version("0.2.0");
 
 program.addCommand(createInitCommand());
 program.addCommand(createBuildCommand());
