@@ -35,7 +35,12 @@ async function main() {
         sourcesContent: false,
         platform: "node",
         outfile: "dist/extension.js",
-        external: ["vscode", "ts-node", "typescript"],
+        external: [
+            "vscode",
+            "esbuild",
+            "@restruct/structurizr-dsl",
+            "@restruct/structurizr-react",
+        ],
         logLevel: "silent",
         plugins: [
             /* add to the end of plugins array */

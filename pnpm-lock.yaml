@@ -190,6 +190,15 @@ importers:
 
   apps/vscode-extension:
     dependencies:
+      '@restruct/structurizr-dsl':
+        specifier: workspace:*
+        version: link:../../packages/structurizr-dsl
+      '@restruct/structurizr-react':
+        specifier: workspace:*
+        version: link:../../packages/structurizr-react
+      esbuild:
+        specifier: ^0.24.0
+        version: 0.24.2
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@20.11.24)(typescript@5.6.2)
@@ -224,9 +233,6 @@ importers:
       '@vscode/test-electron':
         specifier: ^2.4.1
         version: 2.5.2
-      esbuild:
-        specifier: ^0.24.0
-        version: 0.24.2
       eslint:
         specifier: ^9.11.1
         version: 9.20.0(jiti@2.6.1)

@@ -1,8 +1,8 @@
 import * as vscode from "vscode";
-import * as cp from "child_process";
 import * as path from "path";
 import * as fs from "fs";
 import { WebSocketServer, WebSocket } from "ws";
+import { build } from "esbuild";
 
 let currentPanel: vscode.WebviewPanel | undefined = undefined;
 let outputChannel: vscode.OutputChannel | undefined = undefined;
@@ -199,7 +199,7 @@ async function runScript(filePath: string) {
         return;
     }
 
-    outputChannel?.appendLine(`[Script] Running for workspace of: ${filePath}`);
+    outputChannel?.appendLine(`[Script] Running for workspace: ${filePath}`);
 
     const workspaceFolder = vscode.workspace.getWorkspaceFolder(
         vscode.Uri.file(filePath)
@@ -213,22 +213,11 @@ async function runScript(filePath: string) {
 
     const dir = workspaceFolder.uri.fsPath;
 
-    // Find all .ts files in the workspace (excluding typical build/module folders)
-    const tsFilesUri = await vscode.workspace.findFiles(
-        new vscode.RelativePattern(workspaceFolder, "**/*.ts"),
-        new vscode.RelativePattern(
-            workspaceFolder,
-            "{node_modules,dist,out,build,.git}/**"
-        ) // Exclude overrides
-    );
-
-    const tsFiles = tsFilesUri.map((uri) => uri.fsPath);
-
-    // Collect dirty (unsaved) file contents to inject via hook
-    const dirtyFiles: Record<string, string> = {};
+    // Collect dirty (unsaved) file contents to inject via esbuild plugin
+    const dirtyFiles = new Map<string, string>();
     vscode.workspace.textDocuments.forEach((doc) => {
         if (doc.isDirty && doc.fileName.endsWith(".ts")) {
-            dirtyFiles[path.resolve(doc.fileName)] = doc.getText();
+            dirtyFiles.set(path.resolve(doc.fileName), doc.getText());
         }
     });
 
@@ -237,172 +226,78 @@ async function runScript(filePath: string) {
         (d) => d.fileName === filePath
     );
     if (activeDoc) {
-        dirtyFiles[path.resolve(activeDoc.fileName)] = activeDoc.getText();
+        dirtyFiles.set(path.resolve(activeDoc.fileName), activeDoc.getText());
     }
 
-    const tempFilePath = path.join(dir, ".restruct_preview_runner.js");
-    outputChannel?.appendLine(`[Script] Temp file: ${tempFilePath}`);
+    const importPath = filePath.replace(/\\/g, "/");
+    const entryContent = `
+import "${importPath}";
+import { workspaceRegistry } from "@restruct/structurizr-dsl";
 
-    // Resolve typescript from the extension's dependencies
-    let typescriptPath: string;
+const workspaces = workspaceRegistry.getWorkspaces();
+export const workspaceSnapshots = workspaces.map(ws => ws.toSnapshot ? ws.toSnapshot() : ws);
+`;
+
     try {
-        typescriptPath = require.resolve("typescript");
-    } catch (e) {
-        outputChannel?.appendLine("Could not find typescript");
-        updateWebviewError(
-            "Could not find typescript. Please ensure it is installed in the extension."
+        const bundleResult = await build({
+            stdin: {
+                contents: entryContent,
+                resolveDir: dir,
+                loader: "ts",
+            },
+            bundle: true,
+            write: false,
+            platform: "node",
+            format: "iife",
+            globalName: "serverBundle",
+            external: ["vscode"],
+            minify: false,
+            plugins: [
+                {
+                    name: "restruct-dirty",
+                    setup(build) {
+                        build.onLoad({ filter: /\.ts$/ }, async (args) => {
+                            const content = dirtyFiles.get(
+                                path.resolve(args.path)
+                            );
+                            if (content !== undefined) {
+                                return { contents: content, loader: "ts" };
+                            }
+                            return null; // Fallback to fs
+                        });
+                    },
+                },
+            ],
+        });
+
+        const bundleCode = bundleResult.outputFiles[0]?.text ?? "";
+
+        // Evaluate in a context
+        const func = new Function(
+            "window",
+            bundleCode + "; return serverBundle;"
         );
-        return;
-    }
+        const exports = func({});
 
-    // Creating the runner script
-    const wrapperScript = `
-        const fs = require('fs');
-        const path = require('path');
-        
-        const dirtyFiles = ${JSON.stringify(dirtyFiles)};
-        const dirtyFilesMap = {};
-        for (const [key, value] of Object.entries(dirtyFiles)) {
-            dirtyFilesMap[path.resolve(key)] = value;
-        }
-
-        const originalReadFileSync = fs.readFileSync;
-        fs.readFileSync = function(pathArg, options) {
-            const resolvedPath = path.resolve(pathArg);
-            if (dirtyFilesMap[resolvedPath] !== undefined) {
-                const content = dirtyFilesMap[resolvedPath];
-                if (options === 'utf8' || (options && options.encoding === 'utf8')) {
-                    return content;
-                } else if (!options || typeof options === 'object') {
-                    return Buffer.from(content, 'utf8');
-                }
-            }
-            return originalReadFileSync.apply(this, arguments);
-        };
-
-        const ts = require('${typescriptPath.replace(/\\/g, "\\\\")}');
-        require.extensions['.ts'] = function(module, filename) {
-            const content = fs.readFileSync(filename, 'utf8');
-            const result = ts.transpileModule(content, {
-                fileName: filename,
-                compilerOptions: {
-                    module: ts.ModuleKind.CommonJS,
-                    moduleResolution: ts.ModuleResolutionKind.NodeJs,
-                    esModuleInterop: true,
-                    allowSyntheticDefaultImports: true,
-                    target: ts.ScriptTarget.ES2022
-                }
-            });
-            module._compile(result.outputText, filename);
-        };
-
-        const tsFiles = ${JSON.stringify(tsFiles)};
-        for (const file of tsFiles) {
-            try {
-                require(file);
-            } catch(e) {
-                console.error('Failed to require file:', file, '\\n', e);
-            }
-        }
-
-        try {
-            const { workspaceRegistry } = require('@restruct/structurizr-dsl');
-            const workspaces = workspaceRegistry.getWorkspaces();
-            const workspaceSnapshots = workspaces.map((ws) => ws.toSnapshot ? ws.toSnapshot() : ws);
-            console.log('<START_OUTPUT>');
-            console.log(JSON.stringify(workspaceSnapshots));
-            console.log('<END_OUTPUT>');
-        } catch (e) {
-            console.error('Failed to get workspace snapshots:', e);
-        }
-    `;
-
-    try {
-        fs.writeFileSync(tempFilePath, wrapperScript);
-    } catch (e) {
-        outputChannel?.appendLine(`Failed to write temp file: ${e}`);
-        return;
-    }
-
-    const child = cp.spawn("node", [tempFilePath], {
-        cwd: dir,
-        env: { ...process.env, TS_NODE_TRANSPILE_ONLY: "true" }, // Pass environment variables
-    });
-
-    let output = "";
-    let errorOutput = "";
-
-    child.stdout.on("data", (data) => {
-        output += data.toString();
-    });
-
-    child.stderr.on("data", (data) => {
-        errorOutput += data.toString();
-        outputChannel?.append(data.toString());
-    });
-
-    child.on("close", (code) => {
-        // Cleanup temp file
-        try {
-            if (fs.existsSync(tempFilePath)) {
-                fs.unlinkSync(tempFilePath);
-            }
-        } catch (e) {
-            console.error("Failed to delete temp file", e);
-        }
-
-        if (code !== 0) {
-            outputChannel?.appendLine(`Process exited with code ${code}`);
-            updateWebviewError(
-                errorOutput || `Process exited with code ${code}`
-            );
-            return;
-        }
-
-        // Parse output
-        const startMarker = "<START_OUTPUT>";
-        const endMarker = "<END_OUTPUT>";
-        const startIndex = output.indexOf(startMarker);
-        const endIndex = output.indexOf(endMarker);
-
-        if (startIndex !== -1 && endIndex !== -1) {
-            const jsonString = output
-                .substring(startIndex + startMarker.length, endIndex)
-                .trim();
-            try {
-                const data = JSON.parse(jsonString);
-                if (data && Array.isArray(data)) {
-                    outputChannel?.appendLine(
-                        `[Script] Parsed ${data.length} workspace(s) successfully`
-                    );
-                    currentWorkspaces = data;
-                    broadcastWorkspaces(currentWorkspaces);
-                } else {
-                    outputChannel?.appendLine(
-                        "[Script] JSON parsed but result is not an array"
-                    );
-                    updateWebviewError(
-                        "Workspace snapshot not found. Make sure you use @restruct/structurizr-dsl."
-                    );
-                }
-            } catch (e) {
-                outputChannel?.appendLine(
-                    `[Script] Failed to parse JSON: ${e}`
-                );
-                updateWebviewError("Failed to parse JSON output.");
-            }
-        } else {
-            // If we didn't find markers, maybe there was no output or it failed silently before printing markers
+        if (exports && exports.workspaceSnapshots) {
+            currentWorkspaces = exports.workspaceSnapshots;
             outputChannel?.appendLine(
-                `[Script] Output markers not found. stdout snippet: ${output.slice(0, 200)}`
+                `[Script] Generated ${exports.workspaceSnapshots.length} workspace(s) successfully`
             );
-            if (errorOutput) {
-                updateWebviewError(errorOutput);
-            } else {
-                updateWebviewError("No output received from script.");
-            }
+            broadcastWorkspaces(exports.workspaceSnapshots);
+        } else {
+            outputChannel?.appendLine(
+                "[Script] No workspaceSnapshots found in bundle exports"
+            );
+            updateWebviewError(
+                "Workspace snapshot not found. Make sure you use @restruct/structurizr-dsl."
+            );
         }
-    });
+    } catch (err: any) {
+        console.error("Bundle failed", err);
+        outputChannel?.appendLine(`[Script] Bundle error: ${err.message}`);
+        updateWebviewError(err.message || String(err));
+    }
 }
 
 function broadcastWorkspaces(workspaces: any[]) {

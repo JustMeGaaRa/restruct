@@ -54,8 +54,9 @@
         "typescript": "^5.6.2"
     },
     "dependencies": {
-        "ts-node": "^10.9.2",
-        "typescript": "^5.6.2",
+        "@restruct/structurizr-dsl": "workspace:*",
+        "@restruct/structurizr-react": "workspace:*",
+        "esbuild": "^0.24.0",
         "ws": "^8.16.0"
     }
 }
