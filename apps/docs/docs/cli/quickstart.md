@@ -21,13 +21,21 @@ restruct init
 ## Developer preview
 
 ```bash
-restruct serve
+# Start the development server with live updates
+restruct dev
 ```
 
 ## Export your workspaces
 
 ```bash
+# Export as pretty-printed JSON
 restruct export --pretty
+
+# Or export views as SVG images
+restruct export -f svg
 ```
 
-This will generate workspace JSON files in the `exports` directory, including Git metadata for each workspace (authors and last modified dates).
+This will generate files in the `exports` directory:
+- **JSON**: Complete workspace model with Git metadata (authors, timestamps)
+- **SVG**: Individual image files for every architecture view
+- **DSL**: Original Structurizr DSL compatible output

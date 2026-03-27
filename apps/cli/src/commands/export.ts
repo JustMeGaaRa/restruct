@@ -182,6 +182,7 @@ export function createExportCommand(): Command {
                 .default("json" satisfies OutputFormat)
         )
         .option("-p, --pretty", "Pretty-print output", false)
+        .option("-o, --output <dir>", "Output directory")
         .option("--meta", "Include metadata", true)
         .action(exportCommand);
 

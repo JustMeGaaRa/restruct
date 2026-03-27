@@ -2,7 +2,7 @@
 import { Command } from "commander";
 import { createInitCommand } from "./commands/init.js";
 import { createBuildCommand } from "./commands/build.js";
-import { createServeCommand } from "./commands/serve.js";
+import { createDevCommand } from "./commands/dev.js";
 import { createExportCommand } from "./commands/export.js";
 
 const program = new Command();
@@ -16,7 +16,7 @@ program
 
 program.addCommand(createInitCommand());
 program.addCommand(createBuildCommand());
-program.addCommand(createServeCommand());
+program.addCommand(createDevCommand());
 program.addCommand(createExportCommand());
 
 program.parse();

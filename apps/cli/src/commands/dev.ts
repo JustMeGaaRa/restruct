@@ -13,7 +13,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const packageRoot = path.resolve(__dirname, "../");
 
-const serveCommand = async () => {
+const devServerCommand = async () => {
     const cwd = process.cwd();
     let entryPoint: string;
     try {
@@ -171,10 +171,12 @@ export const workspaceSnapshots = workspaces.map(ws => ws.toSnapshot ? ws.toSnap
     server.printUrls();
 };
 
-export function createServeCommand(): Command {
-    const cmd = new Command("serve");
+export function createDevCommand(): Command {
+    const cmd = new Command("dev");
 
-    cmd.description("Serve the project with live updates").action(serveCommand);
+    cmd.description(
+        "Start the dev server for the project with live updates"
+    ).action(devServerCommand);
 
     return cmd;
 }

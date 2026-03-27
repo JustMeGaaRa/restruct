@@ -20,19 +20,10 @@
         "commands": [
             {
                 "command": "restruct.preview",
-                "title": "Restruct: Preview Workspace",
+                "title": "Restruct: Open Preview",
                 "icon": "$(preview)"
             }
-        ],
-        "menus": {
-            "editor/title/run": [
-                {
-                    "command": "restruct.preview",
-                    "group": "navigation",
-                    "when": "resourceLangId == typescript"
-                }
-            ]
-        }
+        ]
     },
     "scripts": {
         "vscode:prepublish": "pnpm run package",

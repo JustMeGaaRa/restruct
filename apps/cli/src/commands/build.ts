@@ -17,8 +17,8 @@ export const buildCommand = async () => {
     try {
         // 1. Clean dist of the user's project
         const userDist = path.join(process.cwd(), "dist");
-        fs.rmSync(userDist);
-        fs.mkdirSync(userDist);
+        fs.rmSync(userDist, { recursive: true, force: true });
+        fs.mkdirSync(userDist, { recursive: true });
 
         // 2. Copy preview app
         const previewSrc = path.join(packageRoot, "dist", "preview");
@@ -27,7 +27,7 @@ export const buildCommand = async () => {
                 `Preview app not found at ${previewSrc}. Did you run 'pnpm build' in restruct-cli?`
             );
         }
-        fs.cpSync(previewSrc, userDist);
+        fs.cpSync(previewSrc, userDist, { recursive: true });
 
         // 3. Bundle workspace file
         let entryPoint: string;

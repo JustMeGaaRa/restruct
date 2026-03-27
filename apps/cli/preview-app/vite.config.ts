@@ -21,6 +21,7 @@ export default defineConfig({
         },
     },
     resolve: {
+        dedupe: ["react", "react-dom", "@chakra-ui/react"],
         // Keep manual alias as backup/override
         alias: {
             "@": path.resolve(__dirname, "src"),
