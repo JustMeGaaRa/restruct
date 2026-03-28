@@ -320,7 +320,7 @@ describe("fetchTheme", () => {
             })
         );
 
-        await expect(fetchTheme(themeUrl)).rejects.toThrow("Theme not found");
+        await expect(fetchTheme(themeUrl)).rejects.toThrow();
     });
 
     test("propagates fetch network errors", async () => {

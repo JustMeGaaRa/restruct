@@ -11,6 +11,7 @@ export interface IRelationship {
     sourceIdentifier: string;
     targetIdentifier: string;
     description?: string;
+    technology?: string[];
     tags?: ITag[];
 }
 
@@ -61,6 +62,16 @@ export const Relationship: FC<{ value: IRelationship }> = ({ value }) => {
                     width={200}
                 >
                     {value.description}
+                </Text>
+                <Text
+                    fill={color}
+                    fontSize={8}
+                    fontFamily={"Inter"}
+                    textAnchor={"middle"}
+                    width={200}
+                    y={16}
+                >
+                    {value.technology?.join(" / ")}
                 </Text>
             </Edge>
         )

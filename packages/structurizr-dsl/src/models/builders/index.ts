@@ -5,6 +5,7 @@ export * from "./DeploymentNodeBuilder";
 export * from "./GroupBuilder";
 export * from "./ModelBuilder";
 export * from "./PersonBuilder";
+export * from "./RelationshipBuilder";
 export * from "./SoftwareSystemBuilder";
 export * from "./StylesBuilder";
 export * from "./ViewsBuilder";

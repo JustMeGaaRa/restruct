@@ -35,7 +35,9 @@ export class Relationship implements ISupportSnapshot<IRelationship> {
         // this.perspectives = params.perspectives;
         this.tags = [
             Tag.Relationship,
-            ...(params.tags?.map((t) => new Tag(t.name)) ?? []),
+            ...(params.tags
+                ?.map((t) => new Tag(t.name))
+                ?.filter((t) => t.name !== Tag.Relationship.name) ?? []),
         ];
     }
 
@@ -58,7 +60,7 @@ export class Relationship implements ISupportSnapshot<IRelationship> {
             targetIdentifier: this.targetIdentifier.toString(),
             description: this.description,
             technology: this.technology.map((x) => x.name),
-            tags: this.tags,
+            tags: this.tags.map((t) => t.toSnapshot()),
             url: this.url,
             // properties: this.properties,
             // perspectives: this.perspectives

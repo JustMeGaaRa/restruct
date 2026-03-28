@@ -5,7 +5,7 @@ export interface TextProps extends SVGProps<SVGTextElement> {
     width?: number;
 }
 
-const CHAR_WIDTH_FACTOR = 0.6;
+const CHAR_WIDTH_FACTOR = 0.5;
 
 export const Text: FC<TextProps> = ({
     noLines = 1,
@@ -82,7 +82,13 @@ export const Text: FC<TextProps> = ({
     }, [children, width, noLines, fontSize, props.style?.fontSize]);
 
     return (
-        <text x={x} y={y} fontSize={fontSize} {...props}>
+        <text
+            x={x}
+            y={y}
+            {...props}
+            fontSize={fontSize}
+            style={{ fontSize: fontSize }}
+        >
             {finalLines.map((line, index) => (
                 <tspan key={index} x={x} dy={index === 0 ? 0 : "1.2em"}>
                     {line}

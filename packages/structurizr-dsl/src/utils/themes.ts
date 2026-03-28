@@ -63,6 +63,9 @@ export const applyTheme = (
 
 export const fetchTheme = async (url: string) => {
     const response = await fetch(url);
+    if (!response.ok) {
+        throw new Error(`Failed to fetch theme from ${url}`);
+    }
     const theme = await response.json();
     return new Theme(theme).toSnapshot();
 };

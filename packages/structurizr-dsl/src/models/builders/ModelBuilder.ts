@@ -11,6 +11,7 @@ import { Relationship } from "../Relationship";
 import { DeploymentEnvironmentBuilder } from "./DeploymentEnvironmentBuilder";
 import { GroupBuilder } from "./GroupBuilder";
 import { PersonBuilder } from "./PersonBuilder";
+import { RelationshipBuilder } from "./RelationshipBuilder";
 import { SoftwareSystemBuilder } from "./SoftwareSystemBuilder";
 
 export class ModelBuilder implements IBuilder<IModel> {
@@ -74,12 +75,19 @@ export class ModelBuilder implements IBuilder<IModel> {
         return deploymentEnvironment;
     }
 
-    uses(source: string, target: string, description?: string): IRelationship {
-        const relationship = new Relationship({
-            sourceIdentifier: source,
-            targetIdentifier: target,
-            description,
-        }).toSnapshot();
+    uses(
+        source: string,
+        target: string,
+        description?: string,
+        callback?: BuilderCallback<RelationshipBuilder>
+    ): IRelationship {
+        const relationshipBuilder = new RelationshipBuilder(
+            source,
+            target,
+            description
+        );
+        callback?.(relationshipBuilder);
+        const relationship = relationshipBuilder.build();
         this.model.relationships.push(relationship);
         return relationship;
     }
