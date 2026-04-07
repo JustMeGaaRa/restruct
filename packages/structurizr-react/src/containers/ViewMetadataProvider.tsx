@@ -20,6 +20,8 @@ export type IRelationshipMetadata = Array<{ x: number; y: number }>;
 
 export interface IViewMetadata {
     key: string;
+    width?: number;
+    height?: number;
     elements: Record<string, IElementMetadata>;
     relationships: Record<string, IRelationshipMetadata>;
 }

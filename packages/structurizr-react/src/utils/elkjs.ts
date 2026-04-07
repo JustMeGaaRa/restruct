@@ -163,6 +163,8 @@ export const elkjsGraph = (): GraphAdapter<
 
             return {
                 key: "",
+                width: layoutedGraph.width,
+                height: layoutedGraph.height,
                 elements,
                 relationships: {},
             };

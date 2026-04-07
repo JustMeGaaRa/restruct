@@ -54,6 +54,9 @@ export const dagreeGraph = (): GraphAdapter<
 
             Dagre.layout(graph);
             return Promise.resolve({
+                key: "",
+                width: graph.graph().width,
+                height: graph.graph().height,
                 elements: Object.fromEntries(
                     graph
                         .nodes()

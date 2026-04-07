@@ -9,6 +9,7 @@ import {
     ModelDiagram,
     DeploymentDiagram,
 } from "../components/diagrams";
+import { useWorkspaceDiagram } from "./WorkspaceDiagramProvider";
 
 export interface WorkspaceContentProps {
     currentView?: View;
@@ -17,8 +18,17 @@ export interface WorkspaceContentProps {
 export const WorkspaceDiagramPreview: FC<
     PropsWithChildren<WorkspaceContentProps>
 > = ({ children, currentView }) => {
+    const { metadata } = useWorkspaceDiagram();
+    const viewMetadata = currentView ? metadata.get(currentView.key) : undefined;
+    const defaultViewbox = viewMetadata ? {
+        x: 0,
+        y: 0,
+        width: viewMetadata.width || 1000,
+        height: viewMetadata.height || 1000,
+    } : undefined;
+
     return (
-        <ViewportProvider>
+        <ViewportProvider defaultViewbox={defaultViewbox}>
             <Viewport>
                 {currentView &&
                     currentView?.type === ViewType.SystemLandscape && (

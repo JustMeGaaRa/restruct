@@ -34,10 +34,10 @@ export const ViewportContext = createContext<{
 });
 
 export const ViewportProvider: FC<
-    PropsWithChildren<{ minZoom?: number; maxZoom?: number; autofit?: boolean }>
-> = ({ children, minZoom = 0.1, maxZoom = 5, autofit = true }) => {
+    PropsWithChildren<{ minZoom?: number; maxZoom?: number; autofit?: boolean; defaultViewbox?: Viewbox }>
+> = ({ children, minZoom = 0.1, maxZoom = 5, autofit = true, defaultViewbox }) => {
     const [zoom, setZoom] = useState<number>(1);
-    const [viewbox, setViewbox] = useState<Viewbox>({
+    const [viewbox, setViewbox] = useState<Viewbox>(defaultViewbox || {
         x: 0,
         y: 0,
         height: 1000,
