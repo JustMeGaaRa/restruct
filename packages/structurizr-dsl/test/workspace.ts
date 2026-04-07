@@ -451,3 +451,21 @@ export const createImpliedRelationshipDeploymentDummy = () => {
         });
     });
 };
+
+export const createWorkspaceWithNoViews = () => {
+    return workspace("Workspace With No Views", "", (_) => {
+        _.model((_) => {
+            _.softwareSystem("Software System A", "", (_) => {
+                _.container("Container A", "", (_) => {
+                    _.component("Component A", "");
+                });
+            });
+
+            _.deploymentEnvironment("Production", (_) => {
+                _.deploymentNode("Node A", (_) => {
+                    _.containerInstance("Container A");
+                });
+            });
+        });
+    });
+};

@@ -3,8 +3,13 @@ import {
     RestructDarkTheme,
     ThemeProvider,
     ViewNavigationProvider,
+    WorkspaceProvider,
 } from "@restruct/structurizr-react";
-import { WorkspaceChannel, WorkspacePreview } from "@restruct/ui";
+import {
+    ElementControlsOverlay,
+    WorkspaceChannel,
+    WorkspacePreview,
+} from "@restruct/ui";
 import { Flex, Spinner, Text } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 
@@ -70,26 +75,38 @@ export const App = () => {
             flexDirection="column"
         >
             <ThemeProvider defaultTheme={RestructDarkTheme}>
-                <ViewNavigationProvider
-                    initialView={activeWorkspace.views.systemLandscape}
+                <WorkspaceProvider
+                    workspace={activeWorkspace}
+                    setWorkspace={(workspace) => {
+                        const newWorkspaces = [...workspaces];
+                        newWorkspaces[activeWorkspaceIndex] = workspace as any;
+                        setWorkspaces(newWorkspaces);
+                    }}
+                    // TODO (navigation): move this overlay to workspace preview
+                    // pass zoom in/out handlers to it to change to "diagrams" view mode when zoom in/out
+                    renderElementOverlay={(element, _, state) => (
+                        <ElementControlsOverlay
+                            element={element}
+                            state={state}
+                        />
+                    )}
                 >
-                    <WorkspacePreview
-                        workspace={activeWorkspace}
-                        setWorkspace={(workspace) => {
-                            const newWorkspaces = [...workspaces];
-                            newWorkspaces[activeWorkspaceIndex] =
-                                workspace as any;
-                            setWorkspaces(newWorkspaces);
-                        }}
-                        availableWorkspaces={workspaces.map((ws, index) => ({
-                            id: String(index),
-                            name: ws.name || `Workspace ${index + 1}`,
-                        }))}
-                        onWorkspaceSelect={(index) =>
-                            setActiveWorkspaceIndex(Number(index))
-                        }
-                    />
-                </ViewNavigationProvider>
+                    <ViewNavigationProvider
+                        initialView={activeWorkspace.views.systemLandscape}
+                    >
+                        <WorkspacePreview
+                            availableWorkspaces={workspaces.map(
+                                (ws, index) => ({
+                                    id: String(index),
+                                    name: ws.name || `Workspace ${index + 1}`,
+                                })
+                            )}
+                            onWorkspaceSelect={(index) =>
+                                setActiveWorkspaceIndex(Number(index))
+                            }
+                        />
+                    </ViewNavigationProvider>
+                </WorkspaceProvider>
             </ThemeProvider>
         </Flex>
     );

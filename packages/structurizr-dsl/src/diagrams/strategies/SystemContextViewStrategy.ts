@@ -1,9 +1,9 @@
 import {
-    IModel,
     IPerson,
     IRelationship,
     ISoftwareSystem,
     ISystemContextView,
+    IWorkspace,
 } from "../../interfaces";
 import { IDiagramVisitor, ISupportDiagramVisitor } from "../../shared";
 import {
@@ -18,7 +18,7 @@ export class SystemContextViewStrategy
         ISupportDiagramVisitor<ISoftwareSystem, ISoftwareSystem | IPerson>
 {
     constructor(
-        private model: IModel,
+        private workspace: IWorkspace,
         private view: ISystemContextView
     ) {}
 
@@ -29,7 +29,7 @@ export class SystemContextViewStrategy
             getWorkspacePeople,
             getWorkspaceSoftwareSystems,
             getImpliedRelationships,
-        } = createWorkspaceExplorer(this.model);
+        } = createWorkspaceExplorer(this.workspace);
         const visitedElements = new Set<string>();
         const relationships = getImpliedRelationships(this.view);
         const people = getWorkspacePeople();

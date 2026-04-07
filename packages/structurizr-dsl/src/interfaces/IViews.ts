@@ -6,7 +6,7 @@ import { ISystemContextView } from "./ISystemContextView";
 import { ISystemLandscapeView } from "./ISystemLandscapeView";
 
 export interface IViews {
-    systemLandscape?: ISystemLandscapeView;
+    systemLandscape: ISystemLandscapeView;
     systemContexts: ISystemContextView[];
     containers: IContainerView[];
     components: IComponentView[];

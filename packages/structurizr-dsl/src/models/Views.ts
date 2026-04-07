@@ -30,7 +30,7 @@ export class Views implements ISupportSnapshot<IViews> {
         // this.properties = params.properties;
     }
 
-    public readonly systemLandscape?: SystemLandscapeView;
+    public readonly systemLandscape: SystemLandscapeView;
     public readonly systemContexts: SystemContextView[];
     public readonly containers: ContainerView[];
     public readonly components: ComponentView[];
@@ -40,7 +40,7 @@ export class Views implements ISupportSnapshot<IViews> {
 
     public toSnapshot(): IViews {
         return {
-            systemLandscape: this.systemLandscape?.toSnapshot(),
+            systemLandscape: this.systemLandscape.toSnapshot(),
             systemContexts: this.systemContexts.map((s) => s.toSnapshot()),
             containers: this.containers.map((c) => c.toSnapshot()),
             components: this.components.map((c) => c.toSnapshot()),

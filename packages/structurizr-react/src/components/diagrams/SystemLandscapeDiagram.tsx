@@ -49,7 +49,7 @@ export const SystemLandscapeDiagram: FC<
     useEffect(() => {
         if (workspace) {
             const systemLandscapeView = findOrDefault(
-                workspace,
+                workspace.views,
                 value,
                 createDefaultSystemLandscapeView()
             );

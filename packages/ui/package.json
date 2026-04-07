@@ -13,7 +13,7 @@
     },
     "peerDependencies": {
         "@chakra-ui/react": "^3.33.0",
-        "@restruct/react-svg": "workspace:^",
+        "@restruct/react-svg": "workspace:*",
         "@restruct/structurizr-dsl": "workspace:*",
         "@restruct/structurizr-react": "workspace:*",
         "react": "^19.0.0",

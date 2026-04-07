@@ -1,7 +1,13 @@
-import { Box, VStack, IconButton, Tooltip, Portal } from "@chakra-ui/react";
+import {
+    Box,
+    IconButton,
+    Tooltip,
+    Portal,
+    ButtonGroup,
+} from "@chakra-ui/react";
 import { useViewport } from "@restruct/react-svg";
 import { FiZoomIn, FiZoomOut, FiMaximize } from "react-icons/fi";
-import React from "react";
+import React, { useCallback } from "react";
 
 const ZoomButton = ({
     label,
@@ -13,18 +19,14 @@ const ZoomButton = ({
     onClick: () => void;
 }) => {
     return (
-        <Tooltip.Root>
+        <Tooltip.Root positioning={{ placement: "left" }}>
             <Tooltip.Trigger asChild>
                 <IconButton
-                    aria-label={label}
+                    variant={"ghost"}
+                    color={"gray.400"}
+                    rounded={"full"}
                     onClick={onClick}
-                    variant="ghost"
-                    size="sm"
-                    borderRadius="full"
-                    color="white"
-                    _hover={{
-                        bg: "whiteAlpha.200",
-                    }}
+                    _hover={{ bg: "whiteAlpha.200", color: "white" }}
                 >
                     {icon}
                 </IconButton>
@@ -50,22 +52,16 @@ const ZoomButton = ({
 export const ZoomControls = () => {
     const { zoom, getBounds, fitBounds, zoomIn, zoomOut } = useViewport();
 
-    const handleZoomIn = () => {
-        zoomIn();
-    };
-
-    const handleZoomOut = () => {
-        zoomOut();
-    };
-
-    const handleFitToScreen = () => {
+    const handleZoomIn = useCallback(() => zoomIn(), [zoomIn]);
+    const handleZoomOut = useCallback(() => zoomOut(), [zoomOut]);
+    const handleFitToScreen = useCallback(() => {
         try {
             const bounds = getBounds();
             fitBounds(bounds);
         } catch (e) {
             console.error("Failed to fit bounds:", e);
         }
-    };
+    }, [getBounds, fitBounds]);
 
     return (
         <Box
@@ -81,14 +77,14 @@ export const ZoomControls = () => {
             boxShadow="0 4px 20px rgba(0, 0, 0, 0.4)"
             zIndex={1000}
         >
-            <VStack gap={1}>
+            <ButtonGroup orientation={"vertical"} size={"sm"}>
                 <ZoomButton
                     label={`Zoom In (${Math.round(zoom * 100)}%)`}
                     icon={<FiZoomIn />}
                     onClick={handleZoomIn}
                 />
                 <ZoomButton
-                    label="Zoom Out"
+                    label={`Zoom Out (${Math.round(zoom * 100)}%)`}
                     icon={<FiZoomOut />}
                     onClick={handleZoomOut}
                 />
@@ -97,7 +93,7 @@ export const ZoomControls = () => {
                     icon={<FiMaximize />}
                     onClick={handleFitToScreen}
                 />
-            </VStack>
+            </ButtonGroup>
         </Box>
     );
 };

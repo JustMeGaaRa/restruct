@@ -1,52 +1,77 @@
 import {
-    findAnyExisting,
     findViewByType,
-    IContainerView,
-    IDeploymentView,
-    ISystemContextView,
-    IWorkspace,
     ViewType,
     fetchThemes,
     createDefaultModelView,
+    View,
+    getViewPathTitle,
+    getDeploymentViewOptions,
+    getSystemContextViewOptions,
+    getContainerViewOptions,
+    getComponentViewOptions,
+    findViewByKey,
 } from "@restruct/structurizr-dsl";
 import {
-    WorkspaceProvider,
     useViewNavigation,
     WorkspaceDiagramPreview,
-    useWorkspace,
     useThemes,
+    useWorkspace,
 } from "@restruct/structurizr-react";
-import { LuWorkflow, LuUser, LuContainer } from "react-icons/lu";
-import {
-    useState,
-    useEffect,
-    useMemo,
-    useCallback,
-    FC,
-    Dispatch,
-    SetStateAction,
-} from "react";
-import { ElementControlsOverlay } from "./ElementControlsOverlay";
+import { LuWorkflow, LuUser, LuContainer, LuMap } from "react-icons/lu";
+import { useEffect, useMemo, FC } from "react";
 import { ZoomControls } from "./ZoomControls";
 import { Breadcrumbs, BreadcrumbItem } from "./Breadcrumbs";
-import { LayerIcon } from "./LayerIcon";
+import { LayerIcon } from "./icons";
 
-type ViewMode = "diagrams" | "model" | "deployment";
+type ViewMode = "landscape" | "diagrams" | "model" | "deployment";
+
+function getViewTypeIcon(viewType: ViewType, size: number) {
+    switch (viewType) {
+        case ViewType.SystemLandscape:
+            return <LuMap size={size} />;
+        case ViewType.SystemContext:
+            return <LayerIcon size={size} layer={1} />;
+        case ViewType.Container:
+            return <LayerIcon size={size} layer={2} />;
+        case ViewType.Component:
+            return <LayerIcon size={size} layer={3} />;
+        case ViewType.Deployment:
+            return <LuContainer size={size} />;
+    }
+}
+
+const getViewMode = (currentView: View | undefined): ViewMode => {
+    if (currentView?.type === ViewType.SystemLandscape) {
+        return "landscape";
+    } else if (currentView?.type === ViewType.SystemContext) {
+        return "diagrams";
+    } else if (currentView?.type === ViewType.Container) {
+        return "diagrams";
+    } else if (currentView?.type === ViewType.Component) {
+        return "diagrams";
+    } else if (currentView?.type === ViewType.Deployment) {
+        return "deployment";
+    } else if (currentView?.type === ViewType.Model) {
+        return "model";
+    } else {
+        return "landscape";
+    }
+};
 
 export interface WorkspacePreviewProps {
-    workspace: IWorkspace;
-    setWorkspace: Dispatch<SetStateAction<IWorkspace>>;
     availableWorkspaces: { id?: string; name: string }[];
     onWorkspaceSelect?: (idOrName: string) => void;
 }
 
 export const WorkspacePreview: FC<WorkspacePreviewProps> = ({
-    workspace,
     availableWorkspaces,
-    setWorkspace,
     onWorkspaceSelect,
 }) => {
     const { setThemes, setStyles } = useThemes();
+    const { workspace, getElementParentId } = useWorkspace();
+
+    const { currentView, path, navigateToView, navigateToPathSection } =
+        useViewNavigation();
 
     useEffect(() => {
         const fetchAndApplyThemes = async () => {
@@ -57,29 +82,14 @@ export const WorkspacePreview: FC<WorkspacePreviewProps> = ({
             setStyles(workspace.views.configuration.styles);
         };
         fetchAndApplyThemes();
-    }, [setThemes, setStyles, workspace.views.configuration]);
+    }, [workspace.views.configuration, setThemes, setStyles]);
 
-    const [viewMode, setViewMode] = useState<ViewMode>("diagrams");
-    const { getSoftwareSystemById, getContainerById, getElementParentId } =
-        useWorkspace();
-    const { currentView, setCurrentView } = useViewNavigation();
+    useEffect(() => {
+        navigateToView(workspace.views.systemLandscape);
+    }, [workspace.views.systemLandscape, navigateToView]);
 
-    const handleViewModeChange = useCallback(
-        (view: ViewMode) => {
-            setViewMode(view);
-            if (view === "diagrams") {
-                setCurrentView(findAnyExisting(workspace)!);
-            } else if (view === "model") {
-                setCurrentView(createDefaultModelView());
-            } else if (view === "deployment") {
-                setCurrentView(findViewByType(workspace, ViewType.Deployment)!);
-            }
-        },
-        [workspace, setCurrentView]
-    );
-
+    const viewMode = getViewMode(currentView);
     const breadcrumbItems = useMemo<BreadcrumbItem[]>(() => {
-        // TODO(navigation): move this to utility class
         const items: BreadcrumbItem[] = [];
 
         // 1. Workspace Dropdown
@@ -94,168 +104,102 @@ export const WorkspacePreview: FC<WorkspacePreviewProps> = ({
 
         items.push({
             label: workspaceLabel,
-            subtitle: "Workspace",
-            icon: (size) => <LuUser size={size} color="#8A8B8C" />,
             options: workspaceOptions,
+            icon: (size) => <LuUser size={size} color="#8A8B8C" />,
             onSelect: (value) => onWorkspaceSelect?.(value),
         });
 
         // 2. View Mode Dropdown
         const viewModeLabels: Record<ViewMode, string> = {
+            landscape: "System Landscape",
             diagrams: "Diagrams",
             model: "Model",
             deployment: "Deployment",
         };
 
+        const viewModeOptions =
+            workspace.views.deployments.length > 0
+                ? [
+                      { label: "Landscape", value: "landscape" },
+                      { label: "Diagrams", value: "diagrams" },
+                      { label: "Model", value: "model" },
+                      { label: "Deployment", value: "deployment" },
+                  ]
+                : [
+                      { label: "Landscape", value: "landscape" },
+                      { label: "Diagrams", value: "diagrams" },
+                      { label: "Model", value: "model" },
+                  ];
+
         items.push({
             label: viewModeLabels[viewMode],
-            subtitle: "View Mode",
+            options: viewModeOptions,
             icon: (size) => <LuWorkflow size={size} color="#8A8B8C" />,
-            options: [
-                { label: "Diagrams", value: "diagrams" },
-                { label: "Model", value: "model" },
-                { label: "Deployment", value: "deployment" },
-            ],
-            onSelect: (value) => handleViewModeChange(value as ViewMode),
+            onSelect: (view: string) => {
+                if (view === "landscape") {
+                    navigateToView(workspace.views.systemLandscape);
+                } else if (view === "diagrams") {
+                    navigateToView(
+                        findViewByType(workspace.views, ViewType.SystemContext)
+                    );
+                } else if (view === "model") {
+                    navigateToView(createDefaultModelView());
+                } else if (view === "deployment") {
+                    navigateToView(
+                        findViewByType(workspace.views, ViewType.Deployment)
+                    );
+                }
+            },
         });
 
         // 3. Drill-down based on view mode
-        if (viewMode === "diagrams" && currentView) {
-            // Include root System Landscape if we are in diagram mode
-            items.push({
-                label: ViewType.SystemLandscape,
-                subtitle: "System Landscape",
-                icon: (size) => <LayerIcon size={size} layer={1} />,
-                onClick: () => {
-                    setCurrentView(workspace.views.systemLandscape as any);
-                },
+        if (viewMode === "diagrams" || viewMode === "deployment") {
+            path.forEach((item) => {
+                const options =
+                    item.view.type === ViewType.SystemContext
+                        ? getSystemContextViewOptions(workspace)
+                        : item.view.type === ViewType.Container
+                          ? getContainerViewOptions(workspace)
+                          : item.view.type === ViewType.Component
+                            ? getComponentViewOptions(
+                                  workspace,
+                                  getElementParentId(
+                                      item.view.containerIdentifier
+                                  )!
+                              )
+                            : item.view.type === ViewType.Deployment
+                              ? getDeploymentViewOptions(workspace)
+                              : [];
+                items.push({
+                    label: getViewPathTitle(item),
+                    options: options.map((item) => ({
+                        label: getViewPathTitle(item),
+                        value: item.view.key,
+                    })),
+                    icon: (size) => getViewTypeIcon(item.view.type, size),
+                    onClick: () => navigateToPathSection(item),
+                    onSelect: (value) =>
+                        navigateToView(findViewByKey(workspace.views, value)),
+                });
             });
-
-            // Find elements to resolve hierarchy based on current view metadata
-            // Structurizr views have keys or specific properties matching the element they describe
-            if (currentView.type === ViewType.SystemContext) {
-                const softwareSystem = getSoftwareSystemById(
-                    currentView.softwareSystemIdentifier
-                );
-                const softwareSystemName =
-                    currentView.title ??
-                    softwareSystem?.name ??
-                    "System Context";
-                items.push({
-                    label: softwareSystemName,
-                    subtitle: "Software System",
-                    icon: (size) => <LayerIcon size={size} layer={2} />,
-                    onClick: () => {
-                        setCurrentView(
-                            workspace.views.systemContexts.find(
-                                (view: ISystemContextView) =>
-                                    view.softwareSystemIdentifier ===
-                                    currentView.softwareSystemIdentifier
-                            ) as any
-                        );
-                    },
-                });
-            } else if (currentView.type === ViewType.Container) {
-                const softwareSystem = getSoftwareSystemById(
-                    currentView.softwareSystemIdentifier
-                );
-                const softwareSystemName =
-                    currentView.title ?? softwareSystem?.name ?? "Container";
-                items.push({
-                    label: softwareSystemName,
-                    subtitle: "Software System",
-                    icon: (size) => <LayerIcon size={size} layer={2} />,
-                    onClick: () => {},
-                });
-            } else if (currentView.type === ViewType.Component) {
-                const softwareSystemId = getElementParentId(
-                    currentView.containerIdentifier
-                )!;
-                const softwareSystem = getSoftwareSystemById(softwareSystemId);
-                const softwareSystemName = softwareSystem?.name ?? "Container";
-                items.push({
-                    label: softwareSystemName,
-                    subtitle: "Container View",
-                    icon: (size) => <LayerIcon size={size} layer={2} />,
-                    onClick: () => {
-                        setCurrentView(
-                            workspace.views.containers.find(
-                                (view: IContainerView) =>
-                                    view.softwareSystemIdentifier ===
-                                    softwareSystemId
-                            ) as any
-                        );
-                    },
-                });
-
-                const container = getContainerById(
-                    currentView.containerIdentifier
-                );
-                const containerName =
-                    currentView.title ?? container?.name ?? "Component";
-                items.push({
-                    label: containerName,
-                    subtitle: "Component View",
-                    icon: (size) => <LayerIcon size={size} layer={3} />,
-                    onClick: () => {},
-                });
-            }
-        } else if (viewMode === "deployment" && currentView) {
-            const environmentName =
-                (currentView as any).environment || currentView.key;
-            items.push({
-                label: environmentName,
-                subtitle: "Deployment",
-                icon: (size) => <LuContainer size={size} color="#8A8B8C" />,
-                options:
-                    workspace.views.deployments?.map(
-                        (deployment: IDeploymentView) => ({
-                            label: deployment.environment,
-                            value: deployment.key ?? deployment.environment,
-                        })
-                    ) || [],
-                onSelect: (value) => {
-                    const view = workspace.views.deployments?.find(
-                        (deployment: IDeploymentView) =>
-                            deployment.key === value
-                    );
-                    if (view) setCurrentView(view);
-                },
-            });
-        } else if (viewMode === "model") {
-            // Already adequately covered by the View Mode Dropdown saying "Model"
         }
 
         return items;
     }, [
-        workspace?.name,
-        workspace.views.systemLandscape,
-        workspace.views.systemContexts,
-        workspace.views.containers,
-        workspace.views.deployments,
+        workspace,
         availableWorkspaces,
         viewMode,
-        currentView,
+        path,
         onWorkspaceSelect,
-        handleViewModeChange,
-        setCurrentView,
-        getSoftwareSystemById,
+        navigateToView,
         getElementParentId,
-        getContainerById,
+        navigateToPathSection,
     ]);
 
     return (
-        <WorkspaceProvider
-            workspace={workspace}
-            setWorkspace={setWorkspace}
-            renderElementOverlay={(element, _, state) => (
-                <ElementControlsOverlay element={element} state={state} />
-            )}
-        >
-            <WorkspaceDiagramPreview currentView={currentView}>
-                <Breadcrumbs items={breadcrumbItems} />
-                <ZoomControls />
-            </WorkspaceDiagramPreview>
-        </WorkspaceProvider>
+        <WorkspaceDiagramPreview currentView={currentView}>
+            <Breadcrumbs items={breadcrumbItems} />
+            <ZoomControls />
+        </WorkspaceDiagramPreview>
     );
 };

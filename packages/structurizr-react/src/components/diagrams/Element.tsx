@@ -112,7 +112,7 @@ export const Element: FC<
             {renderElementOverlay && (
                 <ViewportForeignObject
                     position={{ x: 0, y: 0 }}
-                    pointerEvents="auto"
+                    pointerEvents={"auto"}
                     zIndex={100}
                 >
                     {renderElementOverlay(

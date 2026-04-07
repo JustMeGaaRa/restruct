@@ -101,7 +101,9 @@ describe("WorkspaceDslExporter — Big Bank Plc", () => {
     });
 
     test("has proper indentation (4 spaces per level)", () => {
-        const modelLine = dsl.split("\n").find((l) => l.match(/^\s+model\s*\{/));
+        const modelLine = dsl
+            .split("\n")
+            .find((l) => l.match(/^\s+model\s*\{/));
         expect(modelLine).toBeDefined();
         // model { is nested one level inside workspace, so 4 spaces
         expect(modelLine).toMatch(/^    model \{/);
@@ -114,9 +116,9 @@ describe("WorkspaceDslExporter — Big Bank Plc", () => {
             .slice(groupLine + 1)
             .find((l) => l.match(/\bperson\b/));
         expect(personAfterGroup).toBeDefined();
-        const personIndent = personAfterGroup!.match(/^(\s+)/)?.[1].length ?? 0;
-        const groupIndent =
-            lines[groupLine].match(/^(\s+)/)?.[1].length ?? 0;
+        const personIndent =
+            personAfterGroup?.match(/^(\s+)/)?.[1]?.length ?? 0;
+        const groupIndent = lines[groupLine]?.match(/^(\s+)/)?.[1]?.length ?? 0;
         expect(personIndent).toBeGreaterThan(groupIndent);
     });
 });

@@ -12,13 +12,43 @@ import {
     ISoftwareSystem,
     ISystemContextView,
     ISystemLandscapeView,
+    IWorkspace,
     ViewType,
 } from "../interfaces";
+import { Workspace } from "../models";
 import { IElementVisitor } from "../shared";
 import {
     createRelationship,
     filterRelationshipsBetweenElements,
 } from "./relationship";
+import {
+    createDefaultConfiguration,
+    createDefaultSystemLandscapeView,
+} from "./views";
+
+export const createDefaultWorkspace = (): IWorkspace => {
+    return new Workspace({
+        version: 1,
+        lastModifiedDate: new Date().toISOString(),
+        name: "Workspace",
+        description: "An empty workspace with default values.",
+        model: {
+            people: [],
+            softwareSystems: [],
+            deploymentEnvironments: [],
+            relationships: [],
+            groups: [],
+        },
+        views: {
+            systemLandscape: createDefaultSystemLandscapeView(),
+            systemContexts: [],
+            containers: [],
+            components: [],
+            deployments: [],
+            configuration: createDefaultConfiguration(),
+        },
+    }).toSnapshot();
+};
 
 export const traverseWorkspace = (model: IModel, visitor: IElementVisitor) => {
     const visitComponent = (component: IComponent, parentId?: string) => {
@@ -179,7 +209,9 @@ const createElementInstancesMap = (
     };
 };
 
-export const createWorkspaceExplorer = (model: IModel) => {
+export const createWorkspaceExplorer = (workspace: IWorkspace) => {
+    const model = workspace.model;
+
     const workspacePeople: Map<string, IPerson> = new Map();
     const workspaceSoftwareSystems: Map<string, ISoftwareSystem> = new Map();
     const workspaceContainers: Map<string, IContainer> = new Map();
@@ -226,45 +258,43 @@ export const createWorkspaceExplorer = (model: IModel) => {
         },
     });
 
-    const getWorkspacePeople = () => {
-        return Array.from(workspacePeople.values());
-    };
+    const getElementById = (identifier: string) =>
+        workspaceElements.get(identifier);
 
-    const getPersonById = (identifier: string) => {
-        return workspacePeople.get(identifier);
-    };
+    const getWorkspacePeople = () => Array.from(workspacePeople.values());
 
-    const getWorkspaceSoftwareSystems = () => {
-        return Array.from(workspaceSoftwareSystems.values());
-    };
+    const getPersonById = (identifier: string) =>
+        workspacePeople.get(identifier);
 
-    const getSoftwareSystemById = (identifier: string) => {
-        return workspaceSoftwareSystems.get(identifier);
-    };
+    const getWorkspaceSoftwareSystems = () =>
+        Array.from(workspaceSoftwareSystems.values());
 
-    const getWorkspaceContainers = () => {
-        return Array.from(workspaceContainers.values());
-    };
+    const getSoftwareSystemById = (identifier: string) =>
+        workspaceSoftwareSystems.get(identifier);
 
-    const getContainerById = (identifier: string) => {
-        return workspaceContainers.get(identifier);
-    };
+    const getWorkspaceContainers = () =>
+        Array.from(workspaceContainers.values());
 
-    const getWorkspaceComponents = () => {
-        return Array.from(workspaceComponents.values());
-    };
+    const getContainerById = (identifier: string) =>
+        workspaceContainers.get(identifier);
 
-    const getComponentById = (identifier: string) => {
-        return workspaceComponents.get(identifier);
-    };
+    const getWorkspaceComponents = () =>
+        Array.from(workspaceComponents.values());
 
-    const getElementParentId = (identifier: string) => {
-        return elementParentMap.get(identifier);
-    };
+    const getComponentById = (identifier: string) =>
+        workspaceComponents.get(identifier);
 
-    const getWorkspaceRelationships = (): Array<IRelationship> => {
-        return Array.from(workspaceRelationships.values());
-    };
+    const getWorkspaceDeploymentEnvironments = () =>
+        Array.from(workspaceDeploymentEnvironments.values());
+
+    const getDeploymentEnvironmentById = (identifier: string) =>
+        workspaceDeploymentEnvironments.get(identifier);
+
+    const getElementParentId = (identifier: string) =>
+        elementParentMap.get(identifier);
+
+    const getWorkspaceRelationships = (): Array<IRelationship> =>
+        Array.from(workspaceRelationships.values());
 
     const getImpliedRelationships = (
         view?:
@@ -473,15 +503,18 @@ export const createWorkspaceExplorer = (model: IModel) => {
 
     return {
         getWorkspacePeople,
-        getPersonById,
         getWorkspaceSoftwareSystems,
-        getSoftwareSystemById,
         getWorkspaceContainers,
-        getContainerById,
         getWorkspaceComponents,
-        getComponentById,
-        getElementParentId,
+        getWorkspaceDeploymentEnvironments,
         getWorkspaceRelationships,
         getImpliedRelationships,
+        getElementById,
+        getPersonById,
+        getSoftwareSystemById,
+        getContainerById,
+        getComponentById,
+        getDeploymentEnvironmentById,
+        getElementParentId,
     };
 };

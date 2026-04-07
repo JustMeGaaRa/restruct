@@ -47,7 +47,7 @@ export const ContainerDiagram: FC<
     useEffect(() => {
         if (workspace) {
             const containerView = findOrDefault(
-                workspace,
+                workspace.views,
                 value,
                 createDefaultContainerView(value.softwareSystemIdentifier)
             );

@@ -48,7 +48,7 @@ export const createSystemLandscapeDiagram = (
     const builder = new SystemLandscapeDiagramBuilder(systemLandscapeView);
     const visitor = new SystemLandscapeDiagramVisitor(builder);
     const strategy = new SystemLandscapeViewStrategy(
-        workspace.model,
+        workspace,
         systemLandscapeView
     );
     strategy.accept(visitor);
@@ -62,7 +62,7 @@ export const createSystemContextDiagram = (
     const builder = new SystemContextDiagramBuilder(systemContextView);
     const visitor = new SystemContextDiagramVisitor(builder);
     const strategy = new SystemContextViewStrategy(
-        workspace.model,
+        workspace,
         systemContextView
     );
     strategy.accept(visitor);
@@ -75,7 +75,7 @@ export const createContainerDiagram = (
 ) => {
     const builder = new ContainerDiagramBuilder(containerView);
     const visitor = new ContainerDiagramVisitor(builder);
-    const strategy = new ContainerViewStrategy(workspace.model, containerView);
+    const strategy = new ContainerViewStrategy(workspace, containerView);
     strategy.accept(visitor);
     return builder.build();
 };
@@ -86,7 +86,7 @@ export const createComponentDiagram = (
 ) => {
     const builder = new ComponentDiagramBuilder(componentView);
     const visitor = new ComponentDiagramVisitor(builder);
-    const strategy = new ComponentViewStrategy(workspace.model, componentView);
+    const strategy = new ComponentViewStrategy(workspace, componentView);
     strategy.accept(visitor);
     return builder.build();
 };
@@ -97,10 +97,7 @@ export const createDeploymentDiagram = (
 ) => {
     const builder = new DeploymentDiagramBuilder(deploymentView);
     const visitor = new DeploymentDiagramVisitor(builder);
-    const strategy = new DeploymentViewStrategy(
-        workspace.model,
-        deploymentView
-    );
+    const strategy = new DeploymentViewStrategy(workspace, deploymentView);
     strategy.accept(visitor);
     return builder.build();
 };

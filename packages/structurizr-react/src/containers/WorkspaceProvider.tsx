@@ -24,6 +24,25 @@ export type WorkspaceElement =
     | IContainer
     | IComponent;
 
+export const WorkspaceContext = createContext<{
+    workspace: IWorkspace;
+    setWorkspace: Dispatch<SetStateAction<IWorkspace>>;
+    renderElementOverlay?: (
+        element: WorkspaceElement,
+        dimensions: { x: number; y: number; width: number; height: number },
+        state: {
+            isHovered?: boolean;
+            isSelected?: boolean;
+            isBoundary?: boolean;
+        }
+    ) => ReactNode;
+}>({
+    workspace: createDefaultWorkspace(),
+    setWorkspace: () => {
+        console.debug("Workspace Context: dummy setWorkspace");
+    },
+});
+
 export const WorkspaceProvider: FC<
     PropsWithChildren<{
         workspace: IWorkspace;
@@ -35,6 +54,7 @@ export const WorkspaceProvider: FC<
                 isHovered?: boolean;
                 isSelected?: boolean;
                 isBoundary?: boolean;
+                isSecondary?: boolean;
             }
         ) => ReactNode;
     }>
@@ -52,32 +72,13 @@ export const WorkspaceProvider: FC<
     );
 };
 
-export const WorkspaceContext = createContext<{
-    workspace: IWorkspace | null;
-    setWorkspace: Dispatch<SetStateAction<IWorkspace>>;
-    renderElementOverlay?: (
-        element: WorkspaceElement,
-        dimensions: { x: number; y: number; width: number; height: number },
-        state: {
-            isHovered?: boolean;
-            isSelected?: boolean;
-            isBoundary?: boolean;
-        }
-    ) => ReactNode;
-}>({
-    workspace: null,
-    setWorkspace: () => {
-        console.debug("Workspace Context: dummy setWorkspace");
-    },
-});
-
 export const useWorkspace = () => {
     const context = useContext(WorkspaceContext);
 
-    const explorer = useMemo(() => {
-        const workspace = context.workspace ?? createDefaultWorkspace();
-        return createWorkspaceExplorer(workspace.model);
-    }, [context.workspace]);
+    const explorer = useMemo(
+        () => createWorkspaceExplorer(context.workspace),
+        [context.workspace]
+    );
 
     return {
         ...context,

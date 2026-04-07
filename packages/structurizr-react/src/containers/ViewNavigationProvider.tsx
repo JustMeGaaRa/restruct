@@ -1,15 +1,12 @@
 import {
-    ElementType,
-    findViewForElement,
     IElement,
-    IModel,
-    ISoftwareSystem,
     View,
     ViewType,
-    createDefaultComponentView,
-    createDefaultContainerView,
-    createDefaultSystemContextView,
-    createDefaultSystemLandscapeView,
+    ISoftwareSystem,
+    IContainer,
+    IComponent,
+    zoomOutToParentScope as zoomOutToParentScopeUtil,
+    zoomIntoElementScope as zoomIntoElementScopeUtil,
 } from "@restruct/structurizr-dsl";
 import {
     createContext,
@@ -23,15 +20,29 @@ import {
 } from "react";
 import { useWorkspace } from "./WorkspaceProvider";
 
+export type ViewPathItem = {
+    index: number;
+    element: IElement | undefined;
+    view: View;
+};
+
+export type NavigationElement = ISoftwareSystem | IContainer | IComponent;
+
 export const ViewNavigationContext = createContext<{
     currentView: View | undefined;
+    path: Array<ViewPathItem>;
     setCurrentView: Dispatch<SetStateAction<View | undefined>>;
+    setPath: Dispatch<SetStateAction<Array<ViewPathItem>>>;
 }>({
     currentView: undefined,
+    path: [],
     setCurrentView: () => {
         console.debug(
             "WorkspaceNavigationContext: setCurrentView not implemented"
         );
+    },
+    setPath: () => {
+        console.debug("WorkspaceNavigationContext: setPath not implemented");
     },
 });
 
@@ -41,169 +52,115 @@ export const ViewNavigationProvider: FC<
     }>
 > = ({ children, initialView }) => {
     const [currentView, setCurrentView] = useState(initialView);
+    const [path, setPath] = useState<Array<ViewPathItem>>([]);
 
     return (
-        <ViewNavigationContext.Provider value={{ currentView, setCurrentView }}>
+        <ViewNavigationContext.Provider
+            value={{ currentView, path, setCurrentView, setPath }}
+        >
             {children}
         </ViewNavigationContext.Provider>
     );
 };
 
 export const useViewNavigation = () => {
-    const { currentView, setCurrentView } = useContext(ViewNavigationContext);
-    const { workspace } = useWorkspace();
-
-    const openView = useCallback(
-        (currentView: View) => {
-            if (!workspace) return;
-
-            if (currentView === undefined) {
-                const view =
-                    findViewForElement(
-                        workspace,
-                        ViewType.SystemLandscape,
-                        undefined
-                    ) ?? createDefaultSystemLandscapeView();
-                setCurrentView(view);
-            }
-
-            if (currentView?.type === ViewType.SystemLandscape) {
-                const view =
-                    findViewForElement(
-                        workspace,
-                        ViewType.SystemLandscape,
-                        undefined
-                    ) ?? createDefaultSystemLandscapeView();
-                setCurrentView(view);
-            }
-
-            if (currentView?.type === ViewType.SystemContext) {
-                const view =
-                    findViewForElement(
-                        workspace,
-                        ViewType.SystemContext,
-                        currentView.softwareSystemIdentifier
-                    ) ??
-                    createDefaultSystemContextView(
-                        currentView.softwareSystemIdentifier
-                    );
-                setCurrentView(view);
-            }
-
-            if (currentView?.type === ViewType.Container) {
-                const view =
-                    findViewForElement(
-                        workspace,
-                        ViewType.Container,
-                        currentView.softwareSystemIdentifier
-                    ) ??
-                    createDefaultContainerView(
-                        currentView.softwareSystemIdentifier
-                    );
-                setCurrentView(view);
-            }
-
-            if (currentView?.type === ViewType.Component) {
-                const view =
-                    findViewForElement(
-                        workspace,
-                        ViewType.Component,
-                        currentView.containerIdentifier
-                    ) ??
-                    createDefaultComponentView(currentView.containerIdentifier);
-                setCurrentView(view);
-            }
-        },
-        [setCurrentView]
+    const { currentView, path, setCurrentView, setPath } = useContext(
+        ViewNavigationContext
     );
+    const { workspace, getSoftwareSystemById, getContainerById } =
+        useWorkspace();
 
-    const zoomIntoElement = useCallback(
-        (element: IElement) => {
-            if (!workspace) return;
-
-            if (element === undefined) {
-                const view =
-                    findViewForElement(
-                        workspace,
-                        ViewType.SystemLandscape,
-                        undefined
-                    ) ?? createDefaultSystemLandscapeView();
-                setCurrentView(view);
-            }
-
-            if (element?.type === ElementType.SoftwareSystem) {
-                const view =
-                    findViewForElement(
-                        workspace,
-                        ViewType.Container,
-                        element.identifier
-                    ) ?? createDefaultContainerView(element.identifier);
-                setCurrentView(view);
-            }
-
-            if (element?.type === ElementType.Container) {
-                const view =
-                    findViewForElement(
-                        workspace,
-                        ViewType.Component,
-                        element.identifier
-                    ) ?? createDefaultComponentView(element.identifier);
-                setCurrentView(view);
-            }
-        },
-        [setCurrentView]
-    );
-
-    const zoomOutOfElement = useCallback(
-        (element: IElement) => {
-            if (!workspace) return;
-
-            if (element?.type === ElementType.SoftwareSystem) {
-                const view =
-                    findViewForElement(
-                        workspace,
-                        ViewType.SystemLandscape,
-                        undefined
-                    ) ?? createDefaultSystemLandscapeView();
-                setCurrentView(view);
+    const navigateToView = useCallback(
+        (targetView: View | undefined) => {
+            if (targetView?.type === ViewType.Deployment) {
+                setCurrentView(targetView);
+                setPath([
+                    {
+                        index: 0,
+                        element: undefined,
+                        view: targetView,
+                    },
+                ]);
                 return;
             }
 
-            const findContainerParent = (
-                model: IModel,
-                containerId: string
-            ): ISoftwareSystem | undefined => {
-                return model.softwareSystems
-                    .concat(model.groups.flatMap((x) => x.softwareSystems))
-                    .find((x) => {
-                        const allContainers = [
-                            ...x.containers,
-                            ...x.groups.flatMap((g) => g.containers),
-                        ];
-                        return allContainers.some(
-                            (c) => c.identifier === containerId
-                        );
-                    });
-            };
+            if (targetView?.type === ViewType.Model) {
+                setCurrentView(targetView);
+                setPath([]);
+                return;
+            }
 
-            // TODO(navigation): use workspace explorer to find parent
-            if (element?.type === ElementType.Container) {
-                const parent = findContainerParent(
-                    workspace.model,
-                    element?.identifier
+            const targetScopeElement =
+                targetView?.type === ViewType.SystemContext
+                    ? getSoftwareSystemById(targetView.softwareSystemIdentifier)
+                    : targetView?.type === ViewType.Container
+                      ? getSoftwareSystemById(
+                            targetView.softwareSystemIdentifier
+                        )
+                      : targetView?.type === ViewType.Component
+                        ? getContainerById(targetView.containerIdentifier)
+                        : undefined;
+
+            if (targetScopeElement !== undefined) {
+                const path = zoomIntoElementScopeUtil(
+                    workspace,
+                    targetScopeElement
                 );
-                if (parent !== undefined) {
-                    zoomIntoElement(parent as ISoftwareSystem);
-                }
+
+                setPath(path);
+                setCurrentView(path[path.length - 1]!.view);
             }
         },
-        [zoomIntoElement, workspace]
+        [
+            workspace,
+            getSoftwareSystemById,
+            getContainerById,
+            setCurrentView,
+            setPath,
+        ]
+    );
+
+    const navigateToPathSection = useCallback(
+        (pathItem: ViewPathItem) => {
+            setCurrentView(pathItem.view);
+            setPath((path) => path.slice(0, pathItem.index + 1));
+        },
+        [setCurrentView, setPath]
+    );
+
+    const zoomIntoElementScope = useCallback(
+        (targetScopeElement: ISoftwareSystem | IContainer) => {
+            if (targetScopeElement === undefined) return;
+
+            const path = zoomIntoElementScopeUtil(
+                workspace,
+                targetScopeElement
+            );
+            setPath(path);
+            setCurrentView(path[path.length - 1]!.view);
+        },
+        [workspace, setCurrentView, setPath]
+    );
+
+    const zoomOutToParentScope = useCallback(
+        (currentScopeElement: IElement | undefined) => {
+            const path = zoomOutToParentScopeUtil(
+                workspace,
+                currentScopeElement
+            );
+            setPath(path);
+            setCurrentView(path[path.length - 1]!.view);
+        },
+        [workspace, setCurrentView, setPath]
     );
 
     return {
         currentView,
+        path,
         setCurrentView,
-        zoomIntoElement,
-        zoomOutOfElement,
+        navigateToView,
+        navigateToPathSection,
+        zoomIntoElementScope,
+        zoomOutToParentScope,
     };
 };

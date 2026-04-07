@@ -4,5 +4,6 @@ import { IAutoLayout } from "./IAutoLayout";
 export interface IModelView {
     type: ViewType.Model;
     key: string;
+    title?: string;
     autoLayout?: IAutoLayout;
 }

@@ -45,7 +45,7 @@ export const SystemContextDiagram: FC<
     useEffect(() => {
         if (workspace) {
             const systemContextView = findOrDefault(
-                workspace,
+                workspace.views,
                 value,
                 createDefaultSystemContextView(value.softwareSystemIdentifier)
             );

@@ -1,10 +1,10 @@
 import {
     IContainer,
     IContainerView,
-    IModel,
     IPerson,
     IRelationship,
     ISoftwareSystem,
+    IWorkspace,
 } from "../../interfaces";
 import { IDiagramVisitor, ISupportDiagramVisitor } from "../../shared";
 import {
@@ -19,7 +19,7 @@ export class ContainerViewStrategy
         ISupportDiagramVisitor<ISoftwareSystem, ISoftwareSystem | IPerson>
 {
     constructor(
-        private model: IModel,
+        private workspace: IWorkspace,
         private view: IContainerView
     ) {}
 
@@ -30,7 +30,7 @@ export class ContainerViewStrategy
             getWorkspacePeople,
             getWorkspaceSoftwareSystems,
             getImpliedRelationships,
-        } = createWorkspaceExplorer(this.model);
+        } = createWorkspaceExplorer(this.workspace);
         const visitedElements = new Map<string, string>();
         const relationships = getImpliedRelationships(this.view);
         const people = getWorkspacePeople();

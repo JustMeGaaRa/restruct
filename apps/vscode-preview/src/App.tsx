@@ -3,8 +3,13 @@ import {
     RestructDarkTheme,
     ThemeProvider,
     ViewNavigationProvider,
+    WorkspaceProvider,
 } from "@restruct/structurizr-react";
-import { WorkspaceChannel, WorkspacePreview } from "@restruct/ui";
+import {
+    WorkspaceChannel,
+    WorkspacePreview,
+    ElementControlsOverlay,
+} from "@restruct/ui";
 import { Flex, Spinner, Text } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import bigBankPlc from "./workspace";
@@ -98,29 +103,38 @@ export const App = () => {
             color="white"
         >
             <ThemeProvider defaultTheme={RestructDarkTheme}>
-                <ViewNavigationProvider
-                    initialView={activeWorkspace.views.systemLandscape}
+                <WorkspaceProvider
+                    workspace={activeWorkspace}
+                    setWorkspace={(workspace) => {
+                        const newWorkspaces = [...workspaces];
+                        newWorkspaces[activeWorkspaceIndex] = workspace as any;
+                        setWorkspaces(newWorkspaces);
+                    }}
+                    renderElementOverlay={(element, _, state) => (
+                        <ElementControlsOverlay
+                            element={element}
+                            state={state}
+                        />
+                    )}
                 >
-                    <WorkspacePreview
-                        workspace={activeWorkspace}
-                        setWorkspace={(workspace) => {
-                            const newWorkspaces = [...workspaces];
-                            newWorkspaces[activeWorkspaceIndex] =
-                                workspace as any;
-                            setWorkspaces(newWorkspaces);
-                        }}
-                        availableWorkspaces={workspaces.map(
-                            (workspace, index) => ({
-                                id: String(index),
-                                name:
-                                    workspace.name || `Workspace ${index + 1}`,
-                            })
-                        )}
-                        onWorkspaceSelect={(index) =>
-                            setActiveWorkspaceIndex(Number(index))
-                        }
-                    />
-                </ViewNavigationProvider>
+                    <ViewNavigationProvider
+                        initialView={activeWorkspace.views.systemLandscape}
+                    >
+                        <WorkspacePreview
+                            availableWorkspaces={workspaces.map(
+                                (workspace, index) => ({
+                                    id: String(index),
+                                    name:
+                                        workspace.name ||
+                                        `Workspace ${index + 1}`,
+                                })
+                            )}
+                            onWorkspaceSelect={(index) =>
+                                setActiveWorkspaceIndex(Number(index))
+                            }
+                        />
+                    </ViewNavigationProvider>
+                </WorkspaceProvider>
             </ThemeProvider>
         </Flex>
     );

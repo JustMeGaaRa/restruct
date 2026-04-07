@@ -8,6 +8,7 @@ import {
     IViews,
 } from "../../interfaces";
 import { BuilderCallback, IBuilder } from "../../shared";
+import { createDefaultSystemLandscapeView } from "../../utils";
 import { ComponentView } from "../ComponentView";
 import { ContainerView } from "../ContainerView";
 import { DeploymentView } from "../DeploymentView";
@@ -20,7 +21,7 @@ export class ViewsBuilder implements IBuilder<IViews> {
 
     constructor() {
         this.views = {
-            systemLandscape: undefined,
+            systemLandscape: createDefaultSystemLandscapeView(),
             systemContexts: [],
             containers: [],
             components: [],

@@ -7,7 +7,7 @@ describe("View Builder", () => {
         const views = builder.build();
 
         expect(views).toBeDefined();
-        expect(views.systemLandscape).toBeUndefined();
+        expect(views.systemLandscape).toBeDefined();
         expect(views.systemContexts).toBeDefined();
         expect(views.systemContexts.length).toBe(0);
         expect(views.containers).toBeDefined();

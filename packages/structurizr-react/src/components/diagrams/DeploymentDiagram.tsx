@@ -46,9 +46,12 @@ export const DeploymentDiagram: FC<
     useEffect(() => {
         if (workspace) {
             const deploymentView = findOrDefault(
-                workspace,
+                workspace.views,
                 value,
-                createDefaultDeploymentView()
+                createDefaultDeploymentView(
+                    value.environment,
+                    value.softwareSystemIdentifier
+                )
             );
 
             const diagram = createDeploymentDiagram(workspace, deploymentView);

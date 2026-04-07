@@ -2,9 +2,9 @@ import {
     IComponent,
     IComponentView,
     IContainer,
-    IModel,
     IPerson,
     ISoftwareSystem,
+    IWorkspace,
 } from "../../interfaces";
 import { IDiagramVisitor, ISupportDiagramVisitor } from "../../shared";
 import {
@@ -22,7 +22,7 @@ export class ComponentViewStrategy
         >
 {
     constructor(
-        private model: IModel,
+        private workspace: IWorkspace,
         private view: IComponentView
     ) {}
 
@@ -37,7 +37,7 @@ export class ComponentViewStrategy
             getWorkspaceSoftwareSystems,
             getWorkspaceContainers,
             getWorkspaceRelationships,
-        } = createWorkspaceExplorer(this.model);
+        } = createWorkspaceExplorer(this.workspace);
         const visitedElements = new Map<string, string>();
         const relationships = getWorkspaceRelationships();
         const people = getWorkspacePeople();

@@ -3,8 +3,6 @@ import {
     IDeploymentDiagram,
     IWorkspace,
     createDeploymentDiagram,
-    isContainerInstance,
-    isSoftwareSystemInstance,
 } from "../../src";
 import {
     createBigBankPlcWorkspace,

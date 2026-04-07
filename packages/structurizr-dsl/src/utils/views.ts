@@ -1,75 +1,282 @@
 import {
-    IContainer,
-    IModel,
-    ISoftwareSystem,
     IWorkspace,
-    View,
+    ISystemLandscapeView,
+    AutoLayoutDirection,
+    ISystemContextView,
+    IContainerView,
+    IComponentView,
+    IDeploymentView,
+    IModelView,
+    IConfiguration,
     ViewType,
-    IComponent,
+    IViews,
+    View,
 } from "../interfaces";
-import { createDefaultModelView } from "./workspace.defaults";
+import {
+    ComponentView,
+    Configuration,
+    ContainerView,
+    DeploymentView,
+    SystemContextView,
+    SystemLandscapeView,
+} from "../models";
+import {
+    getWorkspaceContainers,
+    // getWorkspaceDeploymentEnvironments,
+    getWorkspaceSoftwareSystems,
+} from "./model";
+import { createUniqueId } from "./identifier";
+
+export const createDefaultSystemLandscapeView = (): ISystemLandscapeView => {
+    const uniqueId = createUniqueId();
+    return new SystemLandscapeView({
+        key: `system_landscape_view_${uniqueId}`,
+        include: [],
+        autoLayout: {
+            direction: AutoLayoutDirection.TopBotom,
+            rankSeparation: 300,
+            nodeSeparation: 300,
+        },
+    }).toSnapshot();
+};
+
+export const createDefaultSystemContextView = (
+    softwareSystemIdentifier: string
+): ISystemContextView => {
+    const uniqueId = createUniqueId();
+    return new SystemContextView({
+        softwareSystemIdentifier,
+        key: `system_context_view_${uniqueId}`,
+        include: [],
+        autoLayout: {
+            direction: AutoLayoutDirection.TopBotom,
+            rankSeparation: 300,
+            nodeSeparation: 300,
+        },
+    }).toSnapshot();
+};
+
+export const createDefaultContainerView = (
+    softwareSystemIdentifier: string
+): IContainerView => {
+    const uniqueId = createUniqueId();
+    return new ContainerView({
+        softwareSystemIdentifier,
+        key: `container_view_${uniqueId}`,
+        include: [],
+        autoLayout: {
+            direction: AutoLayoutDirection.TopBotom,
+            rankSeparation: 300,
+            nodeSeparation: 300,
+        },
+    }).toSnapshot();
+};
+
+export const createDefaultComponentView = (
+    containerIdentifier: string
+): IComponentView => {
+    const uniqueId = createUniqueId();
+    return new ComponentView({
+        containerIdentifier,
+        key: `component_view_${uniqueId}`,
+        include: [],
+        autoLayout: {
+            direction: AutoLayoutDirection.TopBotom,
+            rankSeparation: 300,
+            nodeSeparation: 300,
+        },
+    }).toSnapshot();
+};
+
+export const createDefaultDeploymentView = (
+    environment: string,
+    softwareSystemIdentifier: string
+): IDeploymentView => {
+    return new DeploymentView({
+        softwareSystemIdentifier,
+        environment,
+        title: `Deployment for ${environment}`,
+        autoLayout: {
+            direction: AutoLayoutDirection.TopBotom,
+            rankSeparation: 300,
+            nodeSeparation: 300,
+        },
+    }).toSnapshot();
+};
+
+export const createDefaultModelView = (): IModelView => {
+    return {
+        type: ViewType.Model,
+        key: "model_view",
+    };
+};
+
+export const createDefaultConfiguration = (): IConfiguration => {
+    return new Configuration({
+        styles: {
+            elements: [],
+            relationships: [],
+        },
+        themes: [],
+    }).toSnapshot();
+};
+
+export const getViewsWithDefaults = (workspace: IWorkspace): IViews => {
+    const softwareSystems = getWorkspaceSoftwareSystems(workspace.model);
+    // const deploymentEnvironments = getWorkspaceDeploymentEnvironments(
+    //     workspace.model
+    // );
+
+    const views = {
+        ...workspace.views,
+        systemLandscape:
+            workspace.views.systemLandscape ??
+            createDefaultSystemLandscapeView(),
+        systemContexts: softwareSystems.map(
+            (softwareSystem) =>
+                workspace.views.systemContexts.find(
+                    (existingView) =>
+                        existingView.softwareSystemIdentifier ===
+                        softwareSystem.identifier
+                ) ?? createDefaultSystemContextView(softwareSystem.identifier)
+        ),
+        containers: softwareSystems.map(
+            (softwareSystem) =>
+                workspace.views.containers.find(
+                    (existingView) =>
+                        existingView.softwareSystemIdentifier ===
+                        softwareSystem.identifier
+                ) ?? createDefaultContainerView(softwareSystem.identifier)
+        ),
+        components: getWorkspaceContainers(workspace.model).map(
+            (container) =>
+                workspace.views.components.find(
+                    (existingView) =>
+                        existingView.containerIdentifier ===
+                        container.identifier
+                ) ?? createDefaultComponentView(container.identifier)
+        ),
+        // TODO (deployment): review how and if default deployment views should be created
+        // deployments: softwareSystems.flatMap((softwareSystem) =>
+        //     deploymentEnvironments.map(
+        //         (deployment) =>
+        //             workspace.views.deployments.find(
+        //                 (existingView) =>
+        //                     existingView.environment === deployment.name &&
+        //                     existingView.softwareSystemIdentifier ===
+        //                         softwareSystem.identifier
+        //             ) ??
+        //             createDefaultDeploymentView(
+        //                 deployment.name,
+        //                 softwareSystem.identifier
+        //             )
+        //     )
+        // ),
+    };
+
+    return views;
+};
 
 export const findViewByKey = (
-    workspace: IWorkspace,
+    views: IViews,
     viewKey: string
 ): View | undefined => {
     return (
-        [workspace.views.systemLandscape].find((x) => x?.key === viewKey) ??
-        workspace.views.systemContexts.find((x) => x.key === viewKey) ??
-        workspace.views.containers.find((x) => x.key === viewKey) ??
-        workspace.views.components.find((x) => x.key === viewKey) ??
-        workspace.views.deployments.find((x) => x.key === viewKey)
+        [views.systemLandscape].find((x) => x?.key === viewKey) ??
+        views.systemContexts.find((x) => x.key === viewKey) ??
+        views.containers.find((x) => x.key === viewKey) ??
+        views.components.find((x) => x.key === viewKey) ??
+        views.deployments.find((x) => x.key === viewKey)
     );
 };
 
-export const findViewByType = (
-    workspace: IWorkspace,
-    viewType?: ViewType
+export const findViewByType = (views: IViews, viewType?: ViewType): View => {
+    switch (viewType) {
+        case ViewType.Model:
+            return createDefaultModelView();
+        case ViewType.SystemLandscape:
+            return views.systemLandscape;
+        case ViewType.SystemContext:
+            return views.systemContexts[0]!;
+        case ViewType.Container:
+            return views.containers[0]!;
+        case ViewType.Component:
+            return views.components[0]!;
+        case ViewType.Deployment:
+            return views.deployments[0]!;
+        default:
+            return views.systemLandscape!;
+    }
+};
+
+export const findViewByDefinition = (
+    views: IViews,
+    view: View
 ): View | undefined => {
-    return (
-        [workspace.views.systemLandscape].find((x) => x?.type === viewType) ??
-        workspace.views.systemContexts.find((x) => x.type === viewType) ??
-        workspace.views.containers.find((x) => x.type === viewType) ??
-        workspace.views.components.find((x) => x.type === viewType) ??
-        workspace.views.deployments.find((x) => x.type === viewType)
-    );
+    switch (view.type) {
+        case ViewType.Model:
+            return createDefaultModelView();
+        case ViewType.SystemLandscape:
+            return views.systemLandscape;
+        case ViewType.SystemContext:
+            return views.systemContexts.find(
+                (x) =>
+                    x.softwareSystemIdentifier === view.softwareSystemIdentifier
+            );
+        case ViewType.Container:
+            return views.containers.find(
+                (x) =>
+                    x.softwareSystemIdentifier === view.softwareSystemIdentifier
+            );
+        case ViewType.Component:
+            return views.components.find(
+                (x) => x.containerIdentifier === view.containerIdentifier
+            );
+        case ViewType.Deployment:
+            return views.deployments.find(
+                (x) =>
+                    x.softwareSystemIdentifier === view.softwareSystemIdentifier
+            );
+        default:
+            return undefined;
+    }
 };
 
 export const findOrDefault = <TView extends View>(
-    workspace: IWorkspace,
-    view: { type: ViewType; key: string },
+    views: IViews,
+    view: View,
     defaultView: TView
 ): TView => {
     return (
-        (findViewByKey(workspace, view.key) as TView) ??
-        (findViewByType(workspace, view.type) as TView) ??
+        (findViewByKey(views, view.key) as TView) ??
+        (findViewByDefinition(views, view) as TView) ??
         defaultView
     );
 };
 
 export const findViewForElement = (
-    workspace: IWorkspace,
+    views: IViews,
     viewType: ViewType,
     elementIdentifier?: string
 ): View | undefined => {
     return (
-        [workspace.views.systemLandscape].find((x) => x?.type === viewType) ??
-        workspace.views.systemContexts.find(
+        [views.systemLandscape].find((x) => x?.type === viewType) ??
+        views.systemContexts.find(
             (x) =>
                 x.type === viewType &&
                 x.softwareSystemIdentifier === elementIdentifier
         ) ??
-        workspace.views.containers.find(
+        views.containers.find(
             (x) =>
                 x.type === viewType &&
                 x.softwareSystemIdentifier === elementIdentifier
         ) ??
-        workspace.views.components.find(
+        views.components.find(
             (x) =>
                 x.type === viewType &&
                 x.containerIdentifier === elementIdentifier
         ) ??
-        workspace.views.deployments.find(
+        views.deployments.find(
             (x) =>
                 x.type === viewType &&
                 x.softwareSystemIdentifier === elementIdentifier
@@ -77,49 +284,12 @@ export const findViewForElement = (
     );
 };
 
-export const findAnyExisting = (workspace: IWorkspace): View | undefined => {
+export const findAnyExisting = (views: IViews): View | undefined => {
     return (
-        workspace.views.systemLandscape ??
-        workspace.views.systemContexts[0] ??
-        workspace.views.containers[0] ??
-        workspace.views.components[0] ??
-        workspace.views.deployments[0]
+        views.systemLandscape ??
+        views.systemContexts[0] ??
+        views.containers[0] ??
+        views.components[0] ??
+        views.deployments[0]
     );
-};
-
-export const findElementPath = (
-    model: IModel,
-    identifier: string
-): Array<ISoftwareSystem | IContainer | IComponent> => {
-    const softwareSystems = model.groups
-        .flatMap((group) => group.softwareSystems)
-        .concat(model.softwareSystems);
-
-    for (const softwareSystem of softwareSystems) {
-        const containers = softwareSystem.groups
-            .flatMap((group) => group.containers)
-            .concat(softwareSystem.containers);
-
-        for (const container of containers) {
-            const components = container.groups
-                .flatMap((group) => group.components)
-                .concat(container.components);
-
-            for (const component of components) {
-                if (component.identifier === identifier) {
-                    return [softwareSystem, container, component];
-                }
-            }
-
-            if (container.identifier === identifier) {
-                return [softwareSystem, container];
-            }
-        }
-
-        if (softwareSystem.identifier === identifier) {
-            return [softwareSystem];
-        }
-    }
-
-    return [];
 };

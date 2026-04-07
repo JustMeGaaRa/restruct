@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Github } from "lucide-react";
 import logo from "./assets/restruct.svg";
+import { GitHub } from "./icons";
 import { Carousel } from "./components/Carousel";
 import { Card } from "./components/Card";
 
@@ -65,7 +65,7 @@ function App() {
         {
             name: "GitHub",
             href: "https://github.com/JustMeGaaRa/restruct",
-            icon: <Github className="w-4 h-4" />,
+            icon: <GitHub size={16} />,
         },
     ];
 

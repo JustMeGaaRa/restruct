@@ -32,6 +32,6 @@
         "@restruct/typescript-config": "workspace:*",
         "tsdown": "^0.21.2",
         "typescript": "^5.3.3",
-        "vitest": "^2.1.1"
+        "vitest": "^4.1.3"
     }
 }

@@ -1,20 +1,82 @@
+import {
+    IElement,
+    ElementType,
+    View,
+    isSoftwareSystem,
+    isContainer,
+    isSystemContextView,
+    isContainerView,
+    isComponentView,
+    isSystemLandscapeView,
+} from "@restruct/structurizr-dsl";
 import { useViewNavigation } from "@restruct/structurizr-react";
 import { ButtonGroup, IconButton } from "@chakra-ui/react";
 import { LuZoomIn, LuZoomOut } from "react-icons/lu";
-import { IElement, ElementType } from "@restruct/structurizr-dsl";
+import { FC, useCallback } from "react";
 
-export const ElementControlsOverlay = ({
-    element,
-    state,
-}: {
+// prettier-ignore
+const checkZoomIntoAllowed = (
+    targetElement: IElement,
+    currentView?: View,
+    isBoundary?: boolean
+) =>
+    !isBoundary &&
+    ((isComponentView(currentView) && (isContainer(targetElement) || isSoftwareSystem(targetElement))) ||
+        (isContainerView(currentView) && (isContainer(targetElement) || isSoftwareSystem(targetElement))) ||
+        (isSystemContextView(currentView) && isSoftwareSystem(targetElement)) ||
+        (isSystemLandscapeView(currentView) && isSoftwareSystem(targetElement)));
+
+// prettier-ignore
+const checkZoomOutOfAllowed = (
+    targetElement: IElement,
+    currentView?: View,
+    isBoundary?: boolean
+) =>
+    isBoundary &&
+    ((isComponentView(currentView) && isContainer(targetElement)) ||
+        (isContainerView(currentView) && isSoftwareSystem(targetElement)));
+
+export type ElementControlsOverlayProps = {
     element: IElement;
     state: {
         isHovered?: boolean;
         isSelected?: boolean;
         isBoundary?: boolean;
+        isSecondary?: boolean;
     };
+    onZoomIn?: () => void;
+    onZoomOut?: () => void;
+};
+
+export const ElementControlsOverlay: FC<ElementControlsOverlayProps> = ({
+    element,
+    state,
+    onZoomIn,
+    onZoomOut,
 }) => {
-    const { zoomIntoElement, zoomOutOfElement } = useViewNavigation();
+    const { currentView, zoomIntoElementScope, zoomOutToParentScope } =
+        useViewNavigation();
+
+    const handleZoomIn = useCallback(
+        (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+            if (isSoftwareSystem(element) || isContainer(element)) {
+                e.stopPropagation();
+                zoomIntoElementScope(element);
+                onZoomIn?.();
+            }
+        },
+        [element, zoomIntoElementScope, onZoomIn]
+    );
+
+    const handleZoomOut = useCallback(
+        (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+            e.stopPropagation();
+            zoomOutToParentScope(element);
+            onZoomOut?.();
+        },
+        [element, zoomOutToParentScope, onZoomOut]
+    );
+
     if (!state.isHovered && !state.isSelected) return null;
 
     if (
@@ -25,34 +87,52 @@ export const ElementControlsOverlay = ({
         return null;
     }
 
-    const isZoomOut = state.isBoundary;
+    const allowZoomIn = checkZoomIntoAllowed(
+        element,
+        currentView,
+        state.isBoundary
+    );
+    const allowZoomOut = checkZoomOutOfAllowed(
+        element,
+        currentView,
+        state.isBoundary
+    );
 
     return (
         <ButtonGroup
-            position="absolute"
-            top={isZoomOut ? 6 : 2}
+            position={"absolute"}
+            top={state.isBoundary ? 6 : 2}
             right={2}
-            borderRadius={"lg"}
-            borderWidth={1}
-            borderColor="#535354"
             gap={1}
             size={"xs"}
             colorPalette={"gray"}
+            orientation={"vertical"}
             zIndex={100}
         >
-            <IconButton
-                aria-label={isZoomOut ? "Zoom Out" : "Zoom In"}
-                borderRadius={"lg"}
-                onClick={(e) => {
-                    e.stopPropagation();
-                    const zoomFunc = isZoomOut
-                        ? zoomOutOfElement
-                        : zoomIntoElement;
-                    zoomFunc(element);
-                }}
-            >
-                {isZoomOut ? <LuZoomOut /> : <LuZoomIn />}
-            </IconButton>
+            {allowZoomIn && (
+                <IconButton
+                    aria-label={"Zoom Into Scope"}
+                    borderRadius={"lg"}
+                    borderWidth={1}
+                    borderColor="#535354"
+                    title={"Zoom Into Scope"}
+                    onClick={handleZoomIn}
+                >
+                    <LuZoomIn />
+                </IconButton>
+            )}
+            {allowZoomOut && (
+                <IconButton
+                    aria-label={"Zoom Out of Scope"}
+                    borderRadius={"lg"}
+                    borderWidth={1}
+                    borderColor="#535354"
+                    title={"Zoom Out of Scope"}
+                    onClick={handleZoomOut}
+                >
+                    <LuZoomOut />
+                </IconButton>
+            )}
         </ButtonGroup>
     );
 };

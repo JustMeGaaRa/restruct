@@ -5,10 +5,10 @@ import {
     IDeploymentNode,
     IDeploymentView,
     IInfrastructureNode,
-    IModel,
     IRelationship,
     ISoftwareSystem,
     ISoftwareSystemInstance,
+    IWorkspace,
 } from "../../interfaces";
 import { IDiagramVisitor, ISupportDiagramVisitor } from "../../shared";
 import { createWorkspaceExplorer, isRelationshipInView } from "../../utils";
@@ -26,7 +26,7 @@ export class DeploymentViewStrategy
         >
 {
     constructor(
-        private readonly model: IModel,
+        private readonly workspace: IWorkspace,
         private readonly view: IDeploymentView
     ) {}
 
@@ -41,7 +41,9 @@ export class DeploymentViewStrategy
             | IContainer
         >
     ): void {
-        const { getImpliedRelationships } = createWorkspaceExplorer(this.model);
+        const { getImpliedRelationships } = createWorkspaceExplorer(
+            this.workspace
+        );
         const visitedElements = new Set<string>();
         const relationships = getImpliedRelationships(this.view);
 
@@ -65,7 +67,7 @@ export class DeploymentViewStrategy
 
         // TODO(deployment): handle the deployment view scoped to a specific software system instance
         const visitDeploymentEnvironmentInScope = () => {
-            this.model.deploymentEnvironments
+            this.workspace.model.deploymentEnvironments
                 .filter(
                     (deploymentEnvironment) =>
                         deploymentEnvironment.name === this.view.environment ||

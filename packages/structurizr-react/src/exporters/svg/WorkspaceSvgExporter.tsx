@@ -28,50 +28,36 @@ export class WorkspaceSvgExporter {
         const result: Record<string, string> = {};
 
         if (workspace) {
-            const views: Array<DiagramRenderProps> = [];
-
-            if (workspace.views.systemLandscape) {
-                views.push({
+            const views: Array<DiagramRenderProps> = [
+                {
                     type: ViewType.SystemLandscape,
                     view: workspace.views.systemLandscape,
                     diagram: createSystemLandscapeDiagram(
                         workspace,
                         workspace.views.systemLandscape
                     ),
-                });
-            }
-
-            views.push(
+                },
                 ...workspace.views.systemContexts.map((view) => ({
                     type: ViewType.SystemContext,
                     view: view,
                     diagram: createSystemContextDiagram(workspace, view),
-                }))
-            );
-
-            views.push(
+                })),
                 ...workspace.views.containers.map((view) => ({
                     type: ViewType.Container,
                     view: view,
                     diagram: createContainerDiagram(workspace, view),
-                }))
-            );
-
-            views.push(
+                })),
                 ...workspace.views.components.map((view) => ({
                     type: ViewType.Component,
                     view: view,
                     diagram: createComponentDiagram(workspace, view),
-                }))
-            );
-
-            views.push(
+                })),
                 ...workspace.views.deployments.map((view) => ({
                     type: ViewType.Deployment,
                     view: view,
                     diagram: createDeploymentDiagram(workspace, view),
-                }))
-            );
+                })),
+            ];
 
             for (const { type, view, diagram } of views) {
                 const autolayout = await autolayoutDiagram(diagram, type);

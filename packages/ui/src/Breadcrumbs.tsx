@@ -1,69 +1,90 @@
 import {
     Breadcrumb,
     Box,
-    MenuRoot,
-    MenuTrigger,
-    MenuContent,
+    Button,
     MenuItem,
     Portal,
     Menu,
+    IconButton,
+    ButtonGroup,
 } from "@chakra-ui/react";
-import { LuChevronRight, LuChevronDown } from "react-icons/lu";
+import { LuChevronDown } from "react-icons/lu";
 import { Fragment } from "react/jsx-runtime";
-import { ReactNode } from "react";
+import { ElementType, FC, ReactNode } from "react";
+import { LiaSlashSolid } from "react-icons/lia";
 
-export interface BreadcrumbOption {
+export interface MenuItem {
     label: string;
     value: string;
 }
 
 export interface BreadcrumbItem {
     label: string;
-    subtitle?: string;
+    options?: MenuItem[];
     icon?: (size: number) => ReactNode;
-    options?: BreadcrumbOption[];
     onClick?: () => void;
     onSelect?: (value: string) => void;
 }
 
 export interface BreadcrumbsProps {
     items: BreadcrumbItem[];
-    showSubtitle?: boolean;
 }
 
-const BreadcrumbItemContent = ({
-    item,
-    showSubtitle = true,
-}: {
-    item: BreadcrumbItem;
-    showSubtitle?: boolean;
-}) => (
-    <Box display={"flex"} flexDirection={"row"} gap={2}>
-        {item.icon && item.icon(showSubtitle ? 24 : 16)}
-        <Box display={"flex"} flexDirection={"column"} gap={0}>
-            {item.subtitle && showSubtitle && (
-                <Box
-                    as="span"
-                    fontSize="10px"
-                    color="gray.500"
-                    lineHeight="1"
-                    textTransform="uppercase"
-                    fontWeight="bold"
+const SplitButton: FC<{
+    as?: ElementType;
+    active?: boolean;
+    label: string;
+    icon?: ReactNode;
+    items?: Array<MenuItem>;
+    onClick?: () => void;
+    onSelect?: (value: string) => void;
+}> = ({ as, active, label, icon, items, onClick, onSelect }) => {
+    return (
+        <Menu.Root positioning={{ placement: "bottom-end" }}>
+            <ButtonGroup attached size={"sm"}>
+                <Button
+                    as={as}
+                    variant="ghost"
+                    color={active ? "white" : "gray.400"}
+                    rounded={"full"}
+                    onClick={onClick}
+                    _hover={{ bg: "whiteAlpha.200", color: "white" }}
                 >
-                    {item.subtitle}
-                </Box>
-            )}
-            <Box as="span" fontSize="sm" lineHeight="1.2">
-                {item.label}
-            </Box>
-        </Box>
-    </Box>
-);
+                    {icon}
+                    {label}
+                </Button>
+                {items && items.length > 0 && onSelect && (
+                    <Menu.Trigger asChild>
+                        <IconButton
+                            variant="ghost"
+                            rounded={"full"}
+                            _hover={{ bg: "whiteAlpha.200", color: "white" }}
+                        >
+                            <LuChevronDown />
+                        </IconButton>
+                    </Menu.Trigger>
+                )}
+            </ButtonGroup>
+            <Portal>
+                <Menu.Positioner>
+                    <Menu.Content>
+                        {items?.map((item) => (
+                            <Menu.Item
+                                key={item.value}
+                                value={item.value}
+                                onClick={() => onSelect?.(item.value)}
+                            >
+                                {item.label}
+                            </Menu.Item>
+                        ))}
+                    </Menu.Content>
+                </Menu.Positioner>
+            </Portal>
+        </Menu.Root>
+    );
+};
 
-export const Breadcrumbs = ({
-    items,
-    showSubtitle = true,
-}: BreadcrumbsProps) => {
+export const Breadcrumbs = ({ items }: BreadcrumbsProps) => {
     if (!items || items.length === 0) return null;
 
     return (
@@ -74,8 +95,7 @@ export const Breadcrumbs = ({
             bg="rgba(20, 20, 20, 0.8)"
             backdropFilter="blur(12px)"
             borderRadius="full"
-            px="4"
-            py="1"
+            p="1"
             border="1px solid"
             borderColor="whiteAlpha.200"
             boxShadow="0 4px 20px rgba(0, 0, 0, 0.4)"
@@ -83,115 +103,30 @@ export const Breadcrumbs = ({
         >
             <Breadcrumb.Root>
                 <Breadcrumb.List>
-                    {items.map((item, index) => {
-                        const isLast = index === items.length - 1;
-
-                        let CustomLink = null;
-                        if (item.options && item.options.length > 0) {
-                            CustomLink = (
-                                <MenuRoot>
-                                    <MenuTrigger asChild>
-                                        <Breadcrumb.Link
-                                            color={
-                                                isLast ? "white" : "gray.400"
-                                            }
-                                            height="auto"
-                                            display="flex"
-                                            alignItems="center"
-                                            gap="1"
-                                            _hover={{
-                                                color: "white",
-                                                textDecoration: "none",
-                                            }}
-                                            cursor="pointer"
-                                        >
-                                            <BreadcrumbItemContent
-                                                item={item}
-                                                showSubtitle={showSubtitle}
-                                            />
-                                            <LuChevronDown size="14" />
-                                        </Breadcrumb.Link>
-                                    </MenuTrigger>
-                                    <Portal>
-                                        <Menu.Positioner>
-                                            <MenuContent
-                                                bg="neutral.900"
-                                                border="1px solid"
-                                                borderColor="whiteAlpha.200"
-                                                zIndex={1001}
-                                            >
-                                                {item.options.map((option) => (
-                                                    <MenuItem
-                                                        key={option.value}
-                                                        value={option.value}
-                                                        onClick={() =>
-                                                            item.onSelect?.(
-                                                                option.value
-                                                            )
-                                                        }
-                                                        _hover={{
-                                                            bg: "whiteAlpha.200",
-                                                        }}
-                                                        color="white"
-                                                    >
-                                                        {option.label}
-                                                    </MenuItem>
-                                                ))}
-                                            </MenuContent>
-                                        </Menu.Positioner>
-                                    </Portal>
-                                </MenuRoot>
-                            );
-                        } else {
-                            CustomLink = isLast ? (
-                                <Breadcrumb.CurrentLink
-                                    color="white"
-                                    _hover={{ textDecoration: "none" }}
-                                    height="auto"
-                                >
-                                    <BreadcrumbItemContent
-                                        item={item}
-                                        showSubtitle={showSubtitle}
-                                    />
-                                </Breadcrumb.CurrentLink>
-                            ) : (
-                                <Breadcrumb.Link
+                    {items.map((item, index) => (
+                        <Fragment key={index}>
+                            <Breadcrumb.Item>
+                                <SplitButton
+                                    as={
+                                        index === items.length - 1
+                                            ? Breadcrumb.CurrentLink
+                                            : Breadcrumb.Link
+                                    }
+                                    active={index === items.length - 1}
+                                    label={item.label}
+                                    icon={item.icon?.(16)}
+                                    items={item.options}
                                     onClick={item.onClick}
-                                    color="gray.400"
-                                    height="auto"
-                                    _hover={{
-                                        color: "white",
-                                        textDecoration: "none",
-                                    }}
-                                    cursor={
-                                        item.onClick ? "pointer" : "default"
-                                    }
-                                    pointerEvents={
-                                        item.onClick ? "auto" : "none"
-                                    }
-                                >
-                                    <BreadcrumbItemContent
-                                        item={item}
-                                        showSubtitle={showSubtitle}
-                                    />
-                                </Breadcrumb.Link>
-                            );
-                        }
-
-                        return (
-                            <Fragment key={index}>
-                                <Breadcrumb.Item>{CustomLink}</Breadcrumb.Item>
-                                {!isLast && (
-                                    <Breadcrumb.Separator
-                                        color="gray.500"
-                                        px={1}
-                                    >
-                                        <LuChevronRight />
-                                    </Breadcrumb.Separator>
-                                )}
-                            </Fragment>
-                        );
-                    })}
+                                    onSelect={item.onSelect}
+                                />
+                            </Breadcrumb.Item>
+                            {!(index === items.length - 1) && (
+                                <Breadcrumb.Separator color="gray.400">
+                                    <LiaSlashSolid size={16} />
+                                </Breadcrumb.Separator>
+                            )}
+                        </Fragment>
+                    ))}
                 </Breadcrumb.List>
             </Breadcrumb.Root>
         </Box>

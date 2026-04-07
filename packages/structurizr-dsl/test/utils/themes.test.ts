@@ -11,6 +11,7 @@ import {
     Style,
 } from "../../src/models";
 import { mergeStyles, applyTheme, fetchTheme } from "../../src/utils/themes";
+import { createDefaultSystemLandscapeView } from "../../src";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -29,6 +30,7 @@ const makeWorkspace = (
         relationships: [],
     },
     views: {
+        systemLandscape: createDefaultSystemLandscapeView(),
         systemContexts: [],
         containers: [],
         components: [],

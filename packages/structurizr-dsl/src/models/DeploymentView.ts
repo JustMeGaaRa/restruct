@@ -16,7 +16,7 @@ export class DeploymentView implements ISupportSnapshot<IDeploymentView> {
         this.environment = values.environment;
         this.key =
             values.key ??
-            `deploymentView_${this.softwareSystemIdentifier.toString()}_${this.environment}`;
+            `deploymentView_${this.environment}_${this.softwareSystemIdentifier.toString()}`;
         this.description = values.description;
         this.include = values.include?.map((i) => Identifier.parse(i)) ?? [];
         this.exclude = values.exclude?.map((i) => Identifier.parse(i)) ?? [];

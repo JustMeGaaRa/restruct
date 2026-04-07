@@ -1,4 +1,4 @@
-import { IModel, ISystemLandscapeView } from "../../interfaces";
+import { IModel, ISystemLandscapeView, IWorkspace } from "../../interfaces";
 import { IDiagramVisitor, ISupportDiagramVisitor } from "../../shared";
 import { createWorkspaceExplorer, isRelationshipInView } from "../../utils";
 
@@ -6,17 +6,19 @@ export class SystemLandscapeViewStrategy
     implements ISupportDiagramVisitor<IModel, unknown>
 {
     constructor(
-        private readonly model: IModel,
+        private readonly workspace: IWorkspace,
         private readonly view: ISystemLandscapeView
     ) {}
 
     accept(visitor: IDiagramVisitor<IModel, unknown>): void {
-        const { getImpliedRelationships } = createWorkspaceExplorer(this.model);
+        const { getImpliedRelationships } = createWorkspaceExplorer(
+            this.workspace
+        );
         const visitedElements = new Set<string>();
         const relationships = getImpliedRelationships(this.view);
 
         // iterate over all groups and find software system for the view
-        this.model.groups.flatMap((group) => {
+        this.workspace.model.groups.flatMap((group) => {
             visitedElements.add(group.identifier);
 
             group.softwareSystems.forEach((softwareSystem) => {
@@ -28,15 +30,15 @@ export class SystemLandscapeViewStrategy
         });
 
         // iterate over all software systems and find software system for the view
-        this.model.softwareSystems.forEach((softwareSystem) => {
+        this.workspace.model.softwareSystems.forEach((softwareSystem) => {
             visitedElements.add(softwareSystem.identifier.toString());
         });
 
-        this.model.people.forEach((person) => {
+        this.workspace.model.people.forEach((person) => {
             visitedElements.add(person.identifier);
         });
 
-        visitor.visitScopeElement?.(this.model);
+        visitor.visitScopeElement?.(this.workspace.model);
 
         relationships
             .filter((relationship) =>

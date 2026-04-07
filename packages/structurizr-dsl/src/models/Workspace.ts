@@ -1,5 +1,6 @@
 import { IWorkspace, Properties } from "../interfaces";
 import { ISupportSnapshot } from "../shared";
+import { getViewsWithDefaults } from "../utils/views";
 import { Model } from "./Model";
 import { Views } from "./Views";
 
@@ -24,7 +25,7 @@ export class Workspace implements ISupportSnapshot<IWorkspace> {
     public readonly views: Views;
 
     public toSnapshot(): IWorkspace {
-        return {
+        const workspace: IWorkspace = {
             version: this.version,
             name: this.name,
             description: this.description,
@@ -32,6 +33,10 @@ export class Workspace implements ISupportSnapshot<IWorkspace> {
             properties: this.properties,
             model: this.model.toSnapshot(),
             views: this.views.toSnapshot(),
+        };
+        return {
+            ...workspace,
+            views: getViewsWithDefaults(workspace),
         };
     }
 }

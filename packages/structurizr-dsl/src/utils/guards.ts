@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
     IComponentView,
     IContainerView,
@@ -50,24 +51,24 @@ export function isViews(views: any): views is IViews {
     );
 }
 export function isElement(element: any): element is IElement {
-    return element.type !== undefined && element.identifier !== undefined;
+    return element?.type !== undefined && element?.identifier !== undefined;
 }
 export function isGroup(group: any): group is IGroup {
-    return group.type === ElementType.Group;
+    return group?.type === ElementType.Group;
 }
 export function isPerson(person: any): person is IPerson {
-    return person.type === ElementType.Person;
+    return person?.type === ElementType.Person;
 }
 export function isSoftwareSystem(
     softwareSystem: any
 ): softwareSystem is ISoftwareSystem {
-    return softwareSystem.type === ElementType.SoftwareSystem;
+    return softwareSystem?.type === ElementType.SoftwareSystem;
 }
 export function isContainer(container: any): container is IContainer {
-    return container.type === ElementType.Container;
+    return container?.type === ElementType.Container;
 }
 export function isComponent(component: any): component is IComponent {
-    return component.type === ElementType.Component;
+    return component?.type === ElementType.Component;
 }
 export function isDeploymentEnvironment(
     deploymentEnvironment: any
@@ -77,52 +78,52 @@ export function isDeploymentEnvironment(
 export function isDeploymentNode(
     deploymentNode: any
 ): deploymentNode is IDeploymentNode {
-    return deploymentNode.type === ElementType.DeploymentNode;
+    return deploymentNode?.type === ElementType.DeploymentNode;
 }
 export function isInfrastructureNode(
     infrastructureNode: any
 ): infrastructureNode is IInfrastructureNode {
-    return infrastructureNode.type === ElementType.InfrastructureNode;
+    return infrastructureNode?.type === ElementType.InfrastructureNode;
 }
 export function isSoftwareSystemInstance(
     softwareSystemInstance: any
 ): softwareSystemInstance is ISoftwareSystemInstance {
-    return softwareSystemInstance.type === ElementType.SoftwareSystemInstance;
+    return softwareSystemInstance?.type === ElementType.SoftwareSystemInstance;
 }
 export function isContainerInstance(
     containerInstance: any
 ): containerInstance is IContainerInstance {
-    return containerInstance.type === ElementType.ContainerInstance;
+    return containerInstance?.type === ElementType.ContainerInstance;
 }
 export function isRelationship(
     relationship: any
 ): relationship is IRelationship {
-    return relationship.type === RelationshipType.Relationship;
+    return relationship?.type === RelationshipType.Relationship;
 }
 export function isSystemLandscapeView(
     systemLandscapeView: any
 ): systemLandscapeView is ISystemLandscapeView {
-    return systemLandscapeView.type === ViewType.SystemLandscape;
+    return systemLandscapeView?.type === ViewType.SystemLandscape;
 }
 export function isSystemContextView(
     systemContextView: any
 ): systemContextView is ISystemContextView {
-    return systemContextView.type === ViewType.SystemContext;
+    return systemContextView?.type === ViewType.SystemContext;
 }
 export function isContainerView(
     containerView: any
 ): containerView is IContainerView {
-    return containerView.type === ViewType.Container;
+    return containerView?.type === ViewType.Container;
 }
 export function isComponentView(
     componentView: any
 ): componentView is IComponentView {
-    return componentView.type === ViewType.Component;
+    return componentView?.type === ViewType.Component;
 }
 export function isDeploymentView(
     deploymentView: any
 ): deploymentView is IDeploymentView {
-    return deploymentView.type === ViewType.Deployment;
+    return deploymentView?.type === ViewType.Deployment;
 }
 export function isStyles(styles: any): styles is IStyles {
     return (

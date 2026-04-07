@@ -50,7 +50,7 @@ export const ComponentDiagram: FC<
     useEffect(() => {
         if (workspace) {
             const componentView = findOrDefault(
-                workspace,
+                workspace.views,
                 value,
                 createDefaultComponentView(value.containerIdentifier)
             );
