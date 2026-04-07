@@ -43,10 +43,9 @@
         "@types/react": "^19.0.0",
         "@types/react-dom": "^19.0.0",
         "@types/ws": "^8.5.10",
-        "@vitejs/plugin-react": "^4.2.1",
+        "@vitejs/plugin-react": "^6.0.1",
         "tsup": "^8.0.2",
         "typescript": "^5.3.3",
-        "vite-tsconfig-paths": "^6.1.1",
         "vitest": "^4.1.3"
     }
 }
