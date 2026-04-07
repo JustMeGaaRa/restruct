@@ -10,30 +10,39 @@ import {
     ISystemLandscapeDiagram,
     ViewType,
 } from "@restruct/structurizr-dsl";
-import { Diagram } from "../types";
+import {
+    Diagram,
+    ELEMENT_DEFAULT_HEIGHT,
+    ELEMENT_DEFAULT_WIDTH,
+} from "../types";
 import { dagreeGraph } from "./dagree";
 import { IViewMetadata } from "../containers";
 import { GraphAdapter } from "./graph";
 
 const defaultPosition = { x: 0, y: 0 };
-const defaultSize = { height: 200, width: 200 };
+
+type AutolayoutOptions = {
+    nodeSize: { width: number; height: number };
+    padding: number;
+};
 
 function buildGraphFromSystemLandscapeDiagram(
     diagram: ISystemLandscapeDiagram,
-    graph: GraphAdapter<IElement, IRelationship, IViewMetadata>
+    graph: GraphAdapter<IElement, IRelationship, IViewMetadata>,
+    options: AutolayoutOptions
 ) {
     [diagram.scope].map((scope) => {
         scope.groups.flatMap((group) => {
             graph.setNode(group.identifier, {
                 id: group.identifier,
-                ...defaultSize,
+                ...options.nodeSize,
                 ...defaultPosition,
             });
             group.people.map((element) => {
                 graph.setNode(element.identifier, {
                     id: element.identifier,
                     parent: group.identifier,
-                    ...defaultSize,
+                    ...options.nodeSize,
                     ...defaultPosition,
                 });
                 graph.setParent(element.identifier, group.identifier);
@@ -42,7 +51,7 @@ function buildGraphFromSystemLandscapeDiagram(
                 graph.setNode(element.identifier, {
                     id: element.identifier,
                     parent: group.identifier,
-                    ...defaultSize,
+                    ...options.nodeSize,
                     ...defaultPosition,
                 });
                 graph.setParent(element.identifier, group.identifier);
@@ -52,7 +61,7 @@ function buildGraphFromSystemLandscapeDiagram(
         scope.softwareSystems.map((element) => {
             graph.setNode(element.identifier, {
                 id: element.identifier,
-                ...defaultSize,
+                ...options.nodeSize,
                 ...defaultPosition,
             });
         });
@@ -60,7 +69,7 @@ function buildGraphFromSystemLandscapeDiagram(
         scope.people.map((element) => {
             graph.setNode(element.identifier, {
                 id: element.identifier,
-                ...defaultSize,
+                ...options.nodeSize,
                 ...defaultPosition,
             });
         });
@@ -77,12 +86,13 @@ function buildGraphFromSystemLandscapeDiagram(
 
 function buildGraphFromSystemContextDiagram(
     diagram: ISystemContextDiagram,
-    graph: GraphAdapter<IElement, IRelationship, IViewMetadata>
+    graph: GraphAdapter<IElement, IRelationship, IViewMetadata>,
+    options: AutolayoutOptions
 ) {
     [diagram.scope].map((scope) => {
         graph.setNode(scope.identifier, {
             id: scope.identifier,
-            ...defaultSize,
+            ...options.nodeSize,
             ...defaultPosition,
         });
     });
@@ -90,7 +100,7 @@ function buildGraphFromSystemContextDiagram(
     diagram.supportingElements.map((element) => {
         graph.setNode(element.identifier, {
             id: element.identifier,
-            ...defaultSize,
+            ...options.nodeSize,
             ...defaultPosition,
         });
     });
@@ -106,12 +116,13 @@ function buildGraphFromSystemContextDiagram(
 
 function buildGraphFromContainerDiagram(
     diagram: IContainerDiagram,
-    graph: GraphAdapter<IElement, IRelationship, IViewMetadata>
+    graph: GraphAdapter<IElement, IRelationship, IViewMetadata>,
+    options: AutolayoutOptions
 ) {
     [diagram.scope].map((scope) => {
         graph.setNode(scope.identifier, {
             id: scope.identifier,
-            ...defaultSize,
+            ...options.nodeSize,
             ...defaultPosition,
         });
 
@@ -119,14 +130,14 @@ function buildGraphFromContainerDiagram(
             graph.setNode(group.identifier, {
                 id: group.identifier,
                 parent: scope.identifier,
-                ...defaultSize,
+                ...options.nodeSize,
                 ...defaultPosition,
             });
             group.containers.map((element) => {
                 graph.setNode(element.identifier, {
                     id: element.identifier,
                     parent: group.identifier,
-                    ...defaultSize,
+                    ...options.nodeSize,
                     ...defaultPosition,
                 });
                 graph.setParent(element.identifier, group.identifier);
@@ -137,7 +148,7 @@ function buildGraphFromContainerDiagram(
             graph.setNode(element.identifier, {
                 id: element.identifier,
                 parent: scope.identifier,
-                ...defaultSize,
+                ...options.nodeSize,
                 ...defaultPosition,
             });
             graph.setParent(element.identifier, scope.identifier);
@@ -147,7 +158,7 @@ function buildGraphFromContainerDiagram(
     diagram.supportingElements.map((element) => {
         graph.setNode(element.identifier, {
             id: element.identifier,
-            ...defaultSize,
+            ...options.nodeSize,
             ...defaultPosition,
         });
     });
@@ -163,13 +174,14 @@ function buildGraphFromContainerDiagram(
 
 function buildGraphFromComponentDiagram(
     diagram: IComponentDiagram,
-    graph: GraphAdapter<IElement, IRelationship, IViewMetadata>
+    graph: GraphAdapter<IElement, IRelationship, IViewMetadata>,
+    options: AutolayoutOptions
 ) {
     [diagram.scope].map((scope) => {
         graph.setNode(scope.identifier, {
             id: scope.identifier,
             parent: scope.identifier,
-            ...defaultSize,
+            ...options.nodeSize,
             ...defaultPosition,
         });
 
@@ -177,14 +189,14 @@ function buildGraphFromComponentDiagram(
             graph.setNode(group.identifier, {
                 id: group.identifier,
                 parent: scope.identifier,
-                ...defaultSize,
+                ...options.nodeSize,
                 ...defaultPosition,
             });
             group.components.map((element) => {
                 graph.setNode(element.identifier, {
                     id: element.identifier,
                     parent: group.identifier,
-                    ...defaultSize,
+                    ...options.nodeSize,
                     ...defaultPosition,
                 });
                 graph.setParent(element.identifier, group.identifier);
@@ -195,7 +207,7 @@ function buildGraphFromComponentDiagram(
             graph.setNode(element.identifier, {
                 id: element.identifier,
                 parent: scope.identifier,
-                ...defaultSize,
+                ...options.nodeSize,
                 ...defaultPosition,
             });
             graph.setParent(element.identifier, scope.identifier);
@@ -205,7 +217,7 @@ function buildGraphFromComponentDiagram(
     diagram.supportingElements.map((element) => {
         graph.setNode(element.identifier, {
             id: element.identifier,
-            ...defaultSize,
+            ...options.nodeSize,
             ...defaultPosition,
         });
     });
@@ -221,10 +233,11 @@ function buildGraphFromComponentDiagram(
 
 function buildGraphFromDeploymentDiagram(
     diagram: IDeploymentDiagram,
-    graphAdapter: GraphAdapter<IElement, IRelationship, IViewMetadata>
+    graphAdapter: GraphAdapter<IElement, IRelationship, IViewMetadata>,
+    options: AutolayoutOptions
 ) {
     diagram.scope.deploymentNodes.forEach((node) => {
-        buildGraphFromDeploymentNode(graphAdapter, node);
+        buildGraphFromDeploymentNode(graphAdapter, node, options);
     });
 
     diagram.relationships.forEach((relationship) => {
@@ -238,11 +251,12 @@ function buildGraphFromDeploymentDiagram(
 
 function buildGraphFromDeploymentNode(
     graphAdapter: GraphAdapter<IElement, IRelationship, IViewMetadata>,
-    deploymentNode: IDeploymentNode
+    deploymentNode: IDeploymentNode,
+    options: AutolayoutOptions
 ) {
     graphAdapter.setNode(deploymentNode.identifier, {
         id: deploymentNode.identifier,
-        ...defaultSize,
+        ...options.nodeSize,
         ...defaultPosition,
     });
 
@@ -250,7 +264,7 @@ function buildGraphFromDeploymentNode(
         graphAdapter.setNode(instance.identifier, {
             id: instance.identifier,
             parent: deploymentNode.identifier,
-            ...defaultSize,
+            ...options.nodeSize,
             ...defaultPosition,
         });
         graphAdapter.setParent(instance.identifier, deploymentNode.identifier);
@@ -260,7 +274,7 @@ function buildGraphFromDeploymentNode(
         graphAdapter.setNode(instance.identifier, {
             id: instance.identifier,
             parent: deploymentNode.identifier,
-            ...defaultSize,
+            ...options.nodeSize,
             ...defaultPosition,
         });
         graphAdapter.setParent(instance.identifier, deploymentNode.identifier);
@@ -270,26 +284,27 @@ function buildGraphFromDeploymentNode(
         graphAdapter.setNode(node.identifier, {
             id: node.identifier,
             parent: deploymentNode.identifier,
-            ...defaultSize,
+            ...options.nodeSize,
             ...defaultPosition,
         });
         graphAdapter.setParent(node.identifier, deploymentNode.identifier);
     });
 
     deploymentNode.deploymentNodes.forEach((node) => {
-        buildGraphFromDeploymentNode(graphAdapter, node);
+        buildGraphFromDeploymentNode(graphAdapter, node, options);
         graphAdapter.setParent(node.identifier, deploymentNode.identifier);
     });
 }
 
 function buildGraphFromModelDiagram(
     diagram: IModelDiagram,
-    graphAdapter: GraphAdapter<IElement, IRelationship, IViewMetadata>
+    graphAdapter: GraphAdapter<IElement, IRelationship, IViewMetadata>,
+    options: AutolayoutOptions
 ) {
     diagram.supportingElements.map((scope) => {
         graphAdapter.setNode(scope.identifier, {
             id: scope.identifier,
-            ...defaultSize,
+            ...options.nodeSize,
             ...defaultPosition,
         });
     });
@@ -306,35 +321,45 @@ function buildGraphFromModelDiagram(
 function createDiagramGraph(
     viewType: ViewType,
     diagram: Diagram,
-    graphAdapter: GraphAdapter<IElement, IRelationship, IViewMetadata>
+    graphAdapter: GraphAdapter<IElement, IRelationship, IViewMetadata>,
+    options: AutolayoutOptions
 ) {
     if (viewType === ViewType.SystemLandscape) {
         buildGraphFromSystemLandscapeDiagram(
             diagram as ISystemLandscapeDiagram,
-            graphAdapter
+            graphAdapter,
+            options
         );
     } else if (viewType === ViewType.SystemContext) {
         buildGraphFromSystemContextDiagram(
             diagram as ISystemContextDiagram,
-            graphAdapter
+            graphAdapter,
+            options
         );
     } else if (viewType === ViewType.Container) {
         buildGraphFromContainerDiagram(
             diagram as IContainerDiagram,
-            graphAdapter
+            graphAdapter,
+            options
         );
     } else if (viewType === ViewType.Component) {
         buildGraphFromComponentDiagram(
             diagram as IComponentDiagram,
-            graphAdapter
+            graphAdapter,
+            options
         );
     } else if (viewType === ViewType.Deployment) {
         buildGraphFromDeploymentDiagram(
             diagram as IDeploymentDiagram,
-            graphAdapter
+            graphAdapter,
+            options
         );
     } else if (viewType === ViewType.Model) {
-        buildGraphFromModelDiagram(diagram as IModelDiagram, graphAdapter);
+        buildGraphFromModelDiagram(
+            diagram as IModelDiagram,
+            graphAdapter,
+            options
+        );
     }
 
     return graphAdapter;
@@ -356,11 +381,22 @@ function createLayoutAlgorithm(
 export const autolayoutDiagram = (
     diagram: Diagram,
     viewType: ViewType,
-    algorithm: "layered" | "elkjs" = "elkjs"
+    algorithm: "layered" | "elkjs" = "elkjs",
+    options?: Partial<AutolayoutOptions>
 ): Promise<IViewMetadata> => {
+    const defaultSize = {
+        width: ELEMENT_DEFAULT_WIDTH,
+        height: ELEMENT_DEFAULT_HEIGHT,
+    };
+    const finalOptions = {
+        nodeSize: options?.nodeSize ?? defaultSize,
+        padding: options?.padding ?? 100,
+    };
+    const layoutAlgorithm = createLayoutAlgorithm(algorithm);
     return createDiagramGraph(
         viewType,
         diagram,
-        createLayoutAlgorithm(algorithm)
+        layoutAlgorithm,
+        finalOptions
     ).layout();
 };

@@ -72,6 +72,12 @@ export const useViewNavigation = () => {
 
     const navigateToView = useCallback(
         (targetView: View | undefined) => {
+            if (targetView?.type === ViewType.SystemLandscape) {
+                setCurrentView(targetView);
+                setPath([]);
+                return;
+            }
+
             if (targetView?.type === ViewType.Deployment) {
                 setCurrentView(targetView);
                 setPath([

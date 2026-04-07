@@ -16,6 +16,10 @@ import { useEffect } from "react";
 import { autolayoutDiagram } from "../../utils";
 import { ElementWrapper } from "./ElementWrapper";
 import { Relationship } from "./Relationship";
+import {
+    ELEMENT_MODEL_DEFAULT_HEIGHT,
+    ELEMENT_MODEL_DEFAULT_WIDTH,
+} from "../../types";
 
 export const ModelDiagram: FC<
     PropsWithChildren<{
@@ -39,9 +43,12 @@ export const ModelDiagram: FC<
             const diagram = createModelDiagram(workspace);
             setDiagram(diagram);
 
-            autolayoutDiagram(diagram, ViewType.Model, "layered").then(
-                setMetadata
-            );
+            autolayoutDiagram(diagram, ViewType.Model, "layered", {
+                nodeSize: {
+                    width: ELEMENT_MODEL_DEFAULT_WIDTH,
+                    height: ELEMENT_MODEL_DEFAULT_HEIGHT,
+                },
+            }).then(setMetadata);
         }
     }, [workspace, value.key]);
 
