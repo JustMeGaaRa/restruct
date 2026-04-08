@@ -1,12 +1,12 @@
 import {
     IElement,
     View,
-    ViewType,
     ISoftwareSystem,
     IContainer,
     IComponent,
     zoomOutToParentScope as zoomOutToParentScopeUtil,
     zoomIntoElementScope as zoomIntoElementScopeUtil,
+    getViewPath,
 } from "@restruct/structurizr-dsl";
 import {
     createContext,
@@ -67,63 +67,15 @@ export const useViewNavigation = () => {
     const { currentView, path, setCurrentView, setPath } = useContext(
         ViewNavigationContext
     );
-    const { workspace, getSoftwareSystemById, getContainerById } =
-        useWorkspace();
+    const { workspace } = useWorkspace();
 
     const navigateToView = useCallback(
         (targetView: View | undefined) => {
-            if (targetView?.type === ViewType.SystemLandscape) {
-                setCurrentView(targetView);
-                setPath([]);
-                return;
-            }
-
-            if (targetView?.type === ViewType.Deployment) {
-                setCurrentView(targetView);
-                setPath([
-                    {
-                        index: 0,
-                        element: undefined,
-                        view: targetView,
-                    },
-                ]);
-                return;
-            }
-
-            if (targetView?.type === ViewType.Model) {
-                setCurrentView(targetView);
-                setPath([]);
-                return;
-            }
-
-            const targetScopeElement =
-                targetView?.type === ViewType.SystemContext
-                    ? getSoftwareSystemById(targetView.softwareSystemIdentifier)
-                    : targetView?.type === ViewType.Container
-                      ? getSoftwareSystemById(
-                            targetView.softwareSystemIdentifier
-                        )
-                      : targetView?.type === ViewType.Component
-                        ? getContainerById(targetView.containerIdentifier)
-                        : undefined;
-
-            if (targetScopeElement !== undefined) {
-                const path = zoomIntoElementScopeUtil(
-                    workspace,
-                    targetScopeElement
-                );
-
-                setPath(path);
-                setCurrentView(path[path.length - 1]!.view);
-            }
+            const path = getViewPath(workspace, targetView);
+            setCurrentView(targetView);
+            setPath(path);
         },
-        [
-            workspace,
-            getSoftwareSystemById,
-            getContainerById,
-            setCurrentView,
-            setPath,
-        ]
+        [workspace, setCurrentView, setPath]
     );
 
     const navigateToPathSection = useCallback(

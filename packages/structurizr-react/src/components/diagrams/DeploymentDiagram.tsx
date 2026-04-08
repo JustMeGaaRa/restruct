@@ -5,7 +5,7 @@ import {
     IDeploymentView,
     ViewType,
     createDefaultDeploymentView,
-    findOrDefault,
+    findViewOrDefault,
 } from "@restruct/structurizr-dsl";
 import { useViewport } from "@restruct/react-svg";
 import { FC, PropsWithChildren, useEffect, useState } from "react";
@@ -45,7 +45,7 @@ export const DeploymentDiagram: FC<
 
     useEffect(() => {
         if (workspace) {
-            const deploymentView = findOrDefault(
+            const deploymentView = findViewOrDefault(
                 workspace.views,
                 value,
                 createDefaultDeploymentView(

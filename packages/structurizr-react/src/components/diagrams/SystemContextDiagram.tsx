@@ -6,7 +6,7 @@ import {
     isPerson,
     isSoftwareSystem,
     createDefaultSystemContextView,
-    findOrDefault,
+    findViewOrDefault,
 } from "@restruct/structurizr-dsl";
 import { useViewport } from "@restruct/react-svg";
 import { FC, PropsWithChildren, useEffect, useState } from "react";
@@ -44,7 +44,7 @@ export const SystemContextDiagram: FC<
 
     useEffect(() => {
         if (workspace) {
-            const systemContextView = findOrDefault(
+            const systemContextView = findViewOrDefault(
                 workspace.views,
                 value,
                 createDefaultSystemContextView(value.softwareSystemIdentifier)

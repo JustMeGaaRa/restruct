@@ -132,30 +132,70 @@ export const getViewsWithDefaults = (workspace: IWorkspace): IViews => {
         systemLandscape:
             workspace.views.systemLandscape ??
             createDefaultSystemLandscapeView(),
-        systemContexts: softwareSystems.map(
-            (softwareSystem) =>
-                workspace.views.systemContexts.find(
-                    (existingView) =>
-                        existingView.softwareSystemIdentifier ===
-                        softwareSystem.identifier
-                ) ?? createDefaultSystemContextView(softwareSystem.identifier)
-        ),
-        containers: softwareSystems.map(
-            (softwareSystem) =>
-                workspace.views.containers.find(
-                    (existingView) =>
-                        existingView.softwareSystemIdentifier ===
-                        softwareSystem.identifier
-                ) ?? createDefaultContainerView(softwareSystem.identifier)
-        ),
-        components: getWorkspaceContainers(workspace.model).map(
-            (container) =>
-                workspace.views.components.find(
-                    (existingView) =>
-                        existingView.containerIdentifier ===
-                        container.identifier
-                ) ?? createDefaultComponentView(container.identifier)
-        ),
+        systemContexts: [
+            ...workspace.views.systemContexts,
+            ...softwareSystems
+                .filter(
+                    (softwareSystem) =>
+                        !workspace.views.systemContexts.some(
+                            (existingView) =>
+                                existingView.softwareSystemIdentifier ===
+                                softwareSystem.identifier
+                        )
+                )
+                .map(
+                    (softwareSystem) =>
+                        workspace.views.systemContexts.find(
+                            (existingView) =>
+                                existingView.softwareSystemIdentifier ===
+                                softwareSystem.identifier
+                        ) ??
+                        createDefaultSystemContextView(
+                            softwareSystem.identifier
+                        )
+                ),
+        ],
+        containers: [
+            ...workspace.views.containers,
+            ...softwareSystems
+                .filter(
+                    (softwareSystem) =>
+                        !workspace.views.containers.some(
+                            (existingView) =>
+                                existingView.softwareSystemIdentifier ===
+                                softwareSystem.identifier
+                        )
+                )
+                .map(
+                    (softwareSystem) =>
+                        workspace.views.containers.find(
+                            (existingView) =>
+                                existingView.softwareSystemIdentifier ===
+                                softwareSystem.identifier
+                        ) ??
+                        createDefaultContainerView(softwareSystem.identifier)
+                ),
+        ],
+        components: [
+            ...workspace.views.components,
+            ...getWorkspaceContainers(workspace.model)
+                .filter(
+                    (container) =>
+                        !workspace.views.components.some(
+                            (existingView) =>
+                                existingView.containerIdentifier ===
+                                container.identifier
+                        )
+                )
+                .map(
+                    (container) =>
+                        workspace.views.components.find(
+                            (existingView) =>
+                                existingView.containerIdentifier ===
+                                container.identifier
+                        ) ?? createDefaultComponentView(container.identifier)
+                ),
+        ],
         // TODO (deployment): review how and if default deployment views should be created
         // deployments: softwareSystems.flatMap((softwareSystem) =>
         //     deploymentEnvironments.map(
@@ -177,111 +217,83 @@ export const getViewsWithDefaults = (workspace: IWorkspace): IViews => {
     return views;
 };
 
-export const findViewByKey = (
+export const getAnyByViewType = (
     views: IViews,
-    viewKey: string
+    viewType: ViewType
 ): View | undefined => {
-    return (
-        [views.systemLandscape].find((x) => x?.key === viewKey) ??
-        views.systemContexts.find((x) => x.key === viewKey) ??
-        views.containers.find((x) => x.key === viewKey) ??
-        views.components.find((x) => x.key === viewKey) ??
-        views.deployments.find((x) => x.key === viewKey)
-    );
-};
-
-export const findViewByType = (views: IViews, viewType?: ViewType): View => {
     switch (viewType) {
         case ViewType.Model:
             return createDefaultModelView();
         case ViewType.SystemLandscape:
             return views.systemLandscape;
         case ViewType.SystemContext:
-            return views.systemContexts[0]!;
+            return views.systemContexts[0];
         case ViewType.Container:
-            return views.containers[0]!;
+            return views.containers[0];
         case ViewType.Component:
-            return views.components[0]!;
+            return views.components[0];
         case ViewType.Deployment:
-            return views.deployments[0]!;
-        default:
-            return views.systemLandscape!;
-    }
-};
-
-export const findViewByDefinition = (
-    views: IViews,
-    view: View
-): View | undefined => {
-    switch (view.type) {
-        case ViewType.Model:
-            return createDefaultModelView();
-        case ViewType.SystemLandscape:
-            return views.systemLandscape;
-        case ViewType.SystemContext:
-            return views.systemContexts.find(
-                (x) =>
-                    x.softwareSystemIdentifier === view.softwareSystemIdentifier
-            );
-        case ViewType.Container:
-            return views.containers.find(
-                (x) =>
-                    x.softwareSystemIdentifier === view.softwareSystemIdentifier
-            );
-        case ViewType.Component:
-            return views.components.find(
-                (x) => x.containerIdentifier === view.containerIdentifier
-            );
-        case ViewType.Deployment:
-            return views.deployments.find(
-                (x) =>
-                    x.softwareSystemIdentifier === view.softwareSystemIdentifier
-            );
+            return views.deployments[0];
         default:
             return undefined;
     }
 };
 
-export const findOrDefault = <TView extends View>(
+export const findViewByDefinition = (
+    views: IViews,
+    view: Partial<View>
+): View | undefined => {
+    return (
+        [views.systemLandscape].find(
+            (x) => x.key === view?.key || x.type === view?.type
+        ) ??
+        views.systemContexts.find(
+            (x) =>
+                x.key === view?.key ||
+                (x.type === view?.type &&
+                    x.softwareSystemIdentifier ===
+                        view.softwareSystemIdentifier)
+        ) ??
+        views.containers.find(
+            (x) =>
+                x.key === view?.key ||
+                (x.type === view?.type &&
+                    x.softwareSystemIdentifier ===
+                        view.softwareSystemIdentifier)
+        ) ??
+        views.components.find(
+            (x) =>
+                x.key === view?.key ||
+                (x.type === view?.type &&
+                    x.containerIdentifier === view.containerIdentifier)
+        ) ??
+        views.deployments.find(
+            (x) =>
+                x.key === view?.key ||
+                (x.type === view?.type &&
+                    x.softwareSystemIdentifier ===
+                        view.softwareSystemIdentifier &&
+                    x.environment === view.environment)
+        ) ??
+        [createDefaultModelView()].find(
+            (x) => x.key === view?.key || x.type === view?.type
+        )
+    );
+};
+
+export const findViewByKey = (
+    views: IViews,
+    viewKey: string
+): View | undefined => {
+    return findViewByDefinition(views, { key: viewKey });
+};
+
+export const findViewOrDefault = <TView extends View>(
     views: IViews,
     view: View,
     defaultView: TView
 ): TView => {
-    return (
-        (findViewByKey(views, view.key) as TView) ??
-        (findViewByDefinition(views, view) as TView) ??
-        defaultView
-    );
-};
-
-export const findViewForElement = (
-    views: IViews,
-    viewType: ViewType,
-    elementIdentifier?: string
-): View | undefined => {
-    return (
-        [views.systemLandscape].find((x) => x?.type === viewType) ??
-        views.systemContexts.find(
-            (x) =>
-                x.type === viewType &&
-                x.softwareSystemIdentifier === elementIdentifier
-        ) ??
-        views.containers.find(
-            (x) =>
-                x.type === viewType &&
-                x.softwareSystemIdentifier === elementIdentifier
-        ) ??
-        views.components.find(
-            (x) =>
-                x.type === viewType &&
-                x.containerIdentifier === elementIdentifier
-        ) ??
-        views.deployments.find(
-            (x) =>
-                x.type === viewType &&
-                x.softwareSystemIdentifier === elementIdentifier
-        )
-    );
+    return (findViewByDefinition(views, view) as TView) ?? defaultView;
 };
 
 export const findAnyExisting = (views: IViews): View | undefined => {

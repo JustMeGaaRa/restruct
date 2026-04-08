@@ -6,7 +6,7 @@ import {
     isPerson,
     isSoftwareSystem,
     createDefaultContainerView,
-    findOrDefault,
+    findViewOrDefault,
 } from "@restruct/structurizr-dsl";
 import { useViewport } from "@restruct/react-svg";
 import { FC, PropsWithChildren, useEffect, useState } from "react";
@@ -46,7 +46,7 @@ export const ContainerDiagram: FC<
 
     useEffect(() => {
         if (workspace) {
-            const containerView = findOrDefault(
+            const containerView = findViewOrDefault(
                 workspace.views,
                 value,
                 createDefaultContainerView(value.softwareSystemIdentifier)

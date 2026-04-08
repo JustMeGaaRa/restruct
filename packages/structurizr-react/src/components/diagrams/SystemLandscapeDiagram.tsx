@@ -5,7 +5,7 @@ import {
     createSystemLandscapeDiagram,
     isPerson,
     isSoftwareSystem,
-    findOrDefault,
+    findViewOrDefault,
     createDefaultSystemLandscapeView,
 } from "@restruct/structurizr-dsl";
 import { useViewport } from "@restruct/react-svg";
@@ -48,7 +48,7 @@ export const SystemLandscapeDiagram: FC<
     // TODO(diagram): consider using Suspese and use hook while building diagram to avoid UI flicker
     useEffect(() => {
         if (workspace) {
-            const systemLandscapeView = findOrDefault(
+            const systemLandscapeView = findViewOrDefault(
                 workspace.views,
                 value,
                 createDefaultSystemLandscapeView()

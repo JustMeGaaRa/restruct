@@ -1,5 +1,5 @@
 import {
-    findViewByType,
+    getAnyByViewType,
     ViewType,
     fetchThemes,
     createDefaultModelView,
@@ -140,13 +140,16 @@ export const WorkspacePreview: FC<WorkspacePreviewProps> = ({
                     navigateToView(workspace.views.systemLandscape);
                 } else if (view === "diagrams") {
                     navigateToView(
-                        findViewByType(workspace.views, ViewType.SystemContext)
+                        getAnyByViewType(
+                            workspace.views,
+                            ViewType.SystemContext
+                        )
                     );
                 } else if (view === "model") {
                     navigateToView(createDefaultModelView());
                 } else if (view === "deployment") {
                     navigateToView(
-                        findViewByType(workspace.views, ViewType.Deployment)
+                        getAnyByViewType(workspace.views, ViewType.Deployment)
                     );
                 }
             },

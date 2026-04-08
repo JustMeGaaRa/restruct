@@ -1,9 +1,77 @@
 import { beforeAll, describe, expect, test } from "vitest";
-import { IElement, IWorkspace, ViewType, workspace } from "../../src";
+import { IElement, IWorkspace, View, ViewType, workspace } from "../../src";
 import {
+    getViewPath,
     zoomIntoElementScope,
     zoomOutToParentScope,
 } from "../../src/utils/breadcrumbs";
+
+describe("getViewPath", () => {
+    let workspace: IWorkspace;
+
+    beforeAll(() => {
+        workspace = createWorkspaceForBreadcrumbs();
+    });
+
+    test("should return empty array for system landscape view", () => {
+        const breadcrumbs = getViewPath(workspace, systemLandscape);
+
+        expect(breadcrumbs).toBeDefined();
+        expect(breadcrumbs.length).toBe(0);
+    });
+
+    test("should return breadcrumbs with system context view for a 'Software System A' element", () => {
+        const breadcrumbs = getViewPath(workspace, systemContextView);
+
+        expect(breadcrumbs).toBeDefined();
+        expect(breadcrumbs.length).toBe(1);
+        expect(breadcrumbs[0]?.element?.identifier).toBe(
+            softwareSystemA.identifier
+        );
+        expect(breadcrumbs[0]?.view?.type).toBe(ViewType.SystemContext);
+    });
+
+    test("should return breadcrumbs with container view for a 'Container A' element", () => {
+        const breadcrumbs = getViewPath(workspace, containerView);
+
+        expect(breadcrumbs).toBeDefined();
+        expect(breadcrumbs.length).toBe(2);
+        expect(breadcrumbs[0]?.element?.identifier).toBe(
+            softwareSystemA.identifier
+        );
+        expect(breadcrumbs[0]?.view?.type).toBe(ViewType.SystemContext);
+        expect(breadcrumbs[1]?.element?.identifier).toBe(
+            softwareSystemA.identifier
+        );
+        expect(breadcrumbs[1]?.view?.type).toBe(ViewType.Container);
+    });
+
+    test("should return breadcrumbs with component view for a 'Component A' element", () => {
+        const breadcrumbs = getViewPath(workspace, componentView);
+
+        expect(breadcrumbs).toBeDefined();
+        expect(breadcrumbs.length).toBe(3);
+        expect(breadcrumbs[0]?.element?.identifier).toBe(
+            softwareSystemA.identifier
+        );
+        expect(breadcrumbs[0]?.view?.type).toBe(ViewType.SystemContext);
+        expect(breadcrumbs[1]?.element?.identifier).toBe(
+            softwareSystemA.identifier
+        );
+        expect(breadcrumbs[1]?.view?.type).toBe(ViewType.Container);
+        expect(breadcrumbs[2]?.element?.identifier).toBe(containerA.identifier);
+        expect(breadcrumbs[2]?.view?.type).toBe(ViewType.Component);
+    });
+
+    test("should return breadcrumbs with deployment view for a 'Deployment' element", () => {
+        const breadcrumbs = getViewPath(workspace, deploymentView);
+
+        expect(breadcrumbs).toBeDefined();
+        expect(breadcrumbs.length).toBe(1);
+        expect(breadcrumbs[0]?.element).toBeUndefined();
+        expect(breadcrumbs[0]?.view?.type).toBe(ViewType.Deployment);
+    });
+});
 
 describe("zoomIntoElementScope", () => {
     let workspace: IWorkspace;
@@ -116,17 +184,15 @@ describe("zoomOutToParentScope", () => {
     });
 });
 
-// prettier-ignore
 let person: IElement;
 let softwareSystemA: IElement;
-let softwareSystemB: IElement;
 let containerA: IElement;
-let containerB: IElement;
-let containerC: IElement;
 let componentA: IElement;
-let componentB: IElement;
-let componentC: IElement;
-let componentD: IElement;
+let systemLandscape: View;
+let systemContextView: View;
+let containerView: View;
+let componentView: View;
+let deploymentView: View;
 
 // prettier-ignore
 const createWorkspaceForBreadcrumbs = () => {
@@ -139,30 +205,26 @@ const createWorkspaceForBreadcrumbs = () => {
                     componentA = _.component("Component A", "Component Description");
                 });
 
-                containerB = _.container("Container B", "Container Description 2", _ => {
-                    componentB = _.component("Component B", "Component Description 2");
+                _.container("Container B", "Container Description 2", _ => {
+                    _.component("Component B", "Component Description 2");
 
-                    componentC = _.component("Component C", "Component Description 3");
+                    _.component("Component C", "Component Description 3");
                 });
             });
 
-            softwareSystemB = _.softwareSystem("Software System B", "Software System Description 2", _ => {
-                containerC = _.container("Container C", "Container Description 2", _ => {
-                    componentD = _.component("Component D", "Component Description 2");
+            _.softwareSystem("Software System B", "Software System Description 2", _ => {
+                _.container("Container C", "Container Description 2", _ => {
+                    _.component("Component D", "Component Description 2");
                 });
             });
         })
 
         _.views(_ => {
-            _.systemLandscapeView("System Landscape");
-
-            _.systemContextView(softwareSystemA.identifier, "System Context view for Software System A");
-
-            _.containerView(containerA.identifier, "Container view for Container A");
-
-            _.componentView(componentA.identifier, "Component view for Component A");
-
-            _.deploymentView("Deployment", "Production", "Deployment View for Production");
+            systemLandscape = _.systemLandscapeView("System Landscape");
+            systemContextView = _.systemContextView(softwareSystemA.identifier, "System Context view for Software System A");
+            containerView = _.containerView(softwareSystemA.identifier, "Container view for Container A");
+            componentView = _.componentView(containerA.identifier, "Component view for Component A");
+            deploymentView = _.deploymentView("Deployment", "Production", "Deployment View for Production");
         })
     });
 };

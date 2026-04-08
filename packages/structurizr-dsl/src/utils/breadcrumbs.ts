@@ -6,6 +6,11 @@ import {
     ViewType,
 } from "../interfaces";
 import {
+    isComponentView,
+    isContainerView,
+    isSystemContextView,
+} from "./guards";
+import {
     createDefaultComponentView,
     createDefaultContainerView,
     createDefaultSystemContextView,
@@ -18,8 +23,174 @@ export type ViewPathItem = {
     view: View;
 };
 
-// prettier-ignore
-export const zoomIntoElementScope = (workspace: IWorkspace, targetScopeElement: IElement): Array<ViewPathItem> => {
+const ViewHierarchy: Record<ViewType, ViewType | undefined> = {
+    [ViewType.SystemLandscape]: undefined,
+    [ViewType.Model]: undefined,
+    [ViewType.Deployment]: undefined,
+    [ViewType.SystemContext]: ViewType.SystemLandscape,
+    [ViewType.Container]: ViewType.SystemContext,
+    [ViewType.Component]: ViewType.Container,
+};
+
+const ElementHierarchy: Record<ElementType, ElementType | undefined> = {
+    [ElementType.SoftwareSystem]: undefined,
+    [ElementType.Container]: ElementType.SoftwareSystem,
+    [ElementType.Component]: ElementType.Container,
+};
+
+export const getViewPath = (
+    workspace: IWorkspace,
+    view?: View
+): Array<ViewPathItem> => {
+    if (
+        view?.type === ViewType.SystemLandscape ||
+        view?.type === ViewType.Model
+    ) {
+        return [];
+    }
+
+    if (view?.type === ViewType.Deployment) {
+        return [
+            {
+                index: 0,
+                element: undefined,
+                view: view,
+            },
+        ];
+    }
+
+    const workspaceSoftwareSystems = workspace.model.groups
+        .flatMap((group) => group.softwareSystems)
+        .concat(workspace.model.softwareSystems);
+
+    for (const softwareSystem of workspaceSoftwareSystems) {
+        const softwareSystemContainers = softwareSystem.groups
+            .flatMap((group) => group.containers)
+            .concat(softwareSystem.containers);
+
+        if (isComponentView(view)) {
+            for (const container of softwareSystemContainers) {
+                if (container.identifier === view.containerIdentifier) {
+                    // NOTE: return the path inline to optimize performance and only if the container element was found
+                    // NOTE: include the deeper level views because we are zooming into the element scope
+                    return [
+                        {
+                            index: 0,
+                            element: softwareSystem,
+                            view:
+                                workspace.views.systemContexts.find(
+                                    (view) =>
+                                        view.softwareSystemIdentifier ===
+                                        softwareSystem.identifier
+                                ) ??
+                                createDefaultSystemContextView(
+                                    softwareSystem.identifier
+                                ),
+                        },
+                        {
+                            index: 1,
+                            element: softwareSystem,
+                            view:
+                                workspace.views.containers.find(
+                                    (view) =>
+                                        view.softwareSystemIdentifier ===
+                                        softwareSystem.identifier
+                                ) ??
+                                createDefaultContainerView(
+                                    softwareSystem.identifier
+                                ),
+                        },
+                        {
+                            index: 2,
+                            element: container,
+                            view:
+                                workspace.views.components.find(
+                                    (view) =>
+                                        view.containerIdentifier ===
+                                        container.identifier
+                                ) ??
+                                createDefaultComponentView(
+                                    container.identifier
+                                ),
+                        },
+                    ];
+                }
+            }
+        }
+
+        if (isContainerView(view)) {
+            if (softwareSystem.identifier === view.softwareSystemIdentifier) {
+                // NOTE: return the path inline to optimize performance and only if the container was not found but software system was
+                // NOTE: include the deeper level views because we are zooming into the element scope
+                return [
+                    {
+                        index: 0,
+                        element: softwareSystem,
+                        view:
+                            workspace.views.systemContexts.find(
+                                (view) =>
+                                    view.softwareSystemIdentifier ===
+                                    softwareSystem.identifier
+                            ) ??
+                            createDefaultSystemContextView(
+                                softwareSystem.identifier
+                            ),
+                    },
+                    {
+                        index: 1,
+                        element: softwareSystem,
+                        view:
+                            workspace.views.containers.find(
+                                (view) =>
+                                    view.softwareSystemIdentifier ===
+                                    softwareSystem.identifier
+                            ) ??
+                            createDefaultContainerView(
+                                softwareSystem.identifier
+                            ),
+                    },
+                ];
+            }
+        }
+
+        if (isSystemContextView(view)) {
+            if (softwareSystem.identifier === view.softwareSystemIdentifier) {
+                // NOTE: return the path inline to optimize performance and only if the container was not found but software system was
+                // NOTE: include the deeper level views because we are zooming into the element scope
+                return [
+                    {
+                        index: 0,
+                        element: softwareSystem,
+                        view:
+                            workspace.views.systemContexts.find(
+                                (view) =>
+                                    view.softwareSystemIdentifier ===
+                                    softwareSystem.identifier
+                            ) ??
+                            createDefaultSystemContextView(
+                                softwareSystem.identifier
+                            ),
+                    },
+                ];
+            }
+        }
+    }
+
+    // NOTE: this error is reachable only if element type is allowed but not found in workspace
+    const identifier = isComponentView(view)
+        ? view?.containerIdentifier
+        : isContainerView(view)
+          ? view?.softwareSystemIdentifier
+          : view?.softwareSystemIdentifier;
+    throw new Error(
+        `Element with identifier ${identifier} not found in workspace`
+    );
+};
+
+export const zoomIntoElementScope = (
+    workspace: IWorkspace,
+    targetScopeElement: IElement
+): Array<ViewPathItem> => {
     if (!workspace) {
         throw new Error("Workspace cannot be undefined");
     }
@@ -53,20 +224,39 @@ export const zoomIntoElementScope = (workspace: IWorkspace, targetScopeElement: 
                     {
                         index: 0,
                         element: softwareSystem,
-                        view: workspace.views.systemContexts.find((view) => view.softwareSystemIdentifier === softwareSystem.identifier)
-                            ?? createDefaultSystemContextView(softwareSystem.identifier),
+                        view:
+                            workspace.views.systemContexts.find(
+                                (view) =>
+                                    view.softwareSystemIdentifier ===
+                                    softwareSystem.identifier
+                            ) ??
+                            createDefaultSystemContextView(
+                                softwareSystem.identifier
+                            ),
                     },
                     {
                         index: 1,
                         element: softwareSystem,
-                        view: workspace.views.containers.find((view) => view.softwareSystemIdentifier === softwareSystem.identifier)
-                            ?? createDefaultContainerView(softwareSystem.identifier),
+                        view:
+                            workspace.views.containers.find(
+                                (view) =>
+                                    view.softwareSystemIdentifier ===
+                                    softwareSystem.identifier
+                            ) ??
+                            createDefaultContainerView(
+                                softwareSystem.identifier
+                            ),
                     },
                     {
                         index: 2,
                         element: container,
-                        view: workspace.views.components.find((view) => view.containerIdentifier === container.identifier)
-                            ?? createDefaultComponentView(container.identifier),
+                        view:
+                            workspace.views.components.find(
+                                (view) =>
+                                    view.containerIdentifier ===
+                                    container.identifier
+                            ) ??
+                            createDefaultComponentView(container.identifier),
                     },
                 ];
             }
@@ -79,25 +269,41 @@ export const zoomIntoElementScope = (workspace: IWorkspace, targetScopeElement: 
                 {
                     index: 0,
                     element: softwareSystem,
-                    view: workspace.views.systemContexts.find((view) => view.softwareSystemIdentifier === softwareSystem.identifier)
-                        ?? createDefaultSystemContextView(softwareSystem.identifier),
+                    view:
+                        workspace.views.systemContexts.find(
+                            (view) =>
+                                view.softwareSystemIdentifier ===
+                                softwareSystem.identifier
+                        ) ??
+                        createDefaultSystemContextView(
+                            softwareSystem.identifier
+                        ),
                 },
                 {
                     index: 1,
                     element: softwareSystem,
-                    view: workspace.views.containers.find((view) => view.softwareSystemIdentifier === softwareSystem.identifier)
-                        ?? createDefaultContainerView(softwareSystem.identifier),
+                    view:
+                        workspace.views.containers.find(
+                            (view) =>
+                                view.softwareSystemIdentifier ===
+                                softwareSystem.identifier
+                        ) ??
+                        createDefaultContainerView(softwareSystem.identifier),
                 },
             ];
         }
     }
 
     // NOTE: this error is reachable only if element type is allowed but not found in workspace
-    throw new Error(`Element with identifier ${targetScopeElement.identifier} not found in workspace`);
+    throw new Error(
+        `Element with identifier ${targetScopeElement.identifier} not found in workspace`
+    );
 };
 
-// prettier-ignore
-export const zoomOutToParentScope = (workspace: IWorkspace, currentScopeElement: IElement | undefined): Array<ViewPathItem> => {
+export const zoomOutToParentScope = (
+    workspace: IWorkspace,
+    currentScopeElement: IElement | undefined
+): Array<ViewPathItem> => {
     if (!workspace) {
         throw new Error("Workspace cannot be undefined");
     }
@@ -127,15 +333,29 @@ export const zoomOutToParentScope = (workspace: IWorkspace, currentScopeElement:
                     {
                         index: 0,
                         element: softwareSystem,
-                        view: workspace.views.systemContexts.find((view) => view.softwareSystemIdentifier === softwareSystem.identifier)
-                            ?? createDefaultSystemContextView(softwareSystem.identifier),
+                        view:
+                            workspace.views.systemContexts.find(
+                                (view) =>
+                                    view.softwareSystemIdentifier ===
+                                    softwareSystem.identifier
+                            ) ??
+                            createDefaultSystemContextView(
+                                softwareSystem.identifier
+                            ),
                     },
                     {
                         index: 1,
                         element: softwareSystem,
-                        view: workspace.views.containers.find((view) => view.softwareSystemIdentifier === softwareSystem.identifier)
-                            ?? createDefaultContainerView(softwareSystem.identifier),
-                    }
+                        view:
+                            workspace.views.containers.find(
+                                (view) =>
+                                    view.softwareSystemIdentifier ===
+                                    softwareSystem.identifier
+                            ) ??
+                            createDefaultContainerView(
+                                softwareSystem.identifier
+                            ),
+                    },
                 ];
             }
         }
@@ -147,9 +367,16 @@ export const zoomOutToParentScope = (workspace: IWorkspace, currentScopeElement:
                 {
                     index: 0,
                     element: softwareSystem,
-                    view: workspace.views.systemContexts.find((view) => view.softwareSystemIdentifier === softwareSystem.identifier)
-                        ?? createDefaultSystemContextView(softwareSystem.identifier),
-                }
+                    view:
+                        workspace.views.systemContexts.find(
+                            (view) =>
+                                view.softwareSystemIdentifier ===
+                                softwareSystem.identifier
+                        ) ??
+                        createDefaultSystemContextView(
+                            softwareSystem.identifier
+                        ),
+                },
             ];
         }
     }
@@ -159,9 +386,11 @@ export const zoomOutToParentScope = (workspace: IWorkspace, currentScopeElement:
         {
             index: 0,
             element: undefined,
-            view: workspace.views.systemLandscape ?? createDefaultSystemLandscapeView(),
-        }
-    ]
+            view:
+                workspace.views.systemLandscape ??
+                createDefaultSystemLandscapeView(),
+        },
+    ];
 };
 
 export const getViewPathTitle = (item: ViewPathItem): string => {
@@ -264,6 +493,11 @@ export const getComponentViewOptions = (
     });
 };
 
+/**
+ * Returns the list of deployment view options for a given workspace.
+ * @param workspace The workspace to get the deployment view options from.
+ * @returns The list of deployment view options.
+ */
 export const getDeploymentViewOptions = (
     workspace: IWorkspace
 ): Array<ViewPathItem> => {

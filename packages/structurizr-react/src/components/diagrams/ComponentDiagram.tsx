@@ -4,7 +4,7 @@ import {
     ViewType,
     createComponentDiagram,
     createDefaultComponentView,
-    findOrDefault,
+    findViewOrDefault,
     isComponent,
     isContainer,
     isPerson,
@@ -49,7 +49,7 @@ export const ComponentDiagram: FC<
 
     useEffect(() => {
         if (workspace) {
-            const componentView = findOrDefault(
+            const componentView = findViewOrDefault(
                 workspace.views,
                 value,
                 createDefaultComponentView(value.containerIdentifier)
